@@ -30,8 +30,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.Semaphore;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
@@ -40,7 +40,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 class ManualScraperService {
 
     private static final ObjectMapper CARD_OBJECT_MAPPER = new ObjectMapper();
@@ -57,6 +56,25 @@ class ManualScraperService {
 
     @Value("${app.scraper.direct-items-enabled:true}")
     private boolean directItemsEnabled = true;
+
+    ManualScraperService(
+            DataSourceRepository dataSourceRepository,
+            ListScraperClient listScraperClient,
+            ScraperMappingService mappingService,
+            IngestionPublisher ingestionPublisher,
+            RawVideoRefetchRepository rawVideoRefetchRepository,
+            @Qualifier("scraperExecutor") Executor scraperExecutor,
+            WorkerJobAuditWriter auditWriter,
+            ScrapeUpdateWindowFilter updateWindowFilter) {
+        this.dataSourceRepository = dataSourceRepository;
+        this.listScraperClient = listScraperClient;
+        this.mappingService = mappingService;
+        this.ingestionPublisher = ingestionPublisher;
+        this.rawVideoRefetchRepository = rawVideoRefetchRepository;
+        this.scraperExecutor = scraperExecutor;
+        this.auditWriter = auditWriter;
+        this.updateWindowFilter = updateWindowFilter;
+    }
 
     UUID initSession(ManualScrapeConfigRequest request) {
         UUID sessionId = IrcsUuidGenerators.nextId();
