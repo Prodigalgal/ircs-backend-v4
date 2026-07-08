@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REGISTRY="${REGISTRY:-registry.mnnu.eu.org/ircs}"
+REGISTRY="${REGISTRY:-docker.io/speedproxy}"
 PUSH_REGISTRY="${PUSH_REGISTRY:-${REGISTRY}}"
 TARGET_ARCH="${TARGET_ARCH:-arm64}"
 TARGET_OS="${TARGET_OS:-linux}"
 TARGET_PLATFORMS="${TARGET_PLATFORMS:-${TARGET_OS}/${TARGET_ARCH}}"
-JIB_BASE_IMAGE="${JIB_BASE_IMAGE:-${PUSH_REGISTRY}/base/eclipse-temurin:25-jre-alpine}"
+JIB_BASE_IMAGE="${JIB_BASE_IMAGE:-eclipse-temurin:25-jre-alpine}"
 JIB_ALLOW_INSECURE_REGISTRIES="${JIB_ALLOW_INSECURE_REGISTRIES:-false}"
 JIB_SEND_CREDENTIALS_OVER_HTTP="${JIB_SEND_CREDENTIALS_OVER_HTTP:-false}"
 TAG="${IMAGE_TAG:-sha-$(git rev-parse --short=12 HEAD)}"
@@ -112,7 +112,7 @@ select_affected() {
   local file
   for file in "${changed[@]}"; do
     case "${file}" in
-      build.gradle|settings.gradle|gradlew|gradlew.bat|gradle/*|gradle/**/*|scripts/ci/*|scripts/ci/**/*|.gitea/workflows/*)
+      build.gradle|settings.gradle|gradlew|gradlew.bat|gradle/*|gradle/**/*|scripts/ci/*|scripts/ci/**/*|.github/workflows/*)
         select_all
         return 0
         ;;

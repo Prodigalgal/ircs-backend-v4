@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REGISTRY="${REGISTRY:-registry.mnnu.eu.org/ircs}"
+REGISTRY="${REGISTRY:-docker.io/speedproxy}"
 PUSH_REGISTRY="${PUSH_REGISTRY:-${REGISTRY}}"
 TARGET_ARCH="${TARGET_ARCH:-arm64}"
 TARGET_OS="${TARGET_OS:-linux}"
 TARGET_PLATFORMS="${TARGET_PLATFORMS:-${TARGET_OS}/${TARGET_ARCH}}"
-BASE_IMAGE_SOURCE="${BASE_IMAGE_SOURCE:-mirror.gcr.io/library/eclipse-temurin:25-jre-alpine}"
+BASE_IMAGE_SOURCE="${BASE_IMAGE_SOURCE:-eclipse-temurin:25-jre-alpine}"
 BASE_IMAGE_FALLBACK="${BASE_IMAGE_FALLBACK:-public.ecr.aws/docker/library/eclipse-temurin:25-jre-alpine}"
 BASE_IMAGE_TARGET="${BASE_IMAGE_TARGET:-${PUSH_REGISTRY}/base/eclipse-temurin:25-jre-alpine}"
 BASE_IMAGE_TARGET_SCHEME="${BASE_IMAGE_TARGET_SCHEME:-https}"

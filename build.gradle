@@ -180,7 +180,7 @@ configure(runtimeProjects) {
         containerizingMode = 'packaged'
         from {
             image = providers.gradleProperty('jibBaseImage')
-                    .orElse('registry.mnnu.eu.org/ircs/base/eclipse-temurin:25-jre-alpine')
+                    .orElse('eclipse-temurin:25-jre-alpine')
                     .get()
             platforms {
                 parseJibPlatforms(project).each { targetPlatform ->
@@ -193,7 +193,7 @@ configure(runtimeProjects) {
         }
         to {
             image = providers.gradleProperty('jibToImage')
-                    .orElse("registry.mnnu.eu.org/ircs/${project.name}:v4-dev")
+                    .orElse("docker.io/speedproxy/${project.name}:v4-dev")
                     .get()
         }
         container {
@@ -209,7 +209,7 @@ configure(runtimeProjects) {
     tasks.named('bootBuildImage') {
         builder = 'paketobuildpacks/builder-jammy-tiny:latest'
         imageName = providers.gradleProperty('bootBuildImageName')
-                .orElse("registry.mnnu.eu.org/ircs/${project.name}:v4-native-dev")
+                .orElse("docker.io/speedproxy/${project.name}:v4-native-dev")
                 .get()
         environment = [
                 BP_NATIVE_IMAGE: 'true',

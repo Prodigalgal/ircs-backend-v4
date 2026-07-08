@@ -6,11 +6,11 @@ param(
     [string]$ImageName,
 
     [string]$Tag = "dev",
-    [string]$Registry = "registry.mnnu.eu.org/ircs",
+    [string]$Registry = "docker.io/speedproxy",
     [string]$Architecture = "arm64",
     [string]$Os = "linux",
     [string]$DockerConfigSecretNamespace = "ircs-prod",
-    [string]$DockerConfigSecret = "registry-secret"
+    [string]$DockerConfigSecret = "dockerhub-registry-secret"
 )
 
 $ErrorActionPreference = "Stop"

@@ -1,8 +1,8 @@
 param(
     [string]$TargetNamespace = "ircs-prod",
-    [string]$SecretName = "registry-secret",
-    [string]$Registry = "registry.mnnu.eu.org",
-    [string]$Username = "admin"
+    [string]$SecretName = "dockerhub-registry-secret",
+    [string]$Registry = "https://index.docker.io/v1/",
+    [string]$Username = "speedproxy"
 )
 
 $ErrorActionPreference = "Stop"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REGISTRY="${REGISTRY:-registry.mnnu.eu.org/ircs}"
+REGISTRY="${REGISTRY:-docker.io/speedproxy}"
 TARGET_ARCH="${TARGET_ARCH:-arm64}"
 TARGET_OS="${TARGET_OS:-linux}"
 TAG="${IMAGE_TAG:-sha-$(git rev-parse --short=12 HEAD)}"

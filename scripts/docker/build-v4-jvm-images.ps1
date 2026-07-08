@@ -1,5 +1,5 @@
 param(
-    [string]$Registry = "registry.mnnu.eu.org/ircs",
+    [string]$Registry = "docker.io/speedproxy",
     [string]$Tag = "v4-dev",
     [string]$Platforms = "linux/arm64",
     [string]$ActiveProcessorCount = "1"

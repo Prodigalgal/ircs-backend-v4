@@ -23,7 +23,7 @@ while IFS='=' read -r module image; do
 
   image_name="${image##*/}"
   image_name="${image_name%%:*}"
-  current_ref_pattern="image: registry\\.mnnu\\.eu\\.org/ircs/${image_name}(@sha256:[a-f0-9]+|:[A-Za-z0-9._-]+)"
+  current_ref_pattern="image: ([^[:space:]]*/)?${image_name}(@sha256:[a-f0-9]+|:[A-Za-z0-9._-]+)"
   replacement="image: ${image}"
 
   for prod_dir in ${prod_dirs}; do

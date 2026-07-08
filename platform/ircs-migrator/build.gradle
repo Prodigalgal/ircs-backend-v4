@@ -24,7 +24,7 @@ jib {
     containerizingMode = 'packaged'
     from {
         image = providers.gradleProperty('jibBaseImage')
-                .orElse('registry.mnnu.eu.org/ircs/base/eclipse-temurin:25-jre-alpine')
+                .orElse('eclipse-temurin:25-jre-alpine')
                 .get()
         platforms {
             platform {
@@ -35,7 +35,7 @@ jib {
     }
     to {
         image = providers.gradleProperty('jibToImage')
-                .orElse('harbor.mnnu.eu.org/ircs/ircs-migrator:dev')
+                .orElse('docker.io/speedproxy/ircs-migrator:dev')
                 .get()
     }
     container {
