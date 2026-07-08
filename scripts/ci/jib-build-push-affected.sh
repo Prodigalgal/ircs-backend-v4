@@ -8,6 +8,7 @@ TARGET_OS="${TARGET_OS:-linux}"
 TARGET_PLATFORMS="${TARGET_PLATFORMS:-${TARGET_OS}/${TARGET_ARCH}}"
 JIB_BASE_IMAGE="${JIB_BASE_IMAGE:-${PUSH_REGISTRY}/base/eclipse-temurin:25-jre-alpine}"
 JIB_ALLOW_INSECURE_REGISTRIES="${JIB_ALLOW_INSECURE_REGISTRIES:-false}"
+JIB_SEND_CREDENTIALS_OVER_HTTP="${JIB_SEND_CREDENTIALS_OVER_HTTP:-false}"
 TAG="${IMAGE_TAG:-sha-$(git rev-parse --short=12 HEAD)}"
 BUILD_SCOPE="${BUILD_SCOPE:-affected}"
 IMAGE_MODE="${IMAGE_MODE:-jvm}"
@@ -238,6 +239,7 @@ for entry in "${selected[@]}"; do
       "-PjibBaseImage=${JIB_BASE_IMAGE}" \
       "-PjibTargetPlatforms=${TARGET_PLATFORMS}" \
       "-Djib.allowInsecureRegistries=${JIB_ALLOW_INSECURE_REGISTRIES}" \
+      "-Djib.sendCredentialsOverHttp=${JIB_SEND_CREDENTIALS_OVER_HTTP}" \
       "-Djib.to.auth.username=${REGISTRY_USERNAME}" \
       "-Djib.to.auth.password=${REGISTRY_PASSWORD}"
   fi

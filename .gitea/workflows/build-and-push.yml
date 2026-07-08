@@ -48,6 +48,7 @@ jobs:
       BASE_IMAGE_TARGET: registry.mnnu.eu.org/ircs/base/eclipse-temurin:25-jre-alpine
       JIB_BASE_IMAGE: 10.110.192.143:5000/ircs/base/eclipse-temurin:25-jre-alpine
       JIB_ALLOW_INSECURE_REGISTRIES: "true"
+      JIB_SEND_CREDENTIALS_OVER_HTTP: "true"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
