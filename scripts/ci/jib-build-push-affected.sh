@@ -161,6 +161,7 @@ esac
 echo "IRCS image build scope: ${BUILD_SCOPE}"
 echo "IRCS image tag: ${TAG}"
 echo "IRCS image mode: ${IMAGE_MODE}"
+echo "IRCS git commit: $(git rev-parse --short=12 HEAD)"
 echo "IRCS target platforms: ${TARGET_PLATFORMS}"
 echo "IRCS Jib base image: ${JIB_BASE_IMAGE}"
 echo "IRCS selected module count: ${#selected[@]}"
