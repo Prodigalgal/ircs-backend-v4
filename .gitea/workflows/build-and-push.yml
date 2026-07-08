@@ -109,17 +109,17 @@ jobs:
           git -c http.extraHeader="Authorization: Basic ${auth}" clone --depth 1 --branch "${PROD_CONFIG_REPO_BRANCH}" "${PROD_CONFIG_REPO_URL}" prod-config-repo
 
           chmod +x scripts/ci/update-prod-image-tags.sh
-          export PROD_K8S_DIR="prod-config-repo/ircs-prod"
+          export PROD_K8S_DIRS="prod-config-repo/ircs-prod prod-config-repo/ircs-v4"
           scripts/ci/update-prod-image-tags.sh build-image-manifest.txt
 
           cd prod-config-repo
-          if git diff --quiet -- ircs-prod; then
+          if git diff --quiet -- ircs-prod ircs-v4; then
             echo "No production manifest image changes."
             exit 0
           fi
           git config user.name "gitea-actions"
           git config user.email "actions@mnnu.eu.org"
-          git add ircs-prod
+          git add ircs-prod ircs-v4
           git commit -m "ci: update ircs image tags"
           git -c http.extraHeader="Authorization: Basic ${auth}" push origin "HEAD:${PROD_CONFIG_REPO_BRANCH}"
 

@@ -23,6 +23,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +47,7 @@ class TaskRuntimeOverviewService {
             StringRedisTemplate redisTemplate,
             ObjectMapper objectMapper,
             RuntimeConfigService runtimeConfig,
-            Clock clock
+            @Qualifier("opsClock") Clock clock
     ) {
         this.redisTemplate = redisTemplate;
         this.objectMapper = objectMapper;

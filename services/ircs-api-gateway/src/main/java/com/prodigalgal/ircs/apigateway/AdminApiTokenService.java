@@ -23,6 +23,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,7 @@ class AdminApiTokenService {
     private final ConcurrentMap<String, CachedToken> cache = new ConcurrentHashMap<>();
     AdminApiTokenService(
             AdminApiTokenRepository repository,
-            Clock clock,
+            @Qualifier("apiGatewayClock") Clock clock,
             ObjectProvider<SecureRandom> secureRandomProvider,
             @Value("${app.gateway.api-token.cache-ttl:PT30S}") String cacheTtl,
             @Value("${app.gateway.api-token.touch-interval:PT5M}") String touchInterval) {

@@ -9,12 +9,11 @@ import com.prodigalgal.ircs.ops.queue.dlq.runtime.RuntimeWorkExpiredInflightReap
 import java.time.Clock;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 @Service
-@RequiredArgsConstructor
 public class LowRiskSelfHealingService {
 
     static final String EXECUTE_ENABLED_KEY = "app.ops.self-healing.low-risk.execute-enabled";
@@ -26,6 +25,21 @@ public class LowRiskSelfHealingService {
     private final DashboardQueryService dashboardQueryService;
     private final RuntimeConfigService runtimeConfig;
     private final Clock clock;
+
+    public LowRiskSelfHealingService(
+            RuntimeWorkExpiredInflightReaper expiredInflightReaper,
+            RuntimeWorkDlqService runtimeWorkDlqService,
+            RabbitDlqService rabbitDlqService,
+            DashboardQueryService dashboardQueryService,
+            RuntimeConfigService runtimeConfig,
+            @Qualifier("opsClock") Clock clock) {
+        this.expiredInflightReaper = expiredInflightReaper;
+        this.runtimeWorkDlqService = runtimeWorkDlqService;
+        this.rabbitDlqService = rabbitDlqService;
+        this.dashboardQueryService = dashboardQueryService;
+        this.runtimeConfig = runtimeConfig;
+        this.clock = clock == null ? Clock.systemUTC() : clock;
+    }
 
     public LowRiskHealingResponse run(LowRiskHealingRequest request) {
         LowRiskHealingPlaybook playbook = request == null ? null : request.playbook();

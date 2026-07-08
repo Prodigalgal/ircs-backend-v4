@@ -13,12 +13,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 @Service
-@RequiredArgsConstructor
 public class ServiceSelfHealingService {
 
     static final String ENABLED_KEY = "app.ops.self-healing.service-restart.enabled";
@@ -31,6 +30,15 @@ public class ServiceSelfHealingService {
     private final RuntimeConfigService runtimeConfig;
     private final Clock clock;
     private final Map<String, RestartAttemptState> attempts = new ConcurrentHashMap<>();
+
+    public ServiceSelfHealingService(
+            KubernetesDeploymentRestartService restartService,
+            RuntimeConfigService runtimeConfig,
+            @Qualifier("opsClock") Clock clock) {
+        this.restartService = restartService;
+        this.runtimeConfig = runtimeConfig;
+        this.clock = clock == null ? Clock.systemUTC() : clock;
+    }
 
     public ServiceRestartHealingResponse restart(ServiceRestartHealingRequest request) {
         String service = requireText(request == null ? null : request.service(), "service");

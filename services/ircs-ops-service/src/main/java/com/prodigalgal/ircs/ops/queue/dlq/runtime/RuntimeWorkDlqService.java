@@ -18,6 +18,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -39,7 +40,10 @@ public class RuntimeWorkDlqService {
     private final ExecutorService queueReadExecutor;
     private final Map<Integer, CachedQueues> queueCache = new ConcurrentHashMap<>();
 
-    public RuntimeWorkDlqService(RuntimeWorkQueue workQueue, RuntimeConfigService runtimeConfig, Clock clock) {
+    public RuntimeWorkDlqService(
+            RuntimeWorkQueue workQueue,
+            RuntimeConfigService runtimeConfig,
+            @Qualifier("opsClock") Clock clock) {
         this.workQueue = workQueue;
         this.runtimeConfig = runtimeConfig;
         this.clock = clock == null ? Clock.systemUTC() : clock;
