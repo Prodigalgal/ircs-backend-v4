@@ -12,6 +12,7 @@ public class IrcsPlatformApiRuntimeHints implements RuntimeHintsRegistrar {
         hints.resources().registerPattern("*.yaml");
         hints.resources().registerPattern("log4j2*.xml");
         hints.resources().registerPattern("META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat");
+        hints.resources().registerPattern("**/Log4j2Plugins.dat");
         hints.resources().registerPattern("META-INF/services/*");
         hints.resources().registerPattern("**/*.sql");
         hints.resources().registerPattern("**/*.lua");

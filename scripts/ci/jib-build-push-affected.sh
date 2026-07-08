@@ -17,7 +17,7 @@ DRY_RUN="${DRY_RUN:-false}"
 if [[ -z "${NATIVE_TARGET_MACHINE:-}" ]]; then
   case "${TARGET_ARCH}" in
     amd64)
-      NATIVE_TARGET_MACHINE="x86-64-v2"
+      NATIVE_TARGET_MACHINE="x86-64"
       ;;
     *)
       NATIVE_TARGET_MACHINE="compatibility"
