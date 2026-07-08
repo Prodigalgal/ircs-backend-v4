@@ -21,6 +21,7 @@
   - `arm64` 使用 `ubuntu-24.04-arm` runner，推送 `:<tag>-arm64`。
   - `publish-multiarch-images` job 使用 `docker buildx imagetools create` 合并成同一个 `:<tag>` 多架构 manifest。
 - 两个 native Dockerfile 使用 BuildKit Gradle cache mount，减少 CI 中 native 构建的重复依赖下载成本。
+- native runtime base 从 distroless base 调整为 `debian:12-slim` 并安装 `zlib1g`、`ca-certificates`；首轮 distroless base 缺 `libz.so.1`，会导致 `/app/ircs-platform-api` 启动时报 shared library error。
 - 本地 Docker buildx 辅助脚本与 CI 保持一致，构建时关闭 provenance，降低 registry manifest 兼容风险。
 
 ## 行为兼容性
