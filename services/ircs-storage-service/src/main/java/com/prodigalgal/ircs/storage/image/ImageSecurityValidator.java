@@ -3,16 +3,16 @@ package com.prodigalgal.ircs.storage.image;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
-import org.apache.tika.Tika;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Component
 public class ImageSecurityValidator {
 
-    private final Tika tika = new Tika();
-
     private static final long MAX_FILE_SIZE = 10L * 1024 * 1024;
+    private static final byte[] PNG_SIGNATURE = new byte[] {
+            (byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A
+    };
     private static final Pattern FILENAME_BLACKLIST = Pattern.compile("[\\u0000-\\u001f\"*<>?|:]|\\.\\.|^\\.|^$");
     private static final Map<String, String> MIME_TO_EXT = Map.of(
             "image/jpeg", ".jpg",
@@ -62,17 +62,62 @@ public class ImageSecurityValidator {
     }
 
     Optional<String> detect(byte[] data) {
-        try {
-            return Optional.ofNullable(normalizeDetectedMimeType(tika.detect(data)));
-        } catch (Exception e) {
-            throw new SecurityException("Failed to detect file type", e);
+        if (startsWith(data, PNG_SIGNATURE)) {
+            return Optional.of("image/png");
         }
+        if (data.length >= 3
+                && unsigned(data[0]) == 0xFF
+                && unsigned(data[1]) == 0xD8
+                && unsigned(data[2]) == 0xFF) {
+            return Optional.of("image/jpeg");
+        }
+        if (asciiAt(data, 0, "RIFF") && asciiAt(data, 8, "WEBP")) {
+            return Optional.of("image/webp");
+        }
+        if (asciiAt(data, 0, "GIF87a") || asciiAt(data, 0, "GIF89a")) {
+            return Optional.of("image/gif");
+        }
+        if (asciiAt(data, 4, "ftyp") && (asciiAt(data, 8, "avif") || asciiAt(data, 8, "avis"))) {
+            return Optional.of("image/avif");
+        }
+        if (asciiAt(data, 0, "BM")) {
+            return Optional.of("image/bmp");
+        }
+        if (data.length >= 4
+                && data[0] == 0
+                && data[1] == 0
+                && data[2] == 1
+                && data[3] == 0) {
+            return Optional.of("image/x-icon");
+        }
+        return Optional.empty();
     }
 
-    private String normalizeDetectedMimeType(String mimeType) {
-        if ("image/vnd.microsoft.icon".equals(mimeType)) {
-            return "image/x-icon";
+    private boolean startsWith(byte[] data, byte[] signature) {
+        if (data.length < signature.length) {
+            return false;
         }
-        return mimeType;
+        for (int index = 0; index < signature.length; index++) {
+            if (data[index] != signature[index]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean asciiAt(byte[] data, int offset, String value) {
+        if (data.length < offset + value.length()) {
+            return false;
+        }
+        for (int index = 0; index < value.length(); index++) {
+            if (data[offset + index] != (byte) value.charAt(index)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private int unsigned(byte value) {
+        return value & 0xFF;
     }
 }

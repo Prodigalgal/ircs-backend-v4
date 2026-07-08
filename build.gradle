@@ -170,6 +170,7 @@ configure(runtimeProjects) {
                         '-H:+ReportExceptionStackTraces',
                         '-H:+UnlockExperimentalVMOptions',
                         '--gc=serial',
+                        '-march=compatibility',
                         '--no-fallback'
                 ])
             }

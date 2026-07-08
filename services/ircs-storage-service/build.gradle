@@ -6,7 +6,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.data:spring-data-commons'
-    implementation 'org.apache.tika:tika-core:3.2.2'
     implementation 'software.amazon.awssdk:s3'
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'com.h2database:h2'

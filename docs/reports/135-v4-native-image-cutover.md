@@ -26,6 +26,8 @@
 - 控制台日志 pattern 改为纯 Log4j2 converter，移除 Spring Boot 颜色包装 `%clr`，避免 native runtime 下 Log4j2 plugin 解析失败。
 - runtime main 方法在 `SpringApplication.run` 前设置 Log4j2 `allowedProtocols` 默认值，允许 `resource:` 配置加载，同时保留部署显式 override。
 - native runtime hints 显式包含 `Log4j2Plugins.dat`，避免 PatternLayout、RollingFile、Filter 等 Log4j2 core plugin 在 native image 中被裁剪。
+- native build 增加 `-march=compatibility`，避免 GitHub amd64 runner 产物使用 edge 节点不支持的 CPU ISA。
+- storage 图片安全校验移除启动期 Apache Tika 初始化，改为固定 allowlist 图片格式的 magic-number 检测，降低 native image 资源裁剪风险。
 - 本地 Docker buildx 辅助脚本与 CI 保持一致，构建时关闭 provenance，降低 registry manifest 兼容风险。
 
 ## 行为兼容性
