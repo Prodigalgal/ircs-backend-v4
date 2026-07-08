@@ -179,6 +179,7 @@ configure(runtimeProjects) {
                 buildArgs.addAll([
                         '--enable-url-protocols=http,https,resource',
                         '-H:+ReportExceptionStackTraces',
+                        '-H:+AddAllCharsets',
                         '-H:+UnlockExperimentalVMOptions',
                         '--gc=serial',
                         "-march=${nativeTargetMachine.get()}",

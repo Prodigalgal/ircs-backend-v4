@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 class ScraperCharsetDetector {
 
     private static final int MARK_LIMIT = 8192;
-    private static final Charset GB18030 = Charset.forName("GB18030");
+    private static final Optional<Charset> GB18030 = optionalCharset("GB18030");
 
     private final UniversalEncodingDetector detector = new UniversalEncodingDetector();
 
@@ -43,11 +43,17 @@ class ScraperCharsetDetector {
         if (isEastAsianCharset(tikaDetected)) {
             return tikaDetected;
         }
-        Optional<String> gb18030 = decodeStrict(data, GB18030);
-        if (gb18030.filter(this::containsCjkText).isPresent()) {
-            return GB18030;
+        if (GB18030.isPresent()) {
+            Charset gb18030 = GB18030.get();
+            if (decodeStrict(data, gb18030).filter(this::containsCjkText).isPresent()) {
+                return gb18030;
+            }
         }
         return tikaDetected == null ? StandardCharsets.UTF_8 : tikaDetected;
+    }
+
+    private static Optional<Charset> optionalCharset(String name) {
+        return Charset.isSupported(name) ? Optional.of(Charset.forName(name)) : Optional.empty();
     }
 
     private Optional<Charset> declaredCharset(String contentType) {
