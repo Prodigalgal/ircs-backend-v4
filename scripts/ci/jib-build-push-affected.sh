@@ -241,6 +241,8 @@ for entry in "${selected[@]}"; do
       "-Djib.allowInsecureRegistries=${JIB_ALLOW_INSECURE_REGISTRIES}" \
       "-Djib.sendCredentialsOverHttp=${JIB_SEND_CREDENTIALS_OVER_HTTP}" \
       "-DsendCredentialsOverHttp=${JIB_SEND_CREDENTIALS_OVER_HTTP}" \
+      "-Djib.from.auth.username=${REGISTRY_USERNAME}" \
+      "-Djib.from.auth.password=${REGISTRY_PASSWORD}" \
       "-Djib.to.auth.username=${REGISTRY_USERNAME}" \
       "-Djib.to.auth.password=${REGISTRY_PASSWORD}"
   fi
