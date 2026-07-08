@@ -48,7 +48,7 @@ add_entry() {
 }
 
 select_all() {
-  selected=("${modules[@]}")
+  selected=("${runtime_modules[@]}")
 }
 
 select_service() {
