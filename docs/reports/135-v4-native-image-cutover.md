@@ -30,6 +30,7 @@
 - runtime dependency resolution 强制 Log4j2 到 `2.26.1`，使用官方 GraalVM reachability metadata，并额外显式携带 plugin cache resource-config，避免 PatternLayout converter 被裁剪后出现 `%d/%level/%msg` 无法识别。
 - native Dockerfile 在复制二进制后移除 `.note.gnu.property`，避免 GraalVM/GCC 写入过宽的 `x86-64-v2/v3` ISA needed 标记导致旧 edge Intel 节点被 dynamic loader 拒绝执行。
 - native runtime hints 为系统配置事件、任务消息、runtime work payload、内容安全评估、维护事件、检索维护响应、凭据租约等手工 `ObjectMapper` 边界注册 Jackson binding 反射元数据，避免 native image 下 record/DTO 被裁剪成 empty bean。
+- native runtime hints 显式包含 `opencc4j` 字典与 `sensitive-word` 词库资源；`SensitiveWordEvidenceService` 在三方词库初始化失败时降级为空命中，避免 worker 因成人敏感词辅助能力不可用而启动失败。
 - GitOps `ircs-v4-runtime` 的两个 Deployment 从 `Recreate` 改为 `RollingUpdate`，并设置 `maxUnavailable=0/maxSurge=1`，保证新镜像未 Ready 前保留旧 Pod 服务能力。
 - storage 图片安全校验移除启动期 Apache Tika 初始化，改为固定 allowlist 图片格式的 magic-number 检测，降低 native image 资源裁剪风险。
 - 本地 Docker buildx 辅助脚本与 CI 保持一致，构建时关闭 provenance，降低 registry manifest 兼容风险。

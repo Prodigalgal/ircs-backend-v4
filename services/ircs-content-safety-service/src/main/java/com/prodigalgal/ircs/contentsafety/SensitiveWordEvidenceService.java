@@ -66,7 +66,7 @@ class SensitiveWordEvidenceService {
             if (result instanceof String match && StringUtils.hasText(match)) {
                 return List.of(match);
             }
-        } catch (ReflectiveOperationException | RuntimeException ex) {
+        } catch (ReflectiveOperationException | RuntimeException | LinkageError ex) {
             log.debug("sensitive-word scan failed: {}", ex.getMessage());
         }
         return List.of();
@@ -74,9 +74,12 @@ class SensitiveWordEvidenceService {
 
     private static Method findFindFirstMethod() {
         try {
-            Class<?> helper = Class.forName(HELPER_CLASS);
+            Class<?> helper = Class.forName(
+                    HELPER_CLASS,
+                    false,
+                    SensitiveWordEvidenceService.class.getClassLoader());
             return helper.getMethod("findFirst", String.class);
-        } catch (ReflectiveOperationException ex) {
+        } catch (ReflectiveOperationException | RuntimeException | LinkageError ex) {
             log.warn("sensitive-word helper is not available: {}", ex.getMessage());
             return null;
         }

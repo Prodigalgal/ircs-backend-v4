@@ -86,6 +86,8 @@ public class IrcsWorkerRuntimeHints implements RuntimeHintsRegistrar {
         hints.resources().registerPattern("META-INF/services/*");
         hints.resources().registerPattern("**/*.sql");
         hints.resources().registerPattern("**/*.lua");
+        hints.resources().registerPattern("data/dictionary/**");
+        hints.resources().registerPattern("sensitive_word_*.txt");
         hints.resources().registerPattern("templates/**");
         hints.resources().registerPattern("static/**");
     }
