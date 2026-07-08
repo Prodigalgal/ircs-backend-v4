@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -37,6 +38,7 @@ class AggregationMaintenanceClient implements MaintenanceAggregationClient {
 
     AggregationMaintenanceClient(
             ObjectMapper objectMapper,
+            @Qualifier("opsOutboundHttpClient")
             OutboundHttpClient httpClient,
             OpsConfigValues configValues) {
         this.objectMapper = objectMapper;

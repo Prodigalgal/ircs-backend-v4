@@ -17,12 +17,11 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Component
-@RequiredArgsConstructor
 class LlmCredentialResolver {
 
     private static final String CREDENTIAL_SERVICE_CIRCUIT_KEY = "normalization-llm-credential-service";
@@ -30,6 +29,15 @@ class LlmCredentialResolver {
     private final NormalizationConfigValues configValues;
     private final ObjectMapper objectMapper;
     private final OutboundHttpClient httpClient;
+
+    LlmCredentialResolver(
+            NormalizationConfigValues configValues,
+            ObjectMapper objectMapper,
+            @Qualifier("normalizationOutboundHttpClient") OutboundHttpClient httpClient) {
+        this.configValues = configValues;
+        this.objectMapper = objectMapper;
+        this.httpClient = httpClient;
+    }
 
     Optional<LlmCredential> resolve() {
         Optional<LlmCredential> runtime = resolveRuntimeCredential();

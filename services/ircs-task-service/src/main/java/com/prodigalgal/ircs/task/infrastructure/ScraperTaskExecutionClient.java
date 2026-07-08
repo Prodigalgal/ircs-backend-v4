@@ -15,6 +15,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +33,7 @@ public class ScraperTaskExecutionClient {
 
     public ScraperTaskExecutionClient(
             ObjectMapper objectMapper,
+            @Qualifier("taskOutboundHttpClient")
             OutboundHttpClient httpClient,
             @Value("${app.task.runner.scraper-base-url:http://ircs-scraper-service.ircs-dev.svc.cluster.local:8080}")
                     String scraperBaseUrl,

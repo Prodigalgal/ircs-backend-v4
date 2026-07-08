@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ComponentScan(
         nameGenerator = FullyQualifiedAnnotationBeanNameGenerator.class,
         basePackages = {
+                "com.prodigalgal.ircs.workerruntime",
                 "com.prodigalgal.ircs.common",
                 "com.prodigalgal.ircs.contracts",
                 "com.prodigalgal.ircs.messaging",

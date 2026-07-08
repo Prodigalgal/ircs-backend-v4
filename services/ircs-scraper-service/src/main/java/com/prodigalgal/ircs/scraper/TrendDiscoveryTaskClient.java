@@ -10,6 +10,7 @@ import com.prodigalgal.ircs.contracts.trend.TrendDiscoveryScheduleRequest;
 import com.prodigalgal.ircs.contracts.trend.TrendDiscoveryScheduleResponse;
 import java.net.URI;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -25,6 +26,7 @@ class TrendDiscoveryTaskClient {
 
     TrendDiscoveryTaskClient(
             ObjectMapper objectMapper,
+            @Qualifier("scraperOutboundHttpClient")
             OutboundHttpClient httpClient,
             ScraperTrendConfigValues configValues) {
         this.objectMapper = objectMapper;

@@ -11,6 +11,7 @@ import org.springframework.context.annotation.ImportRuntimeHints;
 @ComponentScan(
         nameGenerator = FullyQualifiedAnnotationBeanNameGenerator.class,
         basePackages = {
+                "com.prodigalgal.ircs.platformapi",
                 "com.prodigalgal.ircs.common",
                 "com.prodigalgal.ircs.contracts",
                 "com.prodigalgal.ircs.messaging",

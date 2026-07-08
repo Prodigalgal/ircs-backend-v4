@@ -11,6 +11,7 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -28,6 +29,7 @@ class TmdbCredentialResolver {
 
     TmdbCredentialResolver(
             ObjectMapper objectMapper,
+            @Qualifier("scraperOutboundHttpClient")
             OutboundHttpClient httpClient,
             ScraperTrendConfigValues configValues) {
         this.objectMapper = objectMapper;

@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,6 +28,7 @@ public class SearchOpsStatsClient {
 
     SearchOpsStatsClient(
             ObjectMapper objectMapper,
+            @Qualifier("opsOutboundHttpClient")
             OutboundHttpClient httpClient,
             OpsConfigValues configValues) {
         this.objectMapper = objectMapper;
