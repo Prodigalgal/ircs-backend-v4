@@ -2,10 +2,12 @@
 set -euo pipefail
 
 REGISTRY="${REGISTRY:-registry.mnnu.eu.org/ircs}"
+PUSH_REGISTRY="${PUSH_REGISTRY:-${REGISTRY}}"
 TARGET_ARCH="${TARGET_ARCH:-arm64}"
 TARGET_OS="${TARGET_OS:-linux}"
 TARGET_PLATFORMS="${TARGET_PLATFORMS:-${TARGET_OS}/${TARGET_ARCH}}"
-JIB_BASE_IMAGE="${JIB_BASE_IMAGE:-registry.mnnu.eu.org/ircs/base/eclipse-temurin:25-jre-alpine}"
+JIB_BASE_IMAGE="${JIB_BASE_IMAGE:-${PUSH_REGISTRY}/base/eclipse-temurin:25-jre-alpine}"
+JIB_ALLOW_INSECURE_REGISTRIES="${JIB_ALLOW_INSECURE_REGISTRIES:-false}"
 TAG="${IMAGE_TAG:-sha-$(git rev-parse --short=12 HEAD)}"
 BUILD_SCOPE="${BUILD_SCOPE:-affected}"
 IMAGE_MODE="${IMAGE_MODE:-jvm}"
@@ -163,6 +165,7 @@ echo "IRCS image tag: ${TAG}"
 echo "IRCS image mode: ${IMAGE_MODE}"
 echo "IRCS git commit: $(git rev-parse --short=12 HEAD)"
 echo "IRCS target platforms: ${TARGET_PLATFORMS}"
+echo "IRCS push registry: ${PUSH_REGISTRY}"
 echo "IRCS Jib base image: ${JIB_BASE_IMAGE}"
 echo "IRCS selected module count: ${#selected[@]}"
 
@@ -170,6 +173,7 @@ mkdir -p build
 : > build-image-manifest.txt
 {
   echo "registry=${REGISTRY}"
+  echo "push_registry=${PUSH_REGISTRY}"
   echo "tag=${TAG}"
   echo "target_platforms=${TARGET_PLATFORMS}"
   echo "target_os=${TARGET_OS}"
@@ -188,13 +192,17 @@ fi
 for entry in "${selected[@]}"; do
   module="${entry%%=*}"
   image="${entry##*=}"
-  target="${REGISTRY}/${image}:${TAG}"
-  echo "${module}=${target}" >> build-image-manifest.txt
-  echo "::group::${module} -> ${target}"
+  published="${REGISTRY}/${image}:${TAG}"
+  target="${PUSH_REGISTRY}/${image}:${TAG}"
+  echo "${module}=${published}" >> build-image-manifest.txt
+  echo "::group::${module} -> ${published}"
+  if [[ "${target}" != "${published}" ]]; then
+    echo "Pushing ${published} through internal registry target ${target}"
+  fi
   if [[ "${DRY_RUN}" == "true" ]]; then
     echo "DRY_RUN=true, skipping image push for ${target}"
   elif [[ "${module}" == python:* ]]; then
-    echo "${REGISTRY_PASSWORD}" | docker login "${REGISTRY%%/*}" -u "${REGISTRY_USERNAME}" --password-stdin >/dev/null
+    echo "${REGISTRY_PASSWORD}" | docker login "${PUSH_REGISTRY%%/*}" -u "${REGISTRY_USERNAME}" --password-stdin >/dev/null
     service_dir="${module#python:}"
     docker buildx inspect ircs-builder >/dev/null 2>&1 || docker buildx create --name ircs-builder --use >/dev/null
     docker buildx use ircs-builder
@@ -207,7 +215,7 @@ for entry in "${selected[@]}"; do
       --push \
       .
   elif [[ "${IMAGE_MODE}" == "native" && "${module}" == "platform:ircs-platform-api" ]]; then
-    echo "${REGISTRY_PASSWORD}" | docker login "${REGISTRY%%/*}" -u "${REGISTRY_USERNAME}" --password-stdin >/dev/null
+    echo "${REGISTRY_PASSWORD}" | docker login "${PUSH_REGISTRY%%/*}" -u "${REGISTRY_USERNAME}" --password-stdin >/dev/null
     docker buildx build \
       --platform "${TARGET_PLATFORMS}" \
       --file "platform/ircs-platform-api/Dockerfile.native" \
@@ -216,7 +224,7 @@ for entry in "${selected[@]}"; do
       --push \
       .
   elif [[ "${IMAGE_MODE}" == "native" && "${module}" == "platform:ircs-worker-runtime" ]]; then
-    echo "${REGISTRY_PASSWORD}" | docker login "${REGISTRY%%/*}" -u "${REGISTRY_USERNAME}" --password-stdin >/dev/null
+    echo "${REGISTRY_PASSWORD}" | docker login "${PUSH_REGISTRY%%/*}" -u "${REGISTRY_USERNAME}" --password-stdin >/dev/null
     docker buildx build \
       --platform "${TARGET_PLATFORMS}" \
       --file "platform/ircs-worker-runtime/Dockerfile.native" \
@@ -229,6 +237,7 @@ for entry in "${selected[@]}"; do
       "-PjibToImage=${target}" \
       "-PjibBaseImage=${JIB_BASE_IMAGE}" \
       "-PjibTargetPlatforms=${TARGET_PLATFORMS}" \
+      "-Djib.allowInsecureRegistries=${JIB_ALLOW_INSECURE_REGISTRIES}" \
       "-Djib.to.auth.username=${REGISTRY_USERNAME}" \
       "-Djib.to.auth.password=${REGISTRY_PASSWORD}"
   fi

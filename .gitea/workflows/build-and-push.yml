@@ -33,6 +33,7 @@ jobs:
     runs-on: ubuntu-22.04
     env:
       REGISTRY: registry.mnnu.eu.org/ircs
+      PUSH_REGISTRY: 10.110.192.143:5000/ircs
       PROD_CONFIG_REPO_URL: https://gitea.mnnu.eu.org/admin/ircs-prod-config-v4.git
       PROD_CONFIG_REPO_BRANCH: main
       TARGET_PLATFORMS: linux/arm64,linux/amd64
@@ -45,6 +46,8 @@ jobs:
       BASE_IMAGE_SOURCE: mirror.gcr.io/library/eclipse-temurin:25-jre-alpine
       BASE_IMAGE_FALLBACK: public.ecr.aws/docker/library/eclipse-temurin:25-jre-alpine
       BASE_IMAGE_TARGET: registry.mnnu.eu.org/ircs/base/eclipse-temurin:25-jre-alpine
+      JIB_BASE_IMAGE: 10.110.192.143:5000/ircs/base/eclipse-temurin:25-jre-alpine
+      JIB_ALLOW_INSECURE_REGISTRIES: "true"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
