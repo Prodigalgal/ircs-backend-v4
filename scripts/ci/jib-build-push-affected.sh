@@ -14,6 +14,17 @@ BUILD_SCOPE="${BUILD_SCOPE:-affected}"
 IMAGE_MODE="${IMAGE_MODE:-native}"
 DRY_RUN="${DRY_RUN:-false}"
 
+if [[ -z "${NATIVE_TARGET_MACHINE:-}" ]]; then
+  case "${TARGET_ARCH}" in
+    amd64)
+      NATIVE_TARGET_MACHINE="x86-64-v2"
+      ;;
+    *)
+      NATIVE_TARGET_MACHINE="compatibility"
+      ;;
+  esac
+fi
+
 if [[ "${DRY_RUN}" != "true" ]]; then
   if [[ -z "${REGISTRY_USERNAME:-}" || -z "${REGISTRY_PASSWORD:-}" ]]; then
     echo "REGISTRY_USERNAME and REGISTRY_PASSWORD are required." >&2
@@ -220,6 +231,7 @@ for entry in "${selected[@]}"; do
     docker buildx build \
       --platform "${TARGET_PLATFORMS}" \
       --file "platform/ircs-platform-api/Dockerfile.native" \
+      --build-arg "NATIVE_TARGET_MACHINE=${NATIVE_TARGET_MACHINE}" \
       --tag "${target}" \
       --provenance=false \
       --push \
@@ -229,6 +241,7 @@ for entry in "${selected[@]}"; do
     docker buildx build \
       --platform "${TARGET_PLATFORMS}" \
       --file "platform/ircs-worker-runtime/Dockerfile.native" \
+      --build-arg "NATIVE_TARGET_MACHINE=${NATIVE_TARGET_MACHINE}" \
       --tag "${target}" \
       --provenance=false \
       --push \

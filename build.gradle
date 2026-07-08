@@ -157,6 +157,10 @@ configure(runtimeProjects) {
         buildInfo()
     }
 
+    def nativeTargetMachine = providers.gradleProperty('nativeTargetMachine')
+            .orElse(providers.environmentVariable('NATIVE_TARGET_MACHINE'))
+            .orElse('compatibility')
+
     graalvmNative {
         toolchainDetection = true
         metadataRepository {
@@ -170,7 +174,7 @@ configure(runtimeProjects) {
                         '-H:+ReportExceptionStackTraces',
                         '-H:+UnlockExperimentalVMOptions',
                         '--gc=serial',
-                        '-march=compatibility',
+                        "-march=${nativeTargetMachine.get()}",
                         '--no-fallback'
                 ])
             }

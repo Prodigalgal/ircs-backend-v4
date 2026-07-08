@@ -1,9 +1,10 @@
 # syntax=docker/dockerfile:1.7
 FROM ghcr.io/graalvm/native-image-community:25 AS builder
+ARG NATIVE_TARGET_MACHINE=compatibility
 WORKDIR /workspace
 COPY . .
 RUN --mount=type=cache,target=/root/.gradle \
-    chmod +x gradlew && ./gradlew --no-daemon :platform:ircs-worker-runtime:nativeCompile
+    chmod +x gradlew && ./gradlew --no-daemon :platform:ircs-worker-runtime:nativeCompile -PnativeTargetMachine="${NATIVE_TARGET_MACHINE}"
 
 FROM debian:12-slim
 RUN apt-get update \
