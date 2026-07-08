@@ -225,7 +225,7 @@ for entry in "${selected[@]}"; do
       --push \
       .
   else
-    ./gradlew --no-daemon ":${module}:jib" \
+    ./gradlew --no-daemon --no-problems-report ":${module}:jib" \
       "-PjibToImage=${target}" \
       "-PjibBaseImage=${JIB_BASE_IMAGE}" \
       "-PjibTargetPlatforms=${TARGET_PLATFORMS}" \
