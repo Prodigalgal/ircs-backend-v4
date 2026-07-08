@@ -6,6 +6,7 @@ plugins {
 }
 ext {
     springAiVersion = '1.1.2'
+    log4j2Version = '2.26.1'
 }
 
 allprojects {
@@ -39,6 +40,12 @@ subprojects {
 
     configurations.configureEach {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.group == 'org.apache.logging.log4j') {
+                details.useVersion log4j2Version
+                details.because 'Log4j 2.25+ ships GraalVM native image reachability metadata required by V4 native runtimes'
+            }
+        }
     }
 
     configurations {
