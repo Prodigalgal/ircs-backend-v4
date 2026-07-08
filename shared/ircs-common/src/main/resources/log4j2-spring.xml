@@ -2,7 +2,7 @@
 <Configuration status="WARN" monitorInterval="30">
     <Properties>
         <Property name="IRCS_RESOLVED_LOG_PATH">${env:IRCS_LOG_PATH:-${env:LOG_PATH:-./logs}}</Property>
-        <Property name="CONSOLE_LOG_PATTERN">%clr{%d{yyyy-MM-dd HH:mm:ss.SSS}}{faint} %clr{%5p} %clr{${sys:PID}}{magenta} %clr{---}{faint} %clr{[%15.15t]}{faint} %clr{[%X{traceId},%X{spanId},%X{correlationId}]}{yellow} %clr{%-40.40c{1.}}{cyan} %clr{:}{faint} %m%n%wEx</Property>
+        <Property name="CONSOLE_LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${sys:PID} --- [%15.15t] [%X{traceId},%X{spanId},%X{correlationId}] %-40.40c{1.} : %m%n%throwable</Property>
         <Property name="FILE_LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] [%X{traceId},%X{spanId},%X{correlationId}] %-5level %logger{36} - %msg%n</Property>
     </Properties>
 

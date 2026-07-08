@@ -166,7 +166,7 @@ configure(runtimeProjects) {
             main {
                 imageName = project.name
                 buildArgs.addAll([
-                        '--enable-url-protocols=http,https',
+                        '--enable-url-protocols=http,https,resource',
                         '-H:+ReportExceptionStackTraces',
                         '-H:+UnlockExperimentalVMOptions',
                         '--gc=serial',

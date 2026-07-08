@@ -21,6 +21,8 @@ class Log4j2ConfigurationTest {
             assertThat(xml).contains("${IRCS_RESOLVED_LOG_PATH}/warn.log");
             assertThat(xml).contains("${IRCS_RESOLVED_LOG_PATH}/error.log");
             assertThat(xml).contains("${IRCS_RESOLVED_LOG_PATH}/ingestion-trace.log");
+            assertThat(xml).doesNotContain("%clr{");
+            assertThat(xml).contains("%throwable");
         }
     }
 }
