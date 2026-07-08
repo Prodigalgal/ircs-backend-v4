@@ -233,6 +233,7 @@ class RedisRuntimeWorkQueueRateMetricsTest {
     private static <T> ObjectProvider<T> provider(T value) {
         ObjectProvider<T> provider = org.mockito.Mockito.mock(ObjectProvider.class);
         when(provider.getIfAvailable()).thenReturn(value);
+        when(provider.getIfUnique()).thenReturn(value);
         return provider;
     }
 }

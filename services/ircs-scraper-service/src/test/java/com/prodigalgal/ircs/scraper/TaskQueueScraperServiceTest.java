@@ -299,7 +299,7 @@ class TaskQueueScraperServiceTest {
     @SuppressWarnings("unchecked")
     private static ObjectProvider<Clock> clockProvider(Clock clock) {
         ObjectProvider<Clock> provider = org.mockito.Mockito.mock(ObjectProvider.class);
-        when(provider.getIfAvailable()).thenReturn(clock);
+        when(provider.getIfUnique()).thenReturn(clock);
         return provider;
     }
 

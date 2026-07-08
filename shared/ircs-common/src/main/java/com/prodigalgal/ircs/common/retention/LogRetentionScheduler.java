@@ -2,6 +2,7 @@ package com.prodigalgal.ircs.common.retention;
 
 import com.prodigalgal.ircs.common.config.RuntimeConfigService;
 import com.prodigalgal.ircs.common.scheduling.ScheduledTriggers;
+import com.prodigalgal.ircs.common.time.ClockProviders;
 import jakarta.annotation.PreDestroy;
 import java.time.Clock;
 import java.time.Duration;
@@ -37,8 +38,7 @@ public class LogRetentionScheduler {
             ObjectProvider<Clock> clockProvider) {
         this.targetProvider = targetProvider;
         this.runtimeConfig = runtimeConfig;
-        Clock providedClock = clockProvider == null ? null : clockProvider.getIfAvailable();
-        this.clock = providedClock == null ? Clock.systemUTC() : providedClock;
+        this.clock = ClockProviders.uniqueOrSystemUtc(clockProvider);
     }
 
     @Scheduled(

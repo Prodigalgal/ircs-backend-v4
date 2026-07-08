@@ -1,5 +1,6 @@
 package com.prodigalgal.ircs.scraper;
 
+import com.prodigalgal.ircs.common.time.ClockProviders;
 import com.prodigalgal.ircs.scraper.ScraperDtos.ListItem;
 import com.prodigalgal.ircs.scraper.ScraperDtos.ListPage;
 import java.time.Clock;
@@ -36,8 +37,7 @@ class ScrapeUpdateWindowFilter {
     private final Clock clock;
 
     ScrapeUpdateWindowFilter(ObjectProvider<Clock> clockProvider) {
-        Clock provided = clockProvider == null ? null : clockProvider.getIfAvailable();
-        this.clock = provided == null ? Clock.systemUTC() : provided;
+        this.clock = ClockProviders.uniqueOrSystemUtc(clockProvider);
     }
 
     FilteredListPage filter(ListPage page, int pageNumber, Integer filterHours) {

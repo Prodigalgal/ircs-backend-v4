@@ -97,6 +97,7 @@ class MailSendRateLimiterTest {
     private static <T> ObjectProvider<T> provider(T value) {
         ObjectProvider<T> provider = org.mockito.Mockito.mock(ObjectProvider.class);
         org.mockito.Mockito.when(provider.getIfAvailable()).thenReturn(value);
+        org.mockito.Mockito.when(provider.getIfUnique()).thenReturn(value);
         return provider;
     }
 

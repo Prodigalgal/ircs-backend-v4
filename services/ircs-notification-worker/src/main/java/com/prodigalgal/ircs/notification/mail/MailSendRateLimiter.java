@@ -1,5 +1,6 @@
 package com.prodigalgal.ircs.notification.mail;
 
+import com.prodigalgal.ircs.common.time.ClockProviders;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -39,9 +40,8 @@ class MailSendRateLimiter {
             ObjectProvider<Sleeper> sleeperProvider) {
         this.configValues = configValues;
         this.usageRepository = usageRepository;
-        Clock providedClock = clockProvider == null ? null : clockProvider.getIfAvailable();
         Sleeper providedSleeper = sleeperProvider == null ? null : sleeperProvider.getIfAvailable();
-        this.clock = providedClock == null ? Clock.systemUTC() : providedClock;
+        this.clock = ClockProviders.uniqueOrSystemUtc(clockProvider);
         this.sleeper = providedSleeper == null ? Thread::sleep : providedSleeper;
     }
 

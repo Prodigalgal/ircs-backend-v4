@@ -2,6 +2,7 @@ package com.prodigalgal.ircs.common.work;
 
 import com.prodigalgal.ircs.common.config.RuntimeConfigService;
 import com.prodigalgal.ircs.common.metrics.RateMetricKeys;
+import com.prodigalgal.ircs.common.time.ClockProviders;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -264,8 +265,7 @@ public class RedisRuntimeWorkQueue implements RuntimeWorkQueue {
             throw new IllegalArgumentException("redisTemplate is required");
         }
         this.redisTemplate = redisTemplate;
-        Clock providedClock = clockProvider == null ? null : clockProvider.getIfAvailable();
-        this.clock = providedClock == null ? Clock.systemUTC() : providedClock;
+        this.clock = ClockProviders.uniqueOrSystemUtc(clockProvider);
         this.keyPrefix = normalizeKeyPrefix(keyPrefix);
         this.eventStreamMaxLen = Math.max(1000, eventStreamMaxLen);
         this.rateMetricsKeyPrefix = RateMetricKeys.normalizeKeyPrefix(rateMetricsKeyPrefix);

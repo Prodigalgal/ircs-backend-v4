@@ -81,7 +81,7 @@ class LogRetentionSchedulerTest {
         ObjectProvider<LogRetentionTarget> targetProvider = org.mockito.Mockito.mock(ObjectProvider.class);
         ObjectProvider<Clock> clockProvider = org.mockito.Mockito.mock(ObjectProvider.class);
         when(targetProvider.orderedStream()).thenReturn(java.util.stream.Stream.of(target));
-        when(clockProvider.getIfAvailable()).thenReturn(clock);
+        when(clockProvider.getIfUnique()).thenReturn(clock);
         return new LogRetentionScheduler(targetProvider, runtimeConfig, clockProvider);
     }
 
