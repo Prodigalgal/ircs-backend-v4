@@ -29,6 +29,8 @@
 - native build 增加可配置 `nativeTargetMachine`，CI 中 amd64 默认使用 `x86-64`，arm64 默认使用 `compatibility`，避免 GitHub runner 产物使用 edge 节点不支持的 CPU ISA。
 - runtime dependency resolution 强制 Log4j2 到 `2.26.1`，使用官方 GraalVM reachability metadata，并额外显式携带 plugin cache resource-config，避免 PatternLayout converter 被裁剪后出现 `%d/%level/%msg` 无法识别。
 - native Dockerfile 在复制二进制后移除 `.note.gnu.property`，避免 GraalVM/GCC 写入过宽的 `x86-64-v2/v3` ISA needed 标记导致旧 edge Intel 节点被 dynamic loader 拒绝执行。
+- native runtime hints 为系统配置事件、任务消息、runtime work payload、内容安全评估、维护事件、检索维护响应、凭据租约等手工 `ObjectMapper` 边界注册 Jackson binding 反射元数据，避免 native image 下 record/DTO 被裁剪成 empty bean。
+- GitOps `ircs-v4-runtime` 的两个 Deployment 从 `Recreate` 改为 `RollingUpdate`，并设置 `maxUnavailable=0/maxSurge=1`，保证新镜像未 Ready 前保留旧 Pod 服务能力。
 - storage 图片安全校验移除启动期 Apache Tika 初始化，改为固定 allowlist 图片格式的 magic-number 检测，降低 native image 资源裁剪风险。
 - 本地 Docker buildx 辅助脚本与 CI 保持一致，构建时关闭 provenance，降低 registry manifest 兼容风险。
 
@@ -37,6 +39,7 @@
 - HTTP 端口仍为 `8080`。
 - Spring profiles、环境变量、数据库、RabbitMQ、Valkey、ES、R2 等外部依赖配置保持不变。
 - Kubernetes readiness/liveness/startup probe 路径保持不变。
+- 运行时 Deployment 副本数仍为 1；滚动发布只允许发布期间临时 surge 1 个 Pod，避免发布空窗。
 - 若 native 构建或运行态存在 GraalVM reachability 问题，可通过 workflow_dispatch 显式传入 `image_mode=jvm` 回退到 JVM 镜像。
 
 ## 验收标准
