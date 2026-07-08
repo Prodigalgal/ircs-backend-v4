@@ -19,14 +19,13 @@ import java.util.HexFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 @Service
-@RequiredArgsConstructor
 public class AlertIngestionService {
 
     private final OpsAlertRepository repository;
@@ -34,6 +33,19 @@ public class AlertIngestionService {
     private final OpsAlertNotificationPublisher notificationPublisher;
     private final ObjectMapper objectMapper;
     private final Clock clock;
+
+    public AlertIngestionService(
+            OpsAlertRepository repository,
+            HealingPolicyEngine healingPolicyEngine,
+            OpsAlertNotificationPublisher notificationPublisher,
+            ObjectMapper objectMapper,
+            @Qualifier("opsAlertClock") Clock clock) {
+        this.repository = repository;
+        this.healingPolicyEngine = healingPolicyEngine;
+        this.notificationPublisher = notificationPublisher;
+        this.objectMapper = objectMapper;
+        this.clock = clock == null ? Clock.systemUTC() : clock;
+    }
 
     @Transactional
     public AlertIngestionResponse ingest(AlertEventIngestRequest request) {
