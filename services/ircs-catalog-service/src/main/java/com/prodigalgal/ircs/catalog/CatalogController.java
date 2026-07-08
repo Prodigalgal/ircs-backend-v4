@@ -69,7 +69,7 @@ public class CatalogController {
 
     @PutMapping("/standard-categories/{id}")
     public ResponseEntity<StandardCategoryRead> updateStandardCategory(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @RequestBody StandardCategoryAdminRequest request) {
         return ResponseEntity.ok(catalogService.updateStandardCategory(id, request));
     }
@@ -78,7 +78,7 @@ public class CatalogController {
             value = "/standard-categories/{id}",
             consumes = {"application/json", "application/merge-patch+json"})
     public ResponseEntity<StandardCategoryRead> patchStandardCategory(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @RequestBody StandardCategoryAdminRequest request) {
         return catalogService.patchStandardCategory(id, request)
                 .map(ResponseEntity::ok)
@@ -86,23 +86,23 @@ public class CatalogController {
     }
 
     @DeleteMapping("/standard-categories/{id}")
-    public ResponseEntity<Void> deleteStandardCategory(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteStandardCategory(@PathVariable("id") UUID id) {
         catalogService.deleteStandardCategory(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/standard-categories/page")
     public PageEnvelope<StandardCategoryRead> pageStandardCategories(
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size,
-            @RequestParam(required = false) List<String> sort,
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String slug) {
+            @RequestParam(name = "page", required = false) Integer page,
+            @RequestParam(name = "size", required = false) Integer size,
+            @RequestParam(name = "sort", required = false) List<String> sort,
+            @RequestParam(name = "name", required = false) String name,
+            @RequestParam(name = "slug", required = false) String slug) {
         return pageEnvelope(catalogService.pageStandardCategories(CatalogPageRequest.of(page, size, sort), name, slug));
     }
 
     @GetMapping("/standard-categories/{id}")
-    public ResponseEntity<StandardCategoryRead> getStandardCategory(@PathVariable UUID id) {
+    public ResponseEntity<StandardCategoryRead> getStandardCategory(@PathVariable("id") UUID id) {
         return catalogService.findStandardCategory(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -121,7 +121,7 @@ public class CatalogController {
 
     @PutMapping("/standard-genres/{id}")
     public ResponseEntity<StandardGenreRead> updateStandardGenre(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @RequestBody StandardGenreAdminRequest request) {
         return catalogService.updateStandardGenre(id, request)
                 .map(ResponseEntity::ok)
@@ -129,23 +129,23 @@ public class CatalogController {
     }
 
     @DeleteMapping("/standard-genres/{id}")
-    public ResponseEntity<Void> deleteStandardGenre(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteStandardGenre(@PathVariable("id") UUID id) {
         catalogService.deleteStandardGenre(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/standard-genres/page")
     public PageEnvelope<StandardGenreRead> pageStandardGenres(
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size,
-            @RequestParam(required = false) List<String> sort,
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String code) {
+            @RequestParam(name = "page", required = false) Integer page,
+            @RequestParam(name = "size", required = false) Integer size,
+            @RequestParam(name = "sort", required = false) List<String> sort,
+            @RequestParam(name = "name", required = false) String name,
+            @RequestParam(name = "code", required = false) String code) {
         return pageEnvelope(catalogService.pageStandardGenres(CatalogPageRequest.of(page, size, sort), name, code));
     }
 
     @GetMapping("/standard-genres/{id}")
-    public ResponseEntity<StandardGenreRead> getStandardGenre(@PathVariable UUID id) {
+    public ResponseEntity<StandardGenreRead> getStandardGenre(@PathVariable("id") UUID id) {
         return catalogService.findStandardGenre(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -163,9 +163,9 @@ public class CatalogController {
 
     @GetMapping("/standard-areas/page")
     public PageEnvelope<StandardAreaRead> pageStandardAreas(
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size,
-            @RequestParam(required = false) List<String> sort) {
+            @RequestParam(name = "page", required = false) Integer page,
+            @RequestParam(name = "size", required = false) Integer size,
+            @RequestParam(name = "sort", required = false) List<String> sort) {
         return pageEnvelope(catalogService.pageStandardAreas(CatalogPageRequest.of(page, size, sort)));
     }
 
@@ -182,9 +182,9 @@ public class CatalogController {
 
     @GetMapping("/data-sources")
     public PageEnvelope<DataSourceRead> pageDataSources(
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size,
-            @RequestParam(required = false) List<String> sort) {
+            @RequestParam(name = "page", required = false) Integer page,
+            @RequestParam(name = "size", required = false) Integer size,
+            @RequestParam(name = "sort", required = false) List<String> sort) {
         return pageEnvelope(catalogService.pageDataSources(CatalogPageRequest.of(page, size, sort)));
     }
 
@@ -196,7 +196,7 @@ public class CatalogController {
 
     @PutMapping("/data-sources/{id}")
     public ResponseEntity<DataSourceRead> updateDataSource(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @Valid @RequestBody DataSourceAdminRequest request) {
         return ResponseEntity.ok(catalogService.updateDataSource(id, request));
     }
@@ -205,7 +205,7 @@ public class CatalogController {
             value = "/data-sources/{id}",
             consumes = {"application/json", "application/merge-patch+json"})
     public ResponseEntity<DataSourceRead> patchDataSource(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @Valid @RequestBody DataSourceAdminRequest request) {
         return catalogService.patchDataSource(id, request)
                 .map(ResponseEntity::ok)
@@ -213,7 +213,7 @@ public class CatalogController {
     }
 
     @DeleteMapping("/data-sources/{id}")
-    public ResponseEntity<Void> deleteDataSource(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteDataSource(@PathVariable("id") UUID id) {
         catalogService.deleteDataSource(id);
         return ResponseEntity.noContent().build();
     }
@@ -231,7 +231,7 @@ public class CatalogController {
     }
 
     @GetMapping("/data-sources/{id}")
-    public ResponseEntity<DataSourceRead> getDataSource(@PathVariable UUID id) {
+    public ResponseEntity<DataSourceRead> getDataSource(@PathVariable("id") UUID id) {
         return catalogService.findDataSource(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());

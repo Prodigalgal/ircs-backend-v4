@@ -28,13 +28,13 @@ public class SourceDomainAdminController {
     @GetMapping
     public ResponseEntity<PageEnvelope<SourceDomainResponse>> getAll(
             @PageableDefault(size = 20) Pageable pageable,
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) UUID dataSourceId) {
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "dataSourceId", required = false) UUID dataSourceId) {
         return ResponseEntity.ok(PageEnvelope.from(service.findSourceDomains(pageable, keyword, dataSourceId)));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SourceDomainResponse> getOne(@PathVariable UUID id) {
+    public ResponseEntity<SourceDomainResponse> getOne(@PathVariable("id") UUID id) {
         return service.findSourceDomain(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -42,7 +42,7 @@ public class SourceDomainAdminController {
 
     @PutMapping("/{id}")
     public ResponseEntity<SourceDomainResponse> update(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @Valid @RequestBody SourceDomainRequest request) {
         return ResponseEntity.ok(service.updateSourceDomain(id, request));
     }

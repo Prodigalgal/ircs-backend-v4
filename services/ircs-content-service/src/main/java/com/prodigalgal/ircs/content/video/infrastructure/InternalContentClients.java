@@ -36,7 +36,7 @@ public class InternalContentClients {
         this.configValues = configValues;
         this.httpClient = httpClient == null
                 ? defaultHttpClient()
-                : httpClient.getIfAvailable(InternalContentClients::defaultHttpClient);
+                : httpClient.getIfUnique(InternalContentClients::defaultHttpClient);
         this.requestTimeout = requestTimeout == null || requestTimeout.isNegative() || requestTimeout.isZero()
                 ? DEFAULT_REQUEST_TIMEOUT
                 : requestTimeout;

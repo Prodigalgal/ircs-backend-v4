@@ -49,7 +49,7 @@ class AdminVideoSearchClient {
         this.objectMapper = objectMapper;
         this.httpClient = httpClientProvider == null
                 ? defaultHttpClient()
-                : httpClientProvider.getIfAvailable(AdminVideoSearchClient::defaultHttpClient);
+                : httpClientProvider.getIfUnique(AdminVideoSearchClient::defaultHttpClient);
         this.configValues = configValues;
         this.requestTimeout = requestTimeout == null || requestTimeout.isZero() || requestTimeout.isNegative()
                 ? Duration.ofSeconds(3)

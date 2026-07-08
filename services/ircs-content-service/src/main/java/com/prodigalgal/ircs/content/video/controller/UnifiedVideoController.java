@@ -40,19 +40,19 @@ public class UnifiedVideoController {
     @GetMapping
     public ResponseEntity<PageEnvelope<UnifiedVideoCardResponse>> getAll(
             @PageableDefault(size = 20) Pageable pageable,
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) UUID categoryId,
-            @RequestParam(required = false) String year,
-            @RequestParam(required = false) String area,
-            @RequestParam(required = false) BigDecimal minScore,
-            @RequestParam(required = false) Boolean hasDoubanId,
-            @RequestParam(required = false) Boolean hasTmdbId,
-            @RequestParam(required = false) String contentVisibility,
-            @RequestParam(required = false) String metadataStatus,
-            @RequestParam(required = false) String genre,
-            @RequestParam(required = false) String language,
-            @RequestParam(required = false) String actor,
-            @RequestParam(required = false) String director) {
+            @RequestParam(name = "title", required = false) String title,
+            @RequestParam(name = "categoryId", required = false) UUID categoryId,
+            @RequestParam(name = "year", required = false) String year,
+            @RequestParam(name = "area", required = false) String area,
+            @RequestParam(name = "minScore", required = false) BigDecimal minScore,
+            @RequestParam(name = "hasDoubanId", required = false) Boolean hasDoubanId,
+            @RequestParam(name = "hasTmdbId", required = false) Boolean hasTmdbId,
+            @RequestParam(name = "contentVisibility", required = false) String contentVisibility,
+            @RequestParam(name = "metadataStatus", required = false) String metadataStatus,
+            @RequestParam(name = "genre", required = false) String genre,
+            @RequestParam(name = "language", required = false) String language,
+            @RequestParam(name = "actor", required = false) String actor,
+            @RequestParam(name = "director", required = false) String director) {
         return ResponseEntity.ok(PageEnvelope.from(service.findAll(
                 pageable,
                 title,
@@ -71,7 +71,7 @@ public class UnifiedVideoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UnifiedVideoDetailResponse> getOne(@PathVariable UUID id) {
+    public ResponseEntity<UnifiedVideoDetailResponse> getOne(@PathVariable("id") UUID id) {
         return service.findOne(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -85,7 +85,7 @@ public class UnifiedVideoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<UnifiedVideoDetailResponse> update(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @Valid @RequestBody UnifiedVideoUpdateRequest request) {
         if (!Objects.equals(id, request.id())) {
             throw new ContentApiException(HttpStatus.BAD_REQUEST, "Invalid ID");
@@ -94,7 +94,7 @@ public class UnifiedVideoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
@@ -112,7 +112,7 @@ public class UnifiedVideoController {
     }
 
     @PostMapping("/{id}/recalculate")
-    public ResponseEntity<UnifiedVideoDetailResponse> recalculateMetadata(@PathVariable UUID id) {
+    public ResponseEntity<UnifiedVideoDetailResponse> recalculateMetadata(@PathVariable("id") UUID id) {
         return ResponseEntity.ok(service.recalculateMetadata(id));
     }
 }

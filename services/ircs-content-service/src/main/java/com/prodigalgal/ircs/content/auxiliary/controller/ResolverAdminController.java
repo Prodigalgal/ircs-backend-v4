@@ -36,7 +36,7 @@ public class ResolverAdminController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ResolverResponse> update(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @Valid @RequestBody ResolverRequest request) {
         return ResponseEntity.ok(service.updateResolver(id, request));
     }
@@ -52,14 +52,14 @@ public class ResolverAdminController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResolverResponse> getOne(@PathVariable UUID id) {
+    public ResponseEntity<ResolverResponse> getOne(@PathVariable("id") UUID id) {
         return service.findResolver(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") UUID id) {
         service.deleteResolver(id);
         return ResponseEntity.noContent().build();
     }

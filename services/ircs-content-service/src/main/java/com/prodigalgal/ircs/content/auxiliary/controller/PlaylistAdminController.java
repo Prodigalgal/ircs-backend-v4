@@ -38,7 +38,7 @@ public class PlaylistAdminController {
 
     @PutMapping("/{id}")
     public ResponseEntity<PlaylistDetailResponse> update(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @Valid @RequestBody PlaylistUpdateRequest request) {
         return ResponseEntity.ok(service.updatePlaylist(id, request));
     }
@@ -46,20 +46,20 @@ public class PlaylistAdminController {
     @GetMapping
     public ResponseEntity<PageEnvelope<PlaylistCardResponse>> getAll(
             @PageableDefault(size = 20) Pageable pageable,
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String videoTitle) {
+            @RequestParam(name = "name", required = false) String name,
+            @RequestParam(name = "videoTitle", required = false) String videoTitle) {
         return ResponseEntity.ok(PageEnvelope.from(service.findPlaylists(pageable, name, videoTitle)));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PlaylistDetailResponse> getOne(@PathVariable UUID id) {
+    public ResponseEntity<PlaylistDetailResponse> getOne(@PathVariable("id") UUID id) {
         return service.findPlaylist(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") UUID id) {
         service.deletePlaylist(id);
         return ResponseEntity.noContent().build();
     }

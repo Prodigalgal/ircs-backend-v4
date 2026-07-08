@@ -22,7 +22,7 @@ class CatalogFetchSampleClient {
     CatalogFetchSampleClient(ObjectProvider<OutboundHttpClient> httpClient) {
         this.httpClient = httpClient == null
                 ? defaultHttpClient()
-                : httpClient.getIfAvailable(CatalogFetchSampleClient::defaultHttpClient);
+                : httpClient.getIfUnique(CatalogFetchSampleClient::defaultHttpClient);
     }
 
     static CatalogFetchSampleClient forTest(OutboundHttpClient httpClient) {

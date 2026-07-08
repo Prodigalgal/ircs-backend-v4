@@ -41,19 +41,19 @@ public class RawVideoController {
     @GetMapping
     public ResponseEntity<PageEnvelope<RawVideoCardResponse>> getAllRawVideos(
             @PageableDefault(size = 20) Pageable pageable,
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) UUID categoryId,
-            @RequestParam(required = false) String enrichmentStatus,
-            @RequestParam(required = false) String normalizationStatus,
-            @RequestParam(required = false) String aggregationStatus,
-            @RequestParam(required = false) String year,
-            @RequestParam(required = false) String area,
-            @RequestParam(required = false) BigDecimal minScore,
-            @RequestParam(required = false) Boolean isMissingSlug,
-            @RequestParam(required = false) UUID dataSourceId,
-            @RequestParam(required = false) String sourceCategoryName,
-            @RequestParam(required = false) String genre,
-            @RequestParam(required = false) String language) {
+            @RequestParam(name = "title", required = false) String title,
+            @RequestParam(name = "categoryId", required = false) UUID categoryId,
+            @RequestParam(name = "enrichmentStatus", required = false) String enrichmentStatus,
+            @RequestParam(name = "normalizationStatus", required = false) String normalizationStatus,
+            @RequestParam(name = "aggregationStatus", required = false) String aggregationStatus,
+            @RequestParam(name = "year", required = false) String year,
+            @RequestParam(name = "area", required = false) String area,
+            @RequestParam(name = "minScore", required = false) BigDecimal minScore,
+            @RequestParam(name = "isMissingSlug", required = false) Boolean isMissingSlug,
+            @RequestParam(name = "dataSourceId", required = false) UUID dataSourceId,
+            @RequestParam(name = "sourceCategoryName", required = false) String sourceCategoryName,
+            @RequestParam(name = "genre", required = false) String genre,
+            @RequestParam(name = "language", required = false) String language) {
         return ResponseEntity.ok(PageEnvelope.from(service.findAll(
                 pageable,
                 title,
@@ -72,7 +72,7 @@ public class RawVideoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RawVideoDetailResponse> getRawVideo(@PathVariable UUID id) {
+    public ResponseEntity<RawVideoDetailResponse> getRawVideo(@PathVariable("id") UUID id) {
         return service.findOne(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -86,7 +86,7 @@ public class RawVideoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateRawVideo(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @Valid @RequestBody RawVideoUpdateRequest request) {
         if (!Objects.equals(id, request.id())) {
             throw new ContentApiException(HttpStatus.BAD_REQUEST, "Invalid ID");
@@ -96,7 +96,7 @@ public class RawVideoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteVideo(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteVideo(@PathVariable("id") UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
@@ -114,19 +114,19 @@ public class RawVideoController {
     }
 
     @PostMapping("/{id}/renormalize")
-    public ResponseEntity<Void> reNormalize(@PathVariable UUID id) {
+    public ResponseEntity<Void> reNormalize(@PathVariable("id") UUID id) {
         service.reNormalize(id);
         return ResponseEntity.accepted().build();
     }
 
     @PostMapping("/{id}/reenrich")
-    public ResponseEntity<Void> reEnrich(@PathVariable UUID id) {
+    public ResponseEntity<Void> reEnrich(@PathVariable("id") UUID id) {
         service.reEnrich(id);
         return ResponseEntity.accepted().build();
     }
 
     @PostMapping("/{id}/refetch")
-    public ResponseEntity<Void> reFetchFromSource(@PathVariable UUID id) {
+    public ResponseEntity<Void> reFetchFromSource(@PathVariable("id") UUID id) {
         service.reFetchFromSource(id);
         return ResponseEntity.accepted().build();
     }
