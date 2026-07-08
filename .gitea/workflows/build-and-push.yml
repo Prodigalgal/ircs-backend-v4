@@ -34,7 +34,7 @@ jobs:
     env:
       REGISTRY: registry.mnnu.eu.org/ircs
       PUSH_REGISTRY: 10.110.192.143:5000/ircs
-      PROD_CONFIG_REPO_URL: https://gitea.mnnu.eu.org/admin/ircs-prod-config-v4.git
+      PROD_CONFIG_REPO_URL: http://10.99.2.116:3000/admin/ircs-prod-config-v4.git
       PROD_CONFIG_REPO_BRANCH: main
       TARGET_PLATFORMS: linux/arm64,linux/amd64
       REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
