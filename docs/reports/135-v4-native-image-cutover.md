@@ -16,6 +16,10 @@
 - GitHub Actions `image_mode` 默认值从 `jvm` 改为 `native`。
 - push 触发场景也默认导出 `IMAGE_MODE=native`，避免非手动触发时回退到 JVM 镜像。
 - CI 镜像脚本的内部默认值改为 `native`，保留 `IMAGE_MODE=jvm` 作为显式回退开关。
+- CI 拆分为原生分架构构建：
+  - `amd64` 使用 `ubuntu-24.04` runner，推送 `:<tag>-amd64`。
+  - `arm64` 使用 `ubuntu-24.04-arm` runner，推送 `:<tag>-arm64`。
+  - `publish-multiarch-images` job 使用 `docker buildx imagetools create` 合并成同一个 `:<tag>` 多架构 manifest。
 - 两个 native Dockerfile 使用 BuildKit Gradle cache mount，减少 CI 中 native 构建的重复依赖下载成本。
 - 本地 Docker buildx 辅助脚本与 CI 保持一致，构建时关闭 provenance，降低 registry manifest 兼容风险。
 
@@ -29,6 +33,11 @@
 ## 验收标准
 
 - GitHub Actions 能构建并推送 `docker.io/speedproxy/ircs-platform-api:<tag>` 和 `docker.io/speedproxy/ircs-worker-runtime:<tag>`。
+- 同时存在架构后缀镜像：
+  - `docker.io/speedproxy/ircs-platform-api:<tag>-amd64`
+  - `docker.io/speedproxy/ircs-platform-api:<tag>-arm64`
+  - `docker.io/speedproxy/ircs-worker-runtime:<tag>-amd64`
+  - `docker.io/speedproxy/ircs-worker-runtime:<tag>-arm64`
 - `build-image-manifest.txt` 中 `image_mode=native`。
 - CI 自动回写 `ircs-prod-config/ircs-v4` 镜像 tag。
 - Argo CD `ircs-v4-runtime` 同步后两个 runtime Pod Ready。
