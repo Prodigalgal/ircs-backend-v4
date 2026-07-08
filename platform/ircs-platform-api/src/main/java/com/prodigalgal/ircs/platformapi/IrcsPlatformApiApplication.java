@@ -1,5 +1,6 @@
 package com.prodigalgal.ircs.platformapi;
 
+import com.prodigalgal.ircs.common.logging.Log4j2RuntimeBootstrap;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
@@ -50,6 +51,7 @@ import org.springframework.context.annotation.ImportRuntimeHints;
 public class IrcsPlatformApiApplication {
 
     public static void main(String[] args) {
+        Log4j2RuntimeBootstrap.configureBeforeSpringApplicationRun();
         SpringApplication.run(IrcsPlatformApiApplication.class, args);
     }
 }
