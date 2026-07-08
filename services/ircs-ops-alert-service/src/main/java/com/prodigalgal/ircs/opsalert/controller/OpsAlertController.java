@@ -47,14 +47,14 @@ public class OpsAlertController {
     @GetMapping("/events")
     public ResponseEntity<PageEnvelope<AlertEventResponse>> events(
             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-            @RequestParam(required = false) AlertSeverity severity,
-            @RequestParam(required = false) String source,
-            @RequestParam(required = false) String eventType,
-            @RequestParam(required = false) String resourceType,
-            @RequestParam(required = false) String resourceName,
-            @RequestParam(required = false) String fingerprint,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant from,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant to) {
+            @RequestParam(name = "severity", required = false) AlertSeverity severity,
+            @RequestParam(name = "source", required = false) String source,
+            @RequestParam(name = "eventType", required = false) String eventType,
+            @RequestParam(name = "resourceType", required = false) String resourceType,
+            @RequestParam(name = "resourceName", required = false) String resourceName,
+            @RequestParam(name = "fingerprint", required = false) String fingerprint,
+            @RequestParam(name = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant from,
+            @RequestParam(name = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant to) {
         return ResponseEntity.ok(PageEnvelope.from(queryService.findEvents(
                 pageable,
                 new AlertEventFilter(severity, source, eventType, resourceType, resourceName, fingerprint, from, to))));
@@ -63,14 +63,14 @@ public class OpsAlertController {
     @GetMapping("/incidents")
     public ResponseEntity<PageEnvelope<IncidentResponse>> incidents(
             @PageableDefault(sort = "lastSeenAt", direction = Sort.Direction.DESC) Pageable pageable,
-            @RequestParam(required = false) IncidentStatus status,
-            @RequestParam(required = false) AlertSeverity severity,
-            @RequestParam(required = false) String source,
-            @RequestParam(required = false) String resourceType,
-            @RequestParam(required = false) String resourceName,
-            @RequestParam(required = false) String fingerprint,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant from,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant to) {
+            @RequestParam(name = "status", required = false) IncidentStatus status,
+            @RequestParam(name = "severity", required = false) AlertSeverity severity,
+            @RequestParam(name = "source", required = false) String source,
+            @RequestParam(name = "resourceType", required = false) String resourceType,
+            @RequestParam(name = "resourceName", required = false) String resourceName,
+            @RequestParam(name = "fingerprint", required = false) String fingerprint,
+            @RequestParam(name = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant from,
+            @RequestParam(name = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant to) {
         return ResponseEntity.ok(PageEnvelope.from(queryService.findIncidents(
                 pageable,
                 new IncidentFilter(status, severity, source, resourceType, resourceName, fingerprint, from, to))));
@@ -79,13 +79,13 @@ public class OpsAlertController {
     @GetMapping("/healing-actions")
     public ResponseEntity<PageEnvelope<HealingActionResponse>> healingActions(
             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-            @RequestParam(required = false) UUID incidentId,
-            @RequestParam(required = false) HealingActionStatus status,
-            @RequestParam(required = false) String policyKey,
-            @RequestParam(required = false) String playbookKey,
-            @RequestParam(required = false) Boolean dryRun,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant from,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant to) {
+            @RequestParam(name = "incidentId", required = false) UUID incidentId,
+            @RequestParam(name = "status", required = false) HealingActionStatus status,
+            @RequestParam(name = "policyKey", required = false) String policyKey,
+            @RequestParam(name = "playbookKey", required = false) String playbookKey,
+            @RequestParam(name = "dryRun", required = false) Boolean dryRun,
+            @RequestParam(name = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant from,
+            @RequestParam(name = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant to) {
         return ResponseEntity.ok(PageEnvelope.from(queryService.findHealingActions(
                 pageable,
                 new HealingActionFilter(incidentId, status, policyKey, playbookKey, dryRun, from, to))));

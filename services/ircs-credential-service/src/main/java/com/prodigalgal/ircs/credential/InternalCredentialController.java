@@ -27,9 +27,9 @@ public class InternalCredentialController {
 
     @GetMapping("/providers/{provider}/leases")
     public List<ProviderCredentialLease> leaseProviderCredentials(
-            @PathVariable String provider,
-            @RequestParam(required = false) String requiredPayloadKey,
-            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int limit,
+            @PathVariable(name = "provider") String provider,
+            @RequestParam(name = "requiredPayloadKey", required = false) String requiredPayloadKey,
+            @RequestParam(name = "limit", defaultValue = "20") @Min(1) @Max(100) int limit,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_ID, required = false) String serviceId,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_TOKEN, required = false) String serviceToken,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_SCOPES, required = false) String serviceScopes) {

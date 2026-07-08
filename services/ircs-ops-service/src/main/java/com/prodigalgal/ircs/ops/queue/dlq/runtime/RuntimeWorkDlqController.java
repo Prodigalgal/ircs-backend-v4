@@ -18,15 +18,15 @@ class RuntimeWorkDlqController {
 
     @GetMapping
     ResponseEntity<List<RuntimeWorkDlqQueueResponse>> listQueues(
-            @RequestParam(defaultValue = "5") int sampleLimit) {
+            @RequestParam(name = "sampleLimit", defaultValue = "5") int sampleLimit) {
         return ResponseEntity.ok(dlqService.listQueues(sampleLimit));
     }
 
     @PostMapping("/requeue")
     ResponseEntity<RuntimeWorkDlqActionResponse> requeue(
-            @RequestParam String taskType,
-            @RequestParam(defaultValue = "1") int limit,
-            @RequestParam(defaultValue = "3") int maxReplayAttempts) {
+            @RequestParam(name = "taskType") String taskType,
+            @RequestParam(name = "limit", defaultValue = "1") int limit,
+            @RequestParam(name = "maxReplayAttempts", defaultValue = "3") int maxReplayAttempts) {
         return ResponseEntity.ok(dlqService.requeue(taskType, limit, maxReplayAttempts));
     }
 }

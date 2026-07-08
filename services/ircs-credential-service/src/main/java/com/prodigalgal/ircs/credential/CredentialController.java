@@ -29,21 +29,21 @@ public class CredentialController {
 
     @GetMapping
     public List<CredentialSummary> listCredentials(
-            @RequestParam(required = false) String provider,
-            @RequestParam(required = false) Boolean enabled,
-            @RequestParam(defaultValue = "100") @Min(1) @Max(500) int limit) {
+            @RequestParam(name = "provider", required = false) String provider,
+            @RequestParam(name = "enabled", required = false) Boolean enabled,
+            @RequestParam(name = "limit", defaultValue = "100") @Min(1) @Max(500) int limit) {
         return credentialService.list(provider, enabled, limit);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CredentialSummary> getCredential(@PathVariable UUID id) {
+    public ResponseEntity<CredentialSummary> getCredential(@PathVariable(name = "id") UUID id) {
         return credentialService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/templates")
-    public List<CredentialTemplateField> credentialTemplates(@RequestParam String provider) {
+    public List<CredentialTemplateField> credentialTemplates(@RequestParam(name = "provider") String provider) {
         return credentialService.templates(provider);
     }
 
@@ -57,7 +57,7 @@ public class CredentialController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CredentialSummary> updateCredential(
-            @PathVariable UUID id,
+            @PathVariable(name = "id") UUID id,
             @Valid @RequestBody CredentialWriteRequest request) {
         return credentialService.update(id, request)
                 .map(ResponseEntity::ok)
@@ -65,7 +65,7 @@ public class CredentialController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCredential(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteCredential(@PathVariable(name = "id") UUID id) {
         credentialService.delete(id);
         return ResponseEntity.noContent().build();
     }

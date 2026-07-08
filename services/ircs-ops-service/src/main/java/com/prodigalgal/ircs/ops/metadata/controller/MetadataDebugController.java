@@ -15,10 +15,10 @@ public class MetadataDebugController {
 
     @GetMapping("/search")
     public ResponseEntity<Map<String, Object>> search(
-            @RequestParam String title,
-            @RequestParam(required = false) String year,
-            @RequestParam(required = false) String subtitle,
-            @RequestParam(defaultValue = "DOUBAN") String providerType) {
+            @RequestParam(name = "title") String title,
+            @RequestParam(name = "year", required = false) String year,
+            @RequestParam(name = "subtitle", required = false) String subtitle,
+            @RequestParam(name = "providerType", defaultValue = "DOUBAN") String providerType) {
         log.info("Metadata debug dry-run: provider={}, title={}, year={}", providerType, title, year);
         return ResponseEntity.ok(Map.of(
                 "status", "DRY_RUN",

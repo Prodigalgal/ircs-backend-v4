@@ -27,7 +27,7 @@ class SearchIndexMaintenanceInternalController {
 
     @PostMapping("/{entityType}/hard-reset")
     ResponseEntity<SearchIndexMaintenanceResponse> hardReset(
-            @PathVariable SearchEntityType entityType,
+            @PathVariable(name = "entityType") SearchEntityType entityType,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_ID, required = false) String serviceId,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_TOKEN, required = false) String serviceToken,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_SCOPES, required = false) String serviceScopes) {

@@ -31,13 +31,13 @@ public class ConfigController {
     @GetMapping("/configs")
     public PageEnvelope<SystemConfigSummary> listConfigs(
             @PageableDefault(size = 20) Pageable pageable,
-            @RequestParam(required = false) String keyword
+            @RequestParam(name = "keyword", required = false) String keyword
     ) {
         return PageEnvelope.from(configService.listConfigs(pageable, keyword));
     }
 
     @GetMapping("/configs/{key}")
-    public ResponseEntity<SystemConfigSummary> getConfig(@PathVariable String key) {
+    public ResponseEntity<SystemConfigSummary> getConfig(@PathVariable(name = "key") String key) {
         return configService.findConfig(key)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -53,7 +53,7 @@ public class ConfigController {
 
     @PutMapping("/configs/{key}")
     public ResponseEntity<SystemConfigSummary> updateConfig(
-            @PathVariable String key,
+            @PathVariable(name = "key") String key,
             @Valid @RequestBody SystemConfigWriteRequest request) {
         return configService.updateConfig(key, request)
                 .map(ResponseEntity::ok)
@@ -61,14 +61,14 @@ public class ConfigController {
     }
 
     @DeleteMapping("/configs/{key}")
-    public ResponseEntity<Void> deleteConfig(@PathVariable String key) {
+    public ResponseEntity<Void> deleteConfig(@PathVariable(name = "key") String key) {
         configService.deleteConfig(key);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/configs/test/{type}")
     public ResponseEntity<Map<String, String>> testConnection(
-            @PathVariable String type,
+            @PathVariable(name = "type") String type,
             @RequestBody(required = false) Map<String, Object> params) {
         return ResponseEntity.ok(configService.testConnection(type, params == null ? Map.of() : params));
     }

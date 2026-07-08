@@ -28,14 +28,14 @@ public class DlqController {
     @GetMapping
     public ResponseEntity<PageEnvelope<FailedMessageResponse>> getAll(
             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String queueName,
-            @RequestParam(required = false) String keyword) {
+            @RequestParam(name = "status", required = false) String status,
+            @RequestParam(name = "queueName", required = false) String queueName,
+            @RequestParam(name = "keyword", required = false) String keyword) {
         return ResponseEntity.ok(PageEnvelope.from(dlqQueryService.findAll(pageable, status, queueName, keyword)));
     }
 
     @PostMapping("/{id}/retry")
-    public ResponseEntity<Void> retry(@PathVariable UUID id) {
+    public ResponseEntity<Void> retry(@PathVariable(name = "id") UUID id) {
         dlqQueryService.retry(id);
         return ResponseEntity.ok().build();
     }
@@ -47,7 +47,7 @@ public class DlqController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> discard(@PathVariable UUID id) {
+    public ResponseEntity<Void> discard(@PathVariable(name = "id") UUID id) {
         dlqQueryService.discard(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

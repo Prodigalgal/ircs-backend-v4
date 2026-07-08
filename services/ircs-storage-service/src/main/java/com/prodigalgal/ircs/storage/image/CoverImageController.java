@@ -30,12 +30,12 @@ public class CoverImageController {
     @GetMapping
     public ResponseEntity<PageEnvelope<CoverImageResponse>> getAll(
             @PageableDefault(size = 20) Pageable pageable,
-            @RequestParam(required = false) CoverImageStatus status,
-            @RequestParam(required = false) CoverImageStorageType storageType,
-            @RequestParam(required = false) String url,
-            @RequestParam(required = false) String sourceDomain,
-            @RequestParam(required = false) Long minFileSize,
-            @RequestParam(required = false) Long maxFileSize) {
+            @RequestParam(name = "status", required = false) CoverImageStatus status,
+            @RequestParam(name = "storageType", required = false) CoverImageStorageType storageType,
+            @RequestParam(name = "url", required = false) String url,
+            @RequestParam(name = "sourceDomain", required = false) String sourceDomain,
+            @RequestParam(name = "minFileSize", required = false) Long minFileSize,
+            @RequestParam(name = "maxFileSize", required = false) Long maxFileSize) {
         return ResponseEntity.ok(PageEnvelope.from(service.findAll(
                 pageable,
                 status,
@@ -47,14 +47,14 @@ public class CoverImageController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CoverImageResponse> getOne(@PathVariable UUID id) {
+    public ResponseEntity<CoverImageResponse> getOne(@PathVariable(name = "id") UUID id) {
         return service.findOne(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable(name = "id") UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
@@ -70,20 +70,20 @@ public class CoverImageController {
     }
 
     @PostMapping("/{id}/sync-r2")
-    public ResponseEntity<Void> syncR2(@PathVariable UUID id) {
+    public ResponseEntity<Void> syncR2(@PathVariable(name = "id") UUID id) {
         service.triggerR2Sync(id);
         return ResponseEntity.accepted().build();
     }
 
     @PostMapping("/{id}/retry")
-    public ResponseEntity<Void> retryDownload(@PathVariable UUID id) {
+    public ResponseEntity<Void> retryDownload(@PathVariable(name = "id") UUID id) {
         service.retryDownload(id);
         return ResponseEntity.accepted().build();
     }
 
     @PostMapping("/download-backfill")
     public ResponseEntity<Integer> enqueueDownloadBackfill(
-            @RequestParam(defaultValue = "25") int limit) {
+            @RequestParam(name = "limit", defaultValue = "25") int limit) {
         return ResponseEntity.accepted().body(service.enqueueDownloadBackfill(limit));
     }
 }

@@ -47,7 +47,7 @@ public class CollectionTaskController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateTask(
-            @PathVariable UUID id,
+            @PathVariable(name = "id") UUID id,
             @Valid @RequestBody TaskUpdateRequest request
     ) {
         taskCommandService.update(id, request);
@@ -57,16 +57,16 @@ public class CollectionTaskController {
     @GetMapping
     public ResponseEntity<PageEnvelope<TaskCardSummary>> listTasks(
             @PageableDefault(size = 20) Pageable pageable,
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) UUID dataSourceId,
-            @RequestParam(required = false) Boolean enabled
+            @RequestParam(name = "name", required = false) String name,
+            @RequestParam(name = "status", required = false) String status,
+            @RequestParam(name = "dataSourceId", required = false) UUID dataSourceId,
+            @RequestParam(name = "enabled", required = false) Boolean enabled
     ) {
         return ResponseEntity.ok(PageEnvelope.from(taskQueryService.findAll(pageable, name, status, dataSourceId, enabled)));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskDetailSummary> getTask(@PathVariable UUID id) {
+    public ResponseEntity<TaskDetailSummary> getTask(@PathVariable(name = "id") UUID id) {
         return taskQueryService.findOne(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -74,10 +74,10 @@ public class CollectionTaskController {
 
     @GetMapping("/{id}/runtime")
     public ResponseEntity<TaskRuntimeDetailResponse> getTaskRuntime(
-            @PathVariable UUID id,
-            @RequestParam(defaultValue = "0") int pageOffset,
-            @RequestParam(defaultValue = "100") int pageLimit,
-            @RequestParam(defaultValue = "20") int detailLimit
+            @PathVariable(name = "id") UUID id,
+            @RequestParam(name = "pageOffset", defaultValue = "0") int pageOffset,
+            @RequestParam(name = "pageLimit", defaultValue = "100") int pageLimit,
+            @RequestParam(name = "detailLimit", defaultValue = "20") int detailLimit
     ) {
         return taskRuntimeReadService.find(id, pageOffset, pageLimit, detailLimit)
                 .map(ResponseEntity::ok)
@@ -85,41 +85,41 @@ public class CollectionTaskController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteTask(@PathVariable(name = "id") UUID id) {
         taskCommandService.delete(id);
         taskLogService.clearLogs(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/start")
-    public ResponseEntity<Void> startTask(@PathVariable UUID id) {
+    public ResponseEntity<Void> startTask(@PathVariable(name = "id") UUID id) {
         taskCommandService.start(id, false);
         return ResponseEntity.accepted().build();
     }
 
     @PostMapping("/{id}/resume")
-    public ResponseEntity<Void> resumeTask(@PathVariable UUID id) {
+    public ResponseEntity<Void> resumeTask(@PathVariable(name = "id") UUID id) {
         taskCommandService.start(id, true);
         return ResponseEntity.accepted().build();
     }
 
     @PostMapping("/{id}/pause")
-    public ResponseEntity<Void> pauseTask(@PathVariable UUID id) {
+    public ResponseEntity<Void> pauseTask(@PathVariable(name = "id") UUID id) {
         taskCommandService.pause(id);
         return ResponseEntity.accepted().build();
     }
 
     @PostMapping("/{id}/stop")
-    public ResponseEntity<Void> stopTask(@PathVariable UUID id) {
+    public ResponseEntity<Void> stopTask(@PathVariable(name = "id") UUID id) {
         taskCommandService.stop(id);
         return ResponseEntity.accepted().build();
     }
 
     @GetMapping("/{id}/logs")
     public ResponseEntity<java.util.List<TaskItemLogResponse>> getTaskLogs(
-            @PathVariable UUID id,
-            @RequestParam(defaultValue = "0") int offset,
-            @RequestParam(defaultValue = "50") int limit
+            @PathVariable(name = "id") UUID id,
+            @RequestParam(name = "offset", defaultValue = "0") int offset,
+            @RequestParam(name = "limit", defaultValue = "50") int limit
     ) {
         return ResponseEntity.ok(taskLogService.getLogs(id, offset, limit));
     }

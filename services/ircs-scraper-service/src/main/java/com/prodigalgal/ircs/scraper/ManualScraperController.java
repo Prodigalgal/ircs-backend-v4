@@ -27,7 +27,7 @@ class ManualScraperController {
     }
 
     @GetMapping("/stream/{sessionId}")
-    SseEmitter stream(@PathVariable UUID sessionId) {
+    SseEmitter stream(@PathVariable(name = "sessionId") UUID sessionId) {
         return manualScraperService.stream(sessionId);
     }
 }

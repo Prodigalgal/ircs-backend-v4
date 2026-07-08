@@ -38,7 +38,7 @@ public class DashboardController {
     }
 
     @GetMapping("/trend")
-    public ResponseEntity<List<ChartDataPoint>> trend(@RequestParam(defaultValue = "14") int days) {
+    public ResponseEntity<List<ChartDataPoint>> trend(@RequestParam(name = "days", defaultValue = "14") int days) {
         return ResponseEntity.ok(dashboardQueryService.getTrend(days));
     }
 
@@ -58,7 +58,7 @@ public class DashboardController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<Void> refresh(@RequestParam(defaultValue = "14") int days) {
+    public ResponseEntity<Void> refresh(@RequestParam(name = "days", defaultValue = "14") int days) {
         dashboardQueryService.refresh(days);
         return ResponseEntity.noContent().build();
     }
@@ -69,7 +69,7 @@ public class DashboardController {
     }
 
     @GetMapping("/task-runtime")
-    public ResponseEntity<TaskRuntimeOverviewResponse> taskRuntime(@RequestParam(defaultValue = "50") int limit) {
+    public ResponseEntity<TaskRuntimeOverviewResponse> taskRuntime(@RequestParam(name = "limit", defaultValue = "50") int limit) {
         return ResponseEntity.ok(dashboardQueryService.getTaskRuntimeOverview(limit));
     }
 
@@ -85,8 +85,8 @@ public class DashboardController {
 
     @GetMapping(value = "/stream/{topic}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter topicStream(
-            @PathVariable String topic,
-            @RequestParam(defaultValue = "50") int limit) {
+            @PathVariable(name = "topic") String topic,
+            @RequestParam(name = "limit", defaultValue = "50") int limit) {
         try {
             return dashboardStreamService.stream(topic, limit);
         } catch (IllegalArgumentException ex) {

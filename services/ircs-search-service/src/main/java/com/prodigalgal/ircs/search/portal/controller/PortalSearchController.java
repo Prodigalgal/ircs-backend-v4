@@ -27,7 +27,7 @@ public class PortalSearchController {
     private final PortalSearchQueryService portalSearchQueryService;
 
     @GetMapping("/suggest")
-    public ResponseEntity<List<String>> suggest(HttpServletRequest request, @RequestParam String keyword) {
+    public ResponseEntity<List<String>> suggest(HttpServletRequest request, @RequestParam(name = "keyword") String keyword) {
         IrcsRequestPrincipal principal = IrcsAuthHeaders.principalOrPublic(request);
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.noStore())
@@ -37,7 +37,7 @@ public class PortalSearchController {
     @GetMapping("/recommendations/{videoId}")
     public ResponseEntity<PageEnvelope<PortalMovieCardResponse>> recommend(
             HttpServletRequest request,
-            @PathVariable UUID videoId,
+            @PathVariable(name = "videoId") UUID videoId,
             @PageableDefault(size = 10) Pageable pageable) {
         IrcsRequestPrincipal principal = IrcsAuthHeaders.principalOrPublic(request);
         return ResponseEntity.ok(PageEnvelope.from(portalSearchQueryService.recommend(videoId, pageable, principal)));

@@ -30,8 +30,8 @@ public class MediaRequestController {
     @GetMapping
     public PageEnvelope<MediaRequestResponse> myRequests(
             @RequestHeader(value = "Authorization", required = false) String authorization,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
         UUID memberId = memberTokenService.requireMemberId(authorization);
         PageResponse<MediaRequestResponse> requests =
                 commandService.myRequests(memberId, PageBounds.of(page, size, 10, 70));

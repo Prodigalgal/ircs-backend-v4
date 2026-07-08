@@ -23,15 +23,15 @@ public class RequestAuditController {
     @GetMapping
     public ResponseEntity<PageEnvelope<RequestAuditLogResponse>> getAll(
             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-            @RequestParam(required = false) String username,
-            @RequestParam(required = false) String requestSource,
-            @RequestParam(required = false) String method,
-            @RequestParam(required = false) String path,
-            @RequestParam(required = false) Integer statusCode,
-            @RequestParam(required = false) String statusClass,
-            @RequestParam(required = false) String clientIp,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant from,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant to) {
+            @RequestParam(name = "username", required = false) String username,
+            @RequestParam(name = "requestSource", required = false) String requestSource,
+            @RequestParam(name = "method", required = false) String method,
+            @RequestParam(name = "path", required = false) String path,
+            @RequestParam(name = "statusCode", required = false) Integer statusCode,
+            @RequestParam(name = "statusClass", required = false) String statusClass,
+            @RequestParam(name = "clientIp", required = false) String clientIp,
+            @RequestParam(name = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant from,
+            @RequestParam(name = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant to) {
         return ResponseEntity.ok(PageEnvelope.from(requestAuditQueryService.findAll(
                 pageable,
                 username,

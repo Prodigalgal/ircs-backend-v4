@@ -72,17 +72,17 @@ public class MaintenanceController {
 
     @PostMapping("/gates/{id}/close")
     public ResponseEntity<MaintenanceGateResponse> closeGate(
-            @PathVariable UUID id,
+            @PathVariable(name = "id") UUID id,
             @Valid @RequestBody(required = false) MaintenanceGateCloseRequest request) {
         return ResponseEntity.ok(maintenanceGateService.close(id, request));
     }
 
     @GetMapping("/gates/check")
     public ResponseEntity<MaintenanceGateDecision> checkGate(
-            @RequestParam String ownerService,
-            @RequestParam String resourceType,
-            @RequestParam(defaultValue = "*") String resourceScope,
-            @RequestParam(defaultValue = "WRITE") MaintenanceGateCheckKind checkKind) {
+            @RequestParam(name = "ownerService") String ownerService,
+            @RequestParam(name = "resourceType") String resourceType,
+            @RequestParam(name = "resourceScope", defaultValue = "*") String resourceScope,
+            @RequestParam(name = "checkKind", defaultValue = "WRITE") MaintenanceGateCheckKind checkKind) {
         return ResponseEntity.ok(maintenanceGateService.check(ownerService, resourceType, resourceScope, checkKind));
     }
 
@@ -143,7 +143,7 @@ public class MaintenanceController {
     }
 
     @GetMapping(value = "/stream/{sessionId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter stream(@PathVariable UUID sessionId) {
+    public SseEmitter stream(@PathVariable(name = "sessionId") UUID sessionId) {
         return maintenanceSessionService.stream(sessionId);
     }
 

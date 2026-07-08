@@ -23,14 +23,14 @@ public class WorkerJobAuditController {
     @GetMapping
     public ResponseEntity<PageEnvelope<WorkerJobAuditEventResponse>> getAll(
             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-            @RequestParam(required = false) String jobSource,
-            @RequestParam(required = false) String jobType,
-            @RequestParam(required = false) String jobName,
-            @RequestParam(required = false) String correlationId,
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String errorClass,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant from,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant to) {
+            @RequestParam(name = "jobSource", required = false) String jobSource,
+            @RequestParam(name = "jobType", required = false) String jobType,
+            @RequestParam(name = "jobName", required = false) String jobName,
+            @RequestParam(name = "correlationId", required = false) String correlationId,
+            @RequestParam(name = "status", required = false) String status,
+            @RequestParam(name = "errorClass", required = false) String errorClass,
+            @RequestParam(name = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant from,
+            @RequestParam(name = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant to) {
         return ResponseEntity.ok(PageEnvelope.from(workerJobAuditQueryService.findAll(
                 pageable,
                 jobSource,

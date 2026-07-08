@@ -44,7 +44,7 @@ class AdminApiTokenController {
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> revoke(@PathVariable UUID id, HttpServletRequest request) {
+    ResponseEntity<Void> revoke(@PathVariable(name = "request") UUID id, HttpServletRequest request) {
         IrcsRequestPrincipal principal = requireAdmin(request);
         tokenService.revoke(id, principal.subject());
         return ResponseEntity.noContent().build();

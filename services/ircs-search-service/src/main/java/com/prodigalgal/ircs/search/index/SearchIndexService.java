@@ -41,9 +41,9 @@ public class SearchIndexService {
 
     @PostConstruct
     void ensureIndices() {
-        ensureIndex(RawVideoSearchDocument.class);
-        ensureIndex(UnifiedVideoSearchDocument.class);
-        ensureIndex(AuditEventSearchDocument.class);
+        ensureIndexIfAvailable(RawVideoSearchDocument.class);
+        ensureIndexIfAvailable(UnifiedVideoSearchDocument.class);
+        ensureIndexIfAvailable(AuditEventSearchDocument.class);
     }
 
     public void saveRaw(RawVideoSearchDocument document) {
@@ -122,6 +122,17 @@ public class SearchIndexService {
             indexOperations.putMapping();
         }
         ensuredIndexes.add(documentType);
+    }
+
+    private void ensureIndexIfAvailable(Class<?> documentType) {
+        try {
+            ensureIndex(documentType);
+        } catch (RuntimeException ex) {
+            log.warn(
+                    "Elasticsearch index warmup skipped for {}; it will be retried on first use: {}",
+                    documentType.getSimpleName(),
+                    ex.getMessage());
+        }
     }
 
     private Class<?> documentType(SearchEntityType type) {

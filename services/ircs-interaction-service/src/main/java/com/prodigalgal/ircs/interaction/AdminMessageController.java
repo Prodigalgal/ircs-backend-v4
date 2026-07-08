@@ -23,31 +23,31 @@ public class AdminMessageController {
 
     @GetMapping
     public PageEnvelope<UserMessageResponse> getAll(
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String status,
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "status", required = false) String status,
             @RequestParam(required = false, name = "public") Boolean publicMessage,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
-            @RequestParam(required = false) String sort) {
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "20") int size,
+            @RequestParam(name = "sort", required = false) String sort) {
         return pageEnvelope(service.findAll(keyword, status, publicMessage, page, size));
     }
 
     @PostMapping("/{id}/reply")
     public UserMessageResponse reply(
-            @PathVariable UUID id,
+            @PathVariable(name = "id") UUID id,
             @RequestBody AdminReplyRequest request) {
         return service.reply(id, request);
     }
 
     @PutMapping("/{id}/visibility")
     public UserMessageResponse toggleVisibility(
-            @PathVariable UUID id,
+            @PathVariable(name = "id") UUID id,
             @RequestBody MessageVisibilityRequest request) {
         return service.toggleVisibility(id, request);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable(name = "id") UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }

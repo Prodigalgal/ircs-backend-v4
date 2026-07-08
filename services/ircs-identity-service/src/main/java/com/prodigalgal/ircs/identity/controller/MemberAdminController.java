@@ -33,14 +33,14 @@ public class MemberAdminController {
 
     @GetMapping
     public ResponseEntity<PageEnvelope<MemberAdminResponse>> getAll(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
-            @RequestParam(required = false, defaultValue = "createdAt,desc") String sort,
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) MemberStatus status,
-            @RequestParam(required = false) Boolean adultContentAllowed,
-            @RequestParam(required = false) Integer minPoints,
-            @RequestParam(required = false) Integer maxPoints) {
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "20") int size,
+            @RequestParam(name = "sort", required = false, defaultValue = "createdAt,desc") String sort,
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "status", required = false) MemberStatus status,
+            @RequestParam(name = "adultContentAllowed", required = false) Boolean adultContentAllowed,
+            @RequestParam(name = "minPoints", required = false) Integer minPoints,
+            @RequestParam(name = "maxPoints", required = false) Integer maxPoints) {
         return ResponseEntity.ok(pageEnvelope(memberAdminService.findAll(
                 keyword,
                 status,
@@ -54,36 +54,36 @@ public class MemberAdminController {
 
     @GetMapping("/{id}/favorites")
     public ResponseEntity<PageEnvelope<HistoryRecordResponse>> getFavorites(
-            @PathVariable UUID id,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
+            @PathVariable(name = "id") UUID id,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "20") int size) {
         return ResponseEntity.ok(pageEnvelope(memberAdminService.favorites(id, page, size)));
     }
 
     @GetMapping("/{id}/history")
     public ResponseEntity<PageEnvelope<HistoryRecordResponse>> getHistory(
-            @PathVariable UUID id,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
+            @PathVariable(name = "id") UUID id,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "20") int size) {
         return ResponseEntity.ok(pageEnvelope(memberAdminService.history(id, page, size)));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<MemberAdminResponse> updateMember(
-            @PathVariable UUID id,
+            @PathVariable(name = "id") UUID id,
             @Valid @RequestBody MemberAdminUpdateRequest request) {
         return ResponseEntity.ok(memberAdminService.updateMember(id, request));
     }
 
     @PutMapping("/{id}/status")
     public ResponseEntity<MemberAdminResponse> updateStatus(
-            @PathVariable UUID id,
+            @PathVariable(name = "id") UUID id,
             @Valid @RequestBody MemberStatusUpdateRequest request) {
         return ResponseEntity.ok(memberAdminService.updateStatus(id, request.status()));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable(name = "id") UUID id) {
         memberAdminService.delete(id);
         return ResponseEntity.noContent().build();
     }

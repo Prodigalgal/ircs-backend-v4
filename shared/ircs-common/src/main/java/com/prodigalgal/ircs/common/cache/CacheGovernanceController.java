@@ -22,19 +22,19 @@ public class CacheGovernanceController {
     }
 
     @GetMapping("/{name}")
-    public ResponseEntity<CacheSummary> summary(@PathVariable String name) {
+    public ResponseEntity<CacheSummary> summary(@PathVariable(name = "name") String name) {
         return registry.summary(name)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{name}")
-    public CacheEvictResult evictAll(@PathVariable String name) {
+    public CacheEvictResult evictAll(@PathVariable(name = "name") String name) {
         return registry.evictAll(name);
     }
 
     @DeleteMapping("/{name}/entries/{key}")
-    public CacheEvictResult evictKey(@PathVariable String name, @PathVariable String key) {
+    public CacheEvictResult evictKey(@PathVariable(name = "name") String name, @PathVariable(name = "key") String key) {
         return registry.evictKey(name, key);
     }
 }

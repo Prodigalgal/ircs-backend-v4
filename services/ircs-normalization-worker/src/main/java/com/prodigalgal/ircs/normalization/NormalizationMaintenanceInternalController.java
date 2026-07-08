@@ -20,9 +20,9 @@ class NormalizationMaintenanceInternalController {
 
     @PostMapping("/raw-videos/reset-normalization")
     ResponseEntity<NormalizationMaintenanceRunResponse> resetNormalization(
-            @RequestParam(defaultValue = "5") int sampleLimit,
-            @RequestParam(defaultValue = "false") boolean enqueue,
-            @RequestParam(defaultValue = "500") int batchSize,
+            @RequestParam(name = "sampleLimit", defaultValue = "5") int sampleLimit,
+            @RequestParam(name = "enqueue", defaultValue = "false") boolean enqueue,
+            @RequestParam(name = "batchSize", defaultValue = "500") int batchSize,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_ID, required = false) String serviceId,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_TOKEN, required = false) String serviceToken,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_SCOPES, required = false) String serviceScopes) {

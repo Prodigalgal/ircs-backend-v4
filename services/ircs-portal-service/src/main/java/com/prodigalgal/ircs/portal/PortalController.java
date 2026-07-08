@@ -52,15 +52,15 @@ public class PortalController {
     @GetMapping("/explore")
     public ResponseEntity<PageEnvelope<PortalMovieCard>> explore(
             HttpServletRequest request,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String type,
-            @RequestParam(required = false) String genre,
-            @RequestParam(required = false) String area,
-            @RequestParam(required = false) String year,
-            @RequestParam(required = false) String language,
-            @RequestParam(required = false) String sort) {
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "20") int size,
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "type", required = false) String type,
+            @RequestParam(name = "genre", required = false) String genre,
+            @RequestParam(name = "area", required = false) String area,
+            @RequestParam(name = "year", required = false) String year,
+            @RequestParam(name = "language", required = false) String language,
+            @RequestParam(name = "sort", required = false) String sort) {
         int safePage = Math.max(page, 0);
         int safeSize = Math.min(Math.max(size <= 0 ? 20 : size, 1), MAX_EXPLORE_SIZE);
         if ((long) safePage * safeSize > 10000) {
@@ -86,8 +86,8 @@ public class PortalController {
 
     @GetMapping("/sitemap/movies")
     public ResponseEntity<PageEnvelope<PortalSitemapMovie>> sitemapMovies(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "1000") int size) {
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "1000") int size) {
         int safePage = Math.max(page, 0);
         int safeSize = Math.min(Math.max(size <= 0 ? MAX_SITEMAP_SIZE : size, 1), MAX_SITEMAP_SIZE);
         return ResponseEntity.ok()
@@ -96,7 +96,7 @@ public class PortalController {
     }
 
     @GetMapping("/movies/{id}")
-    public ResponseEntity<PortalMovieDetailResponse> getDetail(HttpServletRequest request, @PathVariable UUID id) {
+    public ResponseEntity<PortalMovieDetailResponse> getDetail(HttpServletRequest request, @PathVariable(name = "id") UUID id) {
         IrcsRequestPrincipal principal = IrcsAuthHeaders.principalOrPublic(request);
         Optional<PortalMovieDetailResponse> detail = portalQueryService.getMovieDetail(principal, id);
         return detail

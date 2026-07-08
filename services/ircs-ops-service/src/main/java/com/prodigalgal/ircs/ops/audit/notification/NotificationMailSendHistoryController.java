@@ -23,14 +23,14 @@ public class NotificationMailSendHistoryController {
     @GetMapping
     public ResponseEntity<PageEnvelope<NotificationMailSendHistoryResponse>> getAll(
             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String deliveryMode,
-            @RequestParam(required = false) String templateCode,
-            @RequestParam(required = false) String type,
-            @RequestParam(required = false) String correlationId,
-            @RequestParam(required = false) String recipient,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant from,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant to) {
+            @RequestParam(name = "status", required = false) String status,
+            @RequestParam(name = "deliveryMode", required = false) String deliveryMode,
+            @RequestParam(name = "templateCode", required = false) String templateCode,
+            @RequestParam(name = "type", required = false) String type,
+            @RequestParam(name = "correlationId", required = false) String correlationId,
+            @RequestParam(name = "recipient", required = false) String recipient,
+            @RequestParam(name = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant from,
+            @RequestParam(name = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant to) {
         return ResponseEntity.ok(PageEnvelope.from(queryService.findAll(
                 pageable,
                 status,

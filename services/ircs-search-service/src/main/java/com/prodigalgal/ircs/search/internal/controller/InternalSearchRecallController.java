@@ -20,8 +20,8 @@ class InternalSearchRecallController {
 
     @GetMapping("/unified-context-candidates")
     ResponseEntity<List<UUID>> unifiedContextCandidates(
-            @RequestParam String title,
-            @RequestParam(required = false) String year) {
+            @RequestParam(name = "title") String title,
+            @RequestParam(name = "year", required = false) String year) {
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.noStore())
                 .body(portalSearchQueryService.findCandidateUnifiedVideoIds(title, year));

@@ -27,7 +27,7 @@ public class PortalInteractionController {
     @PostMapping("/favorites/{unifiedVideoId}")
     public Map<String, Boolean> toggleFavorite(
             @RequestHeader(value = "Authorization", required = false) String authorization,
-            @PathVariable UUID unifiedVideoId) {
+            @PathVariable(name = "unifiedVideoId") UUID unifiedVideoId) {
         UUID memberId = memberTokenService.requireMemberId(authorization);
         return Map.of("favorited", commandService.toggleFavorite(memberId, unifiedVideoId));
     }
@@ -35,7 +35,7 @@ public class PortalInteractionController {
     @GetMapping("/favorites/{unifiedVideoId}/status")
     public Map<String, Boolean> favoriteStatus(
             @RequestHeader(value = "Authorization", required = false) String authorization,
-            @PathVariable UUID unifiedVideoId) {
+            @PathVariable(name = "unifiedVideoId") UUID unifiedVideoId) {
         UUID memberId = memberTokenService.requireMemberId(authorization);
         return Map.of("favorited", commandService.favoriteStatus(memberId, unifiedVideoId));
     }
@@ -43,8 +43,8 @@ public class PortalInteractionController {
     @GetMapping("/history")
     public PageEnvelope<InteractionRecordResponse> history(
             @RequestHeader(value = "Authorization", required = false) String authorization,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "20") int size) {
         UUID memberId = memberTokenService.requireMemberId(authorization);
         return pageEnvelope(queryService.history(memberId, PageBounds.of(page, size, 20, 70)));
     }
@@ -52,8 +52,8 @@ public class PortalInteractionController {
     @GetMapping("/favorites")
     public PageEnvelope<InteractionRecordResponse> favorites(
             @RequestHeader(value = "Authorization", required = false) String authorization,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "20") int size) {
         UUID memberId = memberTokenService.requireMemberId(authorization);
         return pageEnvelope(queryService.favorites(memberId, PageBounds.of(page, size, 20, 70)));
     }
@@ -78,7 +78,7 @@ public class PortalInteractionController {
     @DeleteMapping("/history/{id}")
     public ResponseEntity<Void> deleteHistoryRecord(
             @RequestHeader(value = "Authorization", required = false) String authorization,
-            @PathVariable UUID id) {
+            @PathVariable(name = "id") UUID id) {
         UUID memberId = memberTokenService.requireMemberId(authorization);
         commandService.deleteHistoryRecord(memberId, id);
         return ResponseEntity.noContent().build();

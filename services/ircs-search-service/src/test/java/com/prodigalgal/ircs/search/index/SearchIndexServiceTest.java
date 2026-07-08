@@ -35,6 +35,17 @@ class SearchIndexServiceTest {
     private SearchPortalReadModelCache readModelCache;
 
     @Test
+    void ensureIndicesDoesNotFailStartupWhenElasticsearchIsUnavailable() {
+        when(elasticsearchOperations.indexOps(RawVideoSearchDocument.class))
+                .thenThrow(new RuntimeException("Connection refused"));
+
+        SearchIndexService service = new SearchIndexService(elasticsearchOperations, readModelCache);
+
+        org.junit.jupiter.api.Assertions.assertDoesNotThrow(service::ensureIndices);
+        verify(elasticsearchOperations).indexOps(RawVideoSearchDocument.class);
+    }
+
+    @Test
     void saveUnifiedEvictsPortalPublicReadModelCache() {
         UnifiedVideoSearchDocument document = new UnifiedVideoSearchDocument();
         when(elasticsearchOperations.indexOps(UnifiedVideoSearchDocument.class)).thenReturn(indexOperations);

@@ -26,7 +26,7 @@ class InternalAggregationController {
 
     @PostMapping("/unified-videos/{id}/recalculate")
     ResponseEntity<RecalculateResponse> recalculateUnified(
-            @PathVariable UUID id,
+            @PathVariable(name = "id") UUID id,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_ID, required = false) String serviceId,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_TOKEN, required = false) String serviceToken,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_SCOPES, required = false) String serviceScopes) {
@@ -36,7 +36,7 @@ class InternalAggregationController {
 
     @PostMapping("/unified-videos/recalculate-dirty")
     ResponseEntity<AggregationMaintenanceRunResponse> recalculateDirtyUnified(
-            @RequestParam(defaultValue = "5") int limit,
+            @RequestParam(name = "limit", defaultValue = "5") int limit,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_ID, required = false) String serviceId,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_TOKEN, required = false) String serviceToken,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_SCOPES, required = false) String serviceScopes) {
@@ -46,7 +46,7 @@ class InternalAggregationController {
 
     @PostMapping("/raw-videos/enqueue-pending")
     ResponseEntity<AggregationMaintenanceRunResponse> enqueuePendingRawWork(
-            @RequestParam(defaultValue = "100") int limit,
+            @RequestParam(name = "limit", defaultValue = "100") int limit,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_ID, required = false) String serviceId,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_TOKEN, required = false) String serviceToken,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_SCOPES, required = false) String serviceScopes) {
@@ -56,7 +56,7 @@ class InternalAggregationController {
 
     @PostMapping("/unified-videos/backfill-covers")
     ResponseEntity<AggregationMaintenanceRunResponse> backfillUnifiedCovers(
-            @RequestParam(defaultValue = "100") int limit,
+            @RequestParam(name = "limit", defaultValue = "100") int limit,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_ID, required = false) String serviceId,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_TOKEN, required = false) String serviceToken,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_SCOPES, required = false) String serviceScopes) {
@@ -66,8 +66,8 @@ class InternalAggregationController {
 
     @PostMapping("/unified-videos/backfill-adult-assessments")
     ResponseEntity<AggregationMaintenanceRunResponse> backfillUnifiedAdultAssessments(
-            @RequestParam(defaultValue = "100") int limit,
-            @RequestParam(defaultValue = "true") boolean publishSearch,
+            @RequestParam(name = "limit", defaultValue = "100") int limit,
+            @RequestParam(name = "publishSearch", defaultValue = "true") boolean publishSearch,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_ID, required = false) String serviceId,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_TOKEN, required = false) String serviceToken,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_SCOPES, required = false) String serviceScopes) {
@@ -77,7 +77,7 @@ class InternalAggregationController {
 
     @PostMapping("/reset/prepare")
     ResponseEntity<AggregationResetStepResponse> prepareAggregationReset(
-            @RequestParam(defaultValue = "5") int sampleLimit,
+            @RequestParam(name = "sampleLimit", defaultValue = "5") int sampleLimit,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_ID, required = false) String serviceId,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_TOKEN, required = false) String serviceToken,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_SCOPES, required = false) String serviceScopes) {
@@ -87,7 +87,7 @@ class InternalAggregationController {
 
     @PostMapping("/reset/mark-raw-pending")
     ResponseEntity<AggregationResetStepResponse> markAggregationResetRawPending(
-            @RequestParam(defaultValue = "5") int sampleLimit,
+            @RequestParam(name = "sampleLimit", defaultValue = "5") int sampleLimit,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_ID, required = false) String serviceId,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_TOKEN, required = false) String serviceToken,
             @RequestHeader(value = InternalServiceAuthHeaders.SERVICE_SCOPES, required = false) String serviceScopes) {

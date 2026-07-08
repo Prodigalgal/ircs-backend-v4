@@ -34,23 +34,23 @@ public class FeedbackController {
     @GetMapping
     public PageEnvelope<UserMessageResponse> myFeedback(
             @RequestHeader(value = "Authorization", required = false) String authorization,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
         UUID memberId = memberTokenService.requireMemberId(authorization);
         return pageEnvelope(commandService.myFeedback(memberId, PageBounds.of(page, size, 10, 70)));
     }
 
     @GetMapping("/wall")
     public PageEnvelope<UserMessageResponse> publicWall(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "20") int size) {
         return pageEnvelope(queryService.publicWall(PageBounds.of(page, size, 20, 70)));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
             @RequestHeader(value = "Authorization", required = false) String authorization,
-            @PathVariable UUID id) {
+            @PathVariable(name = "id") UUID id) {
         UUID memberId = memberTokenService.requireMemberId(authorization);
         commandService.delete(memberId, id);
         return ResponseEntity.noContent().build();

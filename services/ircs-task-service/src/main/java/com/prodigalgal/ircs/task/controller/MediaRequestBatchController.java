@@ -27,29 +27,29 @@ public class MediaRequestBatchController {
     @GetMapping
     public ResponseEntity<PageEnvelope<MediaRequestBatchResponse>> list(
             @PageableDefault(size = 20) Pageable pageable,
-            @RequestParam(required = false) String status) {
+            @RequestParam(name = "status", required = false) String status) {
         return ResponseEntity.ok(PageEnvelope.from(batchService.findBatches(pageable, status)));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MediaRequestBatchResponse> get(@PathVariable UUID id) {
+    public ResponseEntity<MediaRequestBatchResponse> get(@PathVariable(name = "id") UUID id) {
         return ResponseEntity.ok(batchService.findBatch(id));
     }
 
     @GetMapping("/{id}/collection-tasks")
     public ResponseEntity<PageEnvelope<TaskCardSummary>> collectionTasks(
-            @PathVariable UUID id,
+            @PathVariable(name = "id") UUID id,
             @PageableDefault(size = 20) Pageable pageable) {
         return ResponseEntity.ok(PageEnvelope.from(batchService.findCollectionTasks(id, pageable)));
     }
 
     @PostMapping("/{id}/start")
-    public ResponseEntity<MediaRequestBatchActionResponse> start(@PathVariable UUID id) {
+    public ResponseEntity<MediaRequestBatchActionResponse> start(@PathVariable(name = "id") UUID id) {
         return ResponseEntity.accepted().body(batchService.startBatch(id));
     }
 
     @PostMapping("/{id}/cancel")
-    public ResponseEntity<MediaRequestBatchActionResponse> cancel(@PathVariable UUID id) {
+    public ResponseEntity<MediaRequestBatchActionResponse> cancel(@PathVariable(name = "id") UUID id) {
         return ResponseEntity.accepted().body(batchService.cancelBatch(id));
     }
 }

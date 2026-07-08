@@ -2,12 +2,14 @@ package com.prodigalgal.ircs.platformapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.FullyQualifiedAnnotationBeanNameGenerator;
 import org.springframework.context.annotation.ImportRuntimeHints;
 
 @SpringBootApplication
+@ConfigurationPropertiesScan(basePackages = "com.prodigalgal.ircs")
 @ComponentScan(
         nameGenerator = FullyQualifiedAnnotationBeanNameGenerator.class,
         basePackages = {

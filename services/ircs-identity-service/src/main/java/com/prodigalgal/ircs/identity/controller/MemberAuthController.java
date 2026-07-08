@@ -50,16 +50,16 @@ public class MemberAuthController {
     }
 
     @GetMapping("/oauth/{provider}/start")
-    public ResponseEntity<Void> startOAuth(@PathVariable String provider) {
+    public ResponseEntity<Void> startOAuth(@PathVariable(name = "provider") String provider) {
         return redirect(oAuthLoginService.authorizationRedirect(provider));
     }
 
     @GetMapping("/oauth/{provider}/callback")
     public ResponseEntity<Void> completeOAuth(
-            @PathVariable String provider,
-            @RequestParam(required = false) String code,
-            @RequestParam(required = false) String state,
-            @RequestParam(required = false) String error) {
+            @PathVariable(name = "provider") String provider,
+            @RequestParam(name = "code", required = false) String code,
+            @RequestParam(name = "state", required = false) String state,
+            @RequestParam(name = "error", required = false) String error) {
         return redirect(oAuthLoginService.callbackRedirect(provider, code, state, error));
     }
 
