@@ -19,6 +19,7 @@ foreach ($image in $images) {
         --platform $Platform `
         -f $image.Dockerfile `
         -t "$Registry/$($image.Module):$Tag" `
+        --provenance=false `
         --push `
         .
 }

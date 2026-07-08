@@ -11,7 +11,7 @@ JIB_ALLOW_INSECURE_REGISTRIES="${JIB_ALLOW_INSECURE_REGISTRIES:-false}"
 JIB_SEND_CREDENTIALS_OVER_HTTP="${JIB_SEND_CREDENTIALS_OVER_HTTP:-false}"
 TAG="${IMAGE_TAG:-sha-$(git rev-parse --short=12 HEAD)}"
 BUILD_SCOPE="${BUILD_SCOPE:-affected}"
-IMAGE_MODE="${IMAGE_MODE:-jvm}"
+IMAGE_MODE="${IMAGE_MODE:-native}"
 DRY_RUN="${DRY_RUN:-false}"
 
 if [[ "${DRY_RUN}" != "true" ]]; then

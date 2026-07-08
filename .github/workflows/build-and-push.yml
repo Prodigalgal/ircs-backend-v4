@@ -25,7 +25,7 @@ on:
       image_mode:
         description: "jvm or native"
         required: false
-        default: "jvm"
+        default: "native"
 
 permissions:
   contents: read
@@ -42,7 +42,7 @@ jobs:
       REGISTRY_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
       BUILD_SCOPE_INPUT: ${{ inputs.build_scope }}
-      IMAGE_MODE_INPUT: ${{ inputs.image_mode }}
+      IMAGE_MODE_INPUT: ${{ inputs.image_mode || 'native' }}
       JIB_BASE_IMAGE: eclipse-temurin:25-jre-alpine
       JIB_ALLOW_INSECURE_REGISTRIES: "false"
       JIB_SEND_CREDENTIALS_OVER_HTTP: "false"
@@ -92,7 +92,7 @@ jobs:
             export IMAGE_TAG="sha-$(git rev-parse --short=12 HEAD)"
           fi
           export BUILD_SCOPE="${BUILD_SCOPE_INPUT:-affected}"
-          export IMAGE_MODE="${IMAGE_MODE_INPUT:-jvm}"
+          export IMAGE_MODE="${IMAGE_MODE_INPUT:-native}"
           scripts/ci/jib-build-push-affected.sh
 
       - name: Update production config image tags
