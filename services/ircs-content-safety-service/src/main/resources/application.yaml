@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: ircs-content-safety-service
+  threads:
+    virtual:
+      enabled: true
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: ${SERVER_PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+app:
+  content-safety:
+    internal-access:
+      require-token: ${APP_CONTENT_SAFETY_INTERNAL_ACCESS_REQUIRE_TOKEN:false}
+      token: ${APP_CONTENT_SAFETY_INTERNAL_ACCESS_TOKEN:}
+      required-scope: ${APP_CONTENT_SAFETY_INTERNAL_ACCESS_REQUIRED_SCOPE:content-safety:assess}
+    adult:
+      max-text-length: ${APP_CONTENT_SAFETY_ADULT_MAX_TEXT_LENGTH:512}
+      model:
+        enabled: ${APP_CONTENT_SAFETY_ADULT_MODEL_ENABLED:false}
+        name: ${APP_CONTENT_SAFETY_ADULT_MODEL_NAME:uget/sexual_content_dection}
+        version: ${APP_CONTENT_SAFETY_ADULT_MODEL_VERSION:remote}
+        endpoint: ${APP_CONTENT_SAFETY_ADULT_MODEL_ENDPOINT:}
+        service-id: ${APP_CONTENT_SAFETY_ADULT_MODEL_SERVICE_ID:${spring.application.name}}
+        service-token: ${APP_CONTENT_SAFETY_ADULT_MODEL_SERVICE_TOKEN:${APP_ADULT_CLASSIFIER_SERVICE_TOKEN:}}
+        scopes: ${APP_CONTENT_SAFETY_ADULT_MODEL_SCOPES:adult-classifier:classify}
+        request-timeout: ${APP_CONTENT_SAFETY_ADULT_MODEL_REQUEST_TIMEOUT:PT3S}
+        adult-threshold: ${APP_CONTENT_SAFETY_ADULT_MODEL_ADULT_THRESHOLD:0.85}
+        suspect-threshold: ${APP_CONTENT_SAFETY_ADULT_MODEL_SUSPECT_THRESHOLD:0.5}

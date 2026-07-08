@@ -1,0 +1,151 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ircs-task-service
+  namespace: ircs-dev
+  labels:
+    app: ircs-task-service
+    app.kubernetes.io/part-of: ircs
+    environment: dev
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ircs-task-service
+  template:
+    metadata:
+      labels:
+        app: ircs-task-service
+        app.kubernetes.io/part-of: ircs
+        environment: dev
+      annotations:
+        ircs.prodigalgal.com/no-public-route: "true"
+    spec:
+      imagePullSecrets:
+        - name: harbor-secret
+      containers:
+        - name: app
+          image: harbor.mnnu.eu.org/ircs/ircs-task-service:029-runtime-effective-snapshot-20260613-2000
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: ircs-dev-app-config
+          env:
+            - name: SPRING_APPLICATION_NAME
+              value: ircs-task-service
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: ircs-dev-app-config
+                  key: DB_URL
+            - name: SPRING_DATASOURCE_USERNAME
+              value: postgres
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ircs-dev-secrets
+                  key: DB_PASSWORD
+            - name: SPRING_RABBITMQ_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: ircs-dev-app-config
+                  key: RABBITMQ_HOST
+            - name: SPRING_RABBITMQ_USERNAME
+              value: admin
+            - name: SPRING_RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ircs-dev-secrets
+                  key: RABBITMQ_PASSWORD
+            - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+              value: "2"
+            - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+              value: "0"
+            - name: SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT
+              value: "30000"
+            - name: APP_TASK_DEFAULT_SEED_ENABLED
+              value: "true"
+            - name: APP_TASK_SCHEDULER_ENABLED
+              value: "true"
+            - name: APP_TASK_WATCHDOG_ENABLED
+              value: "false"
+            - name: APP_TASK_RUNNER_QUEUE_CAPACITY
+              value: "500"
+            - name: APP_TASK_QUEUE_ENABLED
+              value: "true"
+            - name: APP_TASK_QUEUE_LISTENER_ENABLED
+              value: "true"
+            - name: APP_TASK_QUEUE_INITIAL_PAGE_WINDOW
+              value: "1"
+            - name: APP_TASK_QUEUE_MAX_PAGES_PER_RUN
+              value: "1"
+            - name: APP_TASK_QUEUE_RETRY_MAX_RETRIES
+              value: "3"
+            - name: IRCS_MESSAGING_RABBIT_TOPOLOGY_RETRY_DELAY_MS
+              value: "30000"
+            - name: APP_TASK_SNAPSHOT_TTL
+              value: "PT24H"
+            - name: APP_TASK_SNAPSHOT_FLUSH_ENABLED
+              value: "true"
+            - name: APP_TASK_SNAPSHOT_FLUSH_DELAY_MS
+              value: "30000"
+            - name: APP_TASK_SNAPSHOT_FLUSH_BATCH_SIZE
+              value: "100"
+            - name: APP_TASK_TREND_DISCOVERY_MAX_KEYWORDS
+              value: "3"
+            - name: APP_TASK_TREND_DISCOVERY_MAX_DATA_SOURCES
+              value: "1"
+            - name: IRCS_OUTBOUND_CIRCUIT_TASK_SCRAPER_EXECUTION_ENABLED
+              value: "true"
+            - name: IRCS_OUTBOUND_CIRCUIT_TASK_SCRAPER_EXECUTION_FAILURE_THRESHOLD
+              value: "5"
+            - name: IRCS_OUTBOUND_CIRCUIT_TASK_SCRAPER_EXECUTION_OPEN_DURATION_MS
+              value: "30000"
+            - name: IRCS_OUTBOUND_CIRCUIT_TASK_SCRAPER_EXECUTION_HALF_OPEN_MAX_CALLS
+              value: "1"
+          startupProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            failureThreshold: 30
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 25m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ircs-task-service
+  namespace: ircs-dev
+  labels:
+    app: ircs-task-service
+    app.kubernetes.io/part-of: ircs
+    environment: dev
+spec:
+  type: ClusterIP
+  selector:
+    app: ircs-task-service
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http

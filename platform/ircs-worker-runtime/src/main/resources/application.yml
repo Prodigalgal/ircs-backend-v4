@@ -1,0 +1,59 @@
+spring:
+  application:
+    name: ircs-worker-runtime
+  profiles:
+    active: worker-runtime
+  main:
+    allow-bean-definition-overriding: true
+    banner-mode: off
+    lazy-initialization: false
+  threads:
+    virtual:
+      enabled: true
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  datasource:
+    hikari:
+      maximum-pool-size: ${IRCS_WORKER_DB_POOL_MAX:4}
+      minimum-idle: ${IRCS_WORKER_DB_POOL_MIN:1}
+      idle-timeout: 30000
+      max-lifetime: 600000
+  rabbitmq:
+    listener:
+      simple:
+        auto-startup: true
+        concurrency: ${IRCS_WORKER_RABBIT_CONCURRENCY:1}
+        max-concurrency: ${IRCS_WORKER_RABBIT_MAX_CONCURRENCY:2}
+        prefetch: ${IRCS_WORKER_RABBIT_PREFETCH:8}
+      direct:
+        auto-startup: true
+  data:
+    redis:
+      lettuce:
+        pool:
+          max-active: ${IRCS_WORKER_REDIS_POOL_MAX:8}
+          max-idle: ${IRCS_WORKER_REDIS_POOL_IDLE:4}
+          min-idle: 0
+
+server:
+  port: ${SERVER_PORT:8080}
+  shutdown: graceful
+  tomcat:
+    threads:
+      max: ${IRCS_WORKER_TOMCAT_MAX_THREADS:16}
+      min-spare: ${IRCS_WORKER_TOMCAT_MIN_SPARE_THREADS:1}
+    accept-count: ${IRCS_WORKER_TOMCAT_ACCEPT_COUNT:32}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  level:
+    root: INFO

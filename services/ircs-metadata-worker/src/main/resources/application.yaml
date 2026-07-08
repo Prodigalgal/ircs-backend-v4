@@ -1,0 +1,104 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: ircs-metadata-worker
+  task:
+    scheduling:
+      pool:
+        size: ${APP_METADATA_SCHEDULING_POOL_SIZE:4}
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:${RABBITMQ_HOST:localhost}}
+    port: ${RABBITMQ_PORT:${SPRING_RABBITMQ_PORT:5672}}
+    username: ${RABBITMQ_USERNAME:${SPRING_RABBITMQ_USERNAME:admin}}
+    password: ${SPRING_RABBITMQ_PASSWORD:${RABBITMQ_PASSWORD:}}
+    listener:
+      simple:
+        auto-startup: ${APP_METADATA_CONFIG_LISTENER_ENABLED:true}
+        default-requeue-rejected: false
+        prefetch: ${APP_METADATA_RABBIT_PREFETCH:10}
+        concurrency: ${APP_METADATA_RABBIT_CONCURRENCY:2}
+        max-concurrency: ${APP_METADATA_RABBIT_MAX_CONCURRENCY:4}
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:${DB_URL:jdbc:postgresql://localhost:5432/ircs?connectionTimeZone=UTC}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:postgres}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:}}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: ${APP_METADATA_DB_MAX_POOL_SIZE:8}
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:${VALKEY_HOST:localhost}}
+      port: ${SPRING_DATA_REDIS_PORT:${VALKEY_PORT:6379}}
+
+app:
+  worker:
+    audit:
+      enabled: ${APP_WORKER_AUDIT_ENABLED:true}
+      datasource-url: ${APP_WORKER_AUDIT_DATASOURCE_URL:${SPRING_DATASOURCE_URL:${DB_URL:${spring.datasource.url:}}}}
+      username: ${APP_WORKER_AUDIT_USERNAME:${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:${spring.datasource.username:}}}}
+      password: ${APP_WORKER_AUDIT_PASSWORD:${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:${spring.datasource.password:}}}}
+      source: ${APP_WORKER_AUDIT_SOURCE:${spring.application.name:ircs-metadata-worker}}
+  metadata:
+    config-listener:
+      enabled: ${APP_METADATA_CONFIG_LISTENER_ENABLED:true}
+    retry-delay: ${APP_METADATA_RETRY_DELAY:PT5M}
+    valkey-dispatcher:
+      initial-delay-ms: ${APP_METADATA_VALKEY_DISPATCHER_INITIAL_DELAY_MS:10000}
+      fixed-delay-ms: ${APP_METADATA_VALKEY_DISPATCHER_FIXED_DELAY_MS:1000}
+      batch-size: ${APP_METADATA_VALKEY_DISPATCHER_BATCH_SIZE:10}
+      visibility-timeout: ${APP_METADATA_VALKEY_DISPATCHER_VISIBILITY_TIMEOUT:PT10M}
+      retry-delay: ${APP_METADATA_VALKEY_DISPATCHER_RETRY_DELAY:PT5M}
+    valkey-provider-worker:
+      initial-delay-ms: ${APP_METADATA_VALKEY_PROVIDER_INITIAL_DELAY_MS:10000}
+      fixed-delay-ms: ${APP_METADATA_VALKEY_PROVIDER_FIXED_DELAY_MS:1000}
+      batch-size: ${APP_METADATA_VALKEY_PROVIDER_BATCH_SIZE:10}
+      parallelism: ${APP_METADATA_VALKEY_PROVIDER_PARALLELISM:1}
+      visibility-timeout: ${APP_METADATA_VALKEY_PROVIDER_VISIBILITY_TIMEOUT:PT10M}
+      retry-delay: ${APP_METADATA_VALKEY_PROVIDER_RETRY_DELAY:PT2M}
+    public-traffic:
+      enabled: ${APP_METADATA_PUBLIC_TRAFFIC_ENABLED:true}
+      default-gap-ms: ${APP_METADATA_PUBLIC_TRAFFIC_DEFAULT_GAP_MS:1000}
+      max-wait: ${APP_METADATA_PUBLIC_TRAFFIC_MAX_WAIT:PT2M}
+      ttl: ${APP_METADATA_PUBLIC_TRAFFIC_TTL:PT10M}
+    providers:
+      douban-enabled: ${APP_METADATA_DOUBAN_ENABLED:false}
+      tmdb-enabled: ${APP_METADATA_TMDB_ENABLED:false}
+      rotten-tomatoes-enabled: ${APP_METADATA_RT_ENABLED:false}
+    credential-service:
+      base-url: ${APP_METADATA_CREDENTIAL_SERVICE_BASE_URL:http://localhost:8080}
+      lease-limit: ${APP_METADATA_CREDENTIAL_SERVICE_LEASE_LIMIT:20}
+      token: ${APP_METADATA_CREDENTIAL_SERVICE_TOKEN:}
+      service-id: ${APP_METADATA_CREDENTIAL_SERVICE_ID:metadata-worker}
+      scopes: ${APP_METADATA_CREDENTIAL_SERVICE_SCOPES:credential:lease}
+      request-timeout: ${APP_METADATA_CREDENTIAL_SERVICE_REQUEST_TIMEOUT:10s}
+    tmdb:
+      base-url: ${APP_METADATA_TMDB_BASE_URL:https://api.themoviedb.org/3}
+      image-base-url: ${APP_METADATA_TMDB_IMAGE_BASE_URL:https://image.tmdb.org/t/p/w500}
+      backdrop-base-url: ${APP_METADATA_TMDB_BACKDROP_BASE_URL:https://image.tmdb.org/t/p/w1280}
+      language: ${APP_METADATA_TMDB_LANGUAGE:zh-CN}
+      include-adult: ${APP_METADATA_TMDB_INCLUDE_ADULT:false}
+      max-multi-pages: ${APP_METADATA_TMDB_MAX_MULTI_PAGES:3}
+      max-wait: ${APP_METADATA_TMDB_MAX_WAIT:5s}
+      request-timeout: ${APP_METADATA_TMDB_REQUEST_TIMEOUT:10s}
+      default-rate-limit: ${APP_METADATA_TMDB_DEFAULT_RATE_LIMIT:30}
+      default-rate-limit-unit: ${APP_METADATA_TMDB_DEFAULT_RATE_LIMIT_UNIT:MINUTE}
+    douban:
+      suggest-url: ${APP_METADATA_DOUBAN_SUGGEST_URL:https://movie.douban.com/j/subject_suggest}
+      request-timeout: ${APP_METADATA_DOUBAN_REQUEST_TIMEOUT:10s}
+      default-user-agent: ${APP_METADATA_DOUBAN_USER_AGENT:IRCS-Metadata-Douban/0.1}
+    rt:
+      search-url: ${APP_METADATA_RT_SEARCH_URL:https://www.rottentomatoes.com/search}
+      request-timeout: ${APP_METADATA_RT_REQUEST_TIMEOUT:10s}
+      default-user-agent: ${APP_METADATA_RT_USER_AGENT:IRCS-Metadata-RT/0.1}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true

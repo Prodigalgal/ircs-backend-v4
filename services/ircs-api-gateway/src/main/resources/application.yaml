@@ -1,0 +1,71 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: ircs-api-gateway
+  servlet:
+    multipart:
+      enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+app:
+  gateway:
+    audit:
+      enabled: ${APP_GATEWAY_AUDIT_ENABLED:true}
+    api-token:
+      cache-ttl: ${APP_GATEWAY_API_TOKEN_CACHE_TTL:PT30S}
+      touch-interval: ${APP_GATEWAY_API_TOKEN_TOUCH_INTERVAL:PT5M}
+    datasource-warmup:
+      enabled: ${APP_GATEWAY_DATASOURCE_WARMUP_ENABLED:true}
+    service-identity:
+      service-id: ${APP_GATEWAY_SERVICE_ID:api-gateway}
+      ops-token: ${APP_GATEWAY_OPS_SERVICE_TOKEN:}
+      ops-scopes: ${APP_GATEWAY_OPS_SERVICE_SCOPES:ops:read ops:run}
+      ops-alert-token: ${APP_GATEWAY_OPS_ALERT_SERVICE_TOKEN:}
+      ops-alert-scopes: ${APP_GATEWAY_OPS_ALERT_SERVICE_SCOPES:ops-alert:read ops-alert:run}
+    proxy:
+      connect-timeout: ${APP_GATEWAY_PROXY_CONNECT_TIMEOUT:PT5S}
+      request-timeout: ${APP_GATEWAY_PROXY_REQUEST_TIMEOUT:PT5S}
+      stream-request-timeout: ${APP_GATEWAY_PROXY_STREAM_REQUEST_TIMEOUT:PT1H}
+      circuit-key: ${APP_GATEWAY_PROXY_CIRCUIT_KEY:api-gateway-proxy}
+      circuit:
+        enabled: ${APP_GATEWAY_PROXY_CIRCUIT_ENABLED:${IRCS_OUTBOUND_CIRCUIT_API_GATEWAY_PROXY_ENABLED:${IRCS_OUTBOUND_CIRCUIT_ENABLED:true}}}
+        failure-threshold: ${APP_GATEWAY_PROXY_CIRCUIT_FAILURE_THRESHOLD:${IRCS_OUTBOUND_CIRCUIT_API_GATEWAY_PROXY_FAILURE_THRESHOLD:${IRCS_OUTBOUND_CIRCUIT_FAILURE_THRESHOLD:5}}}
+        open-duration: ${APP_GATEWAY_PROXY_CIRCUIT_OPEN_DURATION:${IRCS_OUTBOUND_CIRCUIT_API_GATEWAY_PROXY_OPEN_DURATION:${IRCS_OUTBOUND_CIRCUIT_OPEN_DURATION:PT30S}}}
+        half-open-max-calls: ${APP_GATEWAY_PROXY_CIRCUIT_HALF_OPEN_MAX_CALLS:${IRCS_OUTBOUND_CIRCUIT_API_GATEWAY_PROXY_HALF_OPEN_MAX_CALLS:${IRCS_OUTBOUND_CIRCUIT_HALF_OPEN_MAX_CALLS:1}}}
+    targets:
+      identity: ${APP_GATEWAY_IDENTITY_BASE_URL:http://ircs-identity-service.ircs-dev.svc.cluster.local:8080}
+      content: ${APP_GATEWAY_CONTENT_BASE_URL:http://ircs-content-service.ircs-dev.svc.cluster.local:8080}
+      catalog: ${APP_GATEWAY_CATALOG_BASE_URL:http://ircs-catalog-service.ircs-dev.svc.cluster.local:8080}
+      aggregation: ${APP_GATEWAY_AGGREGATION_BASE_URL:http://ircs-aggregation-worker.ircs-dev.svc.cluster.local:8080}
+      task: ${APP_GATEWAY_TASK_BASE_URL:http://ircs-task-service.ircs-dev.svc.cluster.local:8080}
+      ops: ${APP_GATEWAY_OPS_BASE_URL:http://ircs-ops-service.ircs-dev.svc.cluster.local:8080}
+      ops-alert: ${APP_GATEWAY_OPS_ALERT_BASE_URL:http://ircs-ops-alert-service.ircs-dev.svc.cluster.local:8080}
+      portal: ${APP_GATEWAY_PORTAL_BASE_URL:http://ircs-portal-service.ircs-dev.svc.cluster.local:8080}
+      search: ${APP_GATEWAY_SEARCH_BASE_URL:http://ircs-search-service.ircs-dev.svc.cluster.local:8080}
+      storage: ${APP_GATEWAY_STORAGE_BASE_URL:http://ircs-storage-service.ircs-dev.svc.cluster.local:8080}
+      config: ${APP_GATEWAY_CONFIG_BASE_URL:http://ircs-config-service.ircs-dev.svc.cluster.local:8080}
+      credential: ${APP_GATEWAY_CREDENTIAL_BASE_URL:http://ircs-credential-service.ircs-dev.svc.cluster.local:8080}
+      magnet: ${APP_GATEWAY_MAGNET_BASE_URL:http://ircs-magnet-service.ircs-dev.svc.cluster.local:8080}
+      scraper: ${APP_GATEWAY_SCRAPER_BASE_URL:http://ircs-scraper-service.ircs-dev.svc.cluster.local:8080}
+      interaction: ${APP_GATEWAY_INTERACTION_BASE_URL:http://ircs-interaction-service.ircs-dev.svc.cluster.local:8080}
+
+ircs:
+  outbound:
+    circuit:
+      api-gateway-proxy:
+        enabled: ${IRCS_OUTBOUND_CIRCUIT_API_GATEWAY_PROXY_ENABLED:${IRCS_OUTBOUND_CIRCUIT_ENABLED:true}}
+        failure-threshold: ${IRCS_OUTBOUND_CIRCUIT_API_GATEWAY_PROXY_FAILURE_THRESHOLD:${IRCS_OUTBOUND_CIRCUIT_FAILURE_THRESHOLD:5}}
+        open-duration: ${IRCS_OUTBOUND_CIRCUIT_API_GATEWAY_PROXY_OPEN_DURATION:${IRCS_OUTBOUND_CIRCUIT_OPEN_DURATION:PT30S}}
+        open-duration-ms: ${IRCS_OUTBOUND_CIRCUIT_API_GATEWAY_PROXY_OPEN_DURATION_MS:${IRCS_OUTBOUND_CIRCUIT_OPEN_DURATION_MS:30000}}
+        half-open-max-calls: ${IRCS_OUTBOUND_CIRCUIT_API_GATEWAY_PROXY_HALF_OPEN_MAX_CALLS:${IRCS_OUTBOUND_CIRCUIT_HALF_OPEN_MAX_CALLS:1}}

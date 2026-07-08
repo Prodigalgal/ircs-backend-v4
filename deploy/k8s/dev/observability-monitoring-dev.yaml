@@ -1,0 +1,68 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ircs-dev-service-monitor
+  namespace: ircs-dev
+  labels:
+    app.kubernetes.io/part-of: ircs
+    environment: dev
+    release: prometheus-stack
+spec:
+  namespaceSelector:
+    matchNames:
+      - ircs-dev
+  selector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - ircs-api-gateway
+          - ircs-catalog-service
+          - ircs-config-service
+          - ircs-content-service
+          - ircs-credential-service
+          - ircs-identity-service
+          - ircs-interaction-service
+          - ircs-magnet-service
+          - ircs-normalization-worker
+          - ircs-ops-service
+          - ircs-portal-service
+          - ircs-scraper-service
+          - ircs-search-service
+          - ircs-storage-service
+          - ircs-task-service
+  endpoints:
+    - port: http
+      path: /actuator/prometheus
+      interval: 30s
+      scrapeTimeout: 10s
+      honorLabels: true
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: ircs-dev-worker-pod-monitor
+  namespace: ircs-dev
+  labels:
+    app.kubernetes.io/part-of: ircs
+    environment: dev
+    release: prometheus-stack
+spec:
+  namespaceSelector:
+    matchNames:
+      - ircs-dev
+  selector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - ircs-aggregation-worker
+          - ircs-ingestion-worker
+          - ircs-metadata-worker
+          - ircs-notification-worker
+  podMetricsEndpoints:
+    - port: http
+      path: /actuator/prometheus
+      interval: 30s
+      scrapeTimeout: 10s
+      honorLabels: true

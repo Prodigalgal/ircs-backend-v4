@@ -1,0 +1,142 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch-svc
+  namespace: ircs-dev
+  labels:
+    app: elasticsearch
+    app.kubernetes.io/part-of: ircs
+    environment: dev
+spec:
+  type: ClusterIP
+  selector:
+    app: elasticsearch
+  ports:
+    - name: http
+      port: 9200
+      targetPort: http
+    - name: transport
+      port: 9300
+      targetPort: transport
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elasticsearch
+  namespace: ircs-dev
+  labels:
+    app: elasticsearch
+    app.kubernetes.io/part-of: ircs
+    environment: dev
+spec:
+  serviceName: elasticsearch-svc
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+        app.kubernetes.io/part-of: ircs
+        environment: dev
+    spec:
+      initContainers:
+        - name: install-plugins
+          image: alpine:3.19
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              apk add --no-cache unzip wget
+              mkdir -p /plugins/ik /plugins/pinyin
+
+              if [ ! -f /plugins/ik/plugin-descriptor.properties ]; then
+                rm -rf /plugins/ik/*
+                wget -O /tmp/ik.zip https://release.infinilabs.com/analysis-ik/stable/elasticsearch-analysis-ik-9.1.4.zip
+                unzip -q /tmp/ik.zip -d /plugins/ik
+                rm /tmp/ik.zip
+              fi
+
+              if [ ! -f /plugins/pinyin/plugin-descriptor.properties ]; then
+                rm -rf /plugins/pinyin/*
+                wget -O /tmp/pinyin.zip https://release.infinilabs.com/analysis-pinyin/stable/elasticsearch-analysis-pinyin-9.1.4.zip
+                unzip -q /tmp/pinyin.zip -d /plugins/pinyin
+                rm /tmp/pinyin.zip
+              fi
+
+              chown -R 1000:1000 /plugins
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          volumeMounts:
+            - name: plugins-volume
+              mountPath: /plugins
+      containers:
+        - name: elasticsearch
+          image: docker.elastic.co/elasticsearch/elasticsearch:9.1.4
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 9200
+            - name: transport
+              containerPort: 9300
+          env:
+            - name: discovery.type
+              value: single-node
+            - name: xpack.security.enabled
+              value: "true"
+            - name: xpack.security.http.ssl.enabled
+              value: "false"
+            - name: ELASTIC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ircs-dev-secrets
+                  key: ELASTICSEARCH_PASSWORD
+            - name: ES_JAVA_OPTS
+              value: "-Xms512m -Xmx512m"
+          startupProbe:
+            tcpSocket:
+              port: http
+            failureThreshold: 60
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: http
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 100m
+              memory: 1Gi
+            limits:
+              cpu: 1000m
+              memory: 2Gi
+          volumeMounts:
+            - name: elasticsearch-data
+              mountPath: /usr/share/elasticsearch/data
+            - name: plugins-volume
+              mountPath: /usr/share/elasticsearch/plugins
+      volumes:
+        - name: plugins-volume
+          emptyDir: {}
+  volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data
+        labels:
+          app: elasticsearch
+          app.kubernetes.io/part-of: ircs
+          environment: dev
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 5Gi

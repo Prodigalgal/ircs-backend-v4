@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: ircs-ops-alert-service
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:5432/ircs}
+    username: ${SPRING_DATASOURCE_USERNAME:ircs}
+    password: ${SPRING_DATASOURCE_PASSWORD:ircs}
+  liquibase:
+    enabled: false
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: ${SERVER_PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+app:
+  ops-alert:
+    internal-access:
+      require-token: ${OPS_ALERT_INTERNAL_ACCESS_REQUIRE_TOKEN:false}
+      token: ${OPS_ALERT_SERVICE_TOKEN:${APP_OPS_SERVICE_TOKEN:}}
+      read-scope: ${OPS_ALERT_INTERNAL_ACCESS_READ_SCOPE:ops-alert:read}
+      run-scope: ${OPS_ALERT_INTERNAL_ACCESS_RUN_SCOPE:ops-alert:run}
+    first-page-cache:
+      warmup:
+        enabled: ${OPS_ALERT_FIRST_PAGE_CACHE_WARMUP_ENABLED:true}
+        initial-delay-ms: ${OPS_ALERT_FIRST_PAGE_CACHE_WARMUP_INITIAL_DELAY_MS:8000}
+        tick-delay-ms: ${OPS_ALERT_FIRST_PAGE_CACHE_WARMUP_TICK_DELAY_MS:5000}
+        refresh-interval: ${OPS_ALERT_FIRST_PAGE_CACHE_WARMUP_REFRESH_INTERVAL:PT15S}
+        page-size: ${OPS_ALERT_FIRST_PAGE_CACHE_WARMUP_PAGE_SIZE:20}
+    self-healing:
+      enabled: ${OPS_ALERT_SELF_HEALING_ENABLED:true}
+      dry-run: ${OPS_ALERT_SELF_HEALING_DRY_RUN:true}
+      min-severity: ${OPS_ALERT_SELF_HEALING_MIN_SEVERITY:WARNING}
+    notification:
+      mail:
+        enabled: ${OPS_ALERT_NOTIFICATION_MAIL_ENABLED:true}
+        recipients: ${OPS_ALERT_NOTIFICATION_MAIL_RECIPIENTS:}
+        subject-prefix: ${OPS_ALERT_NOTIFICATION_MAIL_SUBJECT_PREFIX:[IRCS 运维告警]}

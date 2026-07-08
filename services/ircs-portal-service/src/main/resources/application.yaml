@@ -1,0 +1,49 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: ircs-portal-service
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:${RABBITMQ_HOST:localhost}}
+    port: ${RABBITMQ_PORT:${SPRING_RABBITMQ_PORT:5672}}
+    username: ${RABBITMQ_USERNAME:${SPRING_RABBITMQ_USERNAME:admin}}
+    password: ${SPRING_RABBITMQ_PASSWORD:${RABBITMQ_PASSWORD:}}
+    listener:
+      simple:
+        auto-startup: ${APP_PORTAL_CONFIG_LISTENER_ENABLED:true}
+        default-requeue-rejected: false
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:${DB_URL:jdbc:postgresql://localhost:5432/ircs?connectionTimeZone=UTC}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:postgres}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:}}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-init-sql: ${SPRING_DATASOURCE_HIKARI_CONNECTION_INIT_SQL:SET jit=off}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  health:
+    redis:
+      enabled: false
+
+app:
+  portal:
+    config-listener:
+      enabled: ${APP_PORTAL_CONFIG_LISTENER_ENABLED:true}
+    cache:
+      enabled: ${APP_PORTAL_CACHE_ENABLED:true}
+      metadata-ttl: ${APP_PORTAL_CACHE_METADATA_TTL:PT5M}
+      home-ttl: ${APP_PORTAL_CACHE_HOME_TTL:PT60S}
+      explore-ttl: ${APP_PORTAL_CACHE_EXPLORE_TTL:PT60S}
+      detail-ttl: ${APP_PORTAL_CACHE_DETAIL_TTL:PT15M}
+      dictionary-ttl: ${APP_PORTAL_CACHE_DICTIONARY_TTL:PT30M}
+  storage:
+    r2-public-domain: ${APP_STORAGE_R2_PUBLIC_DOMAIN:}

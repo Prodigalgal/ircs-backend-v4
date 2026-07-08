@@ -1,0 +1,5 @@
+dependencies {
+    implementation project(':shared:ircs-common')
+    implementation project(':shared:ircs-contracts')
+    implementation 'com.github.houbb:sensitive-word:0.29.5'
+}

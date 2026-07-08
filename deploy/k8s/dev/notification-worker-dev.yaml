@@ -1,0 +1,163 @@
+﻿apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ircs-dev-app-config
+  namespace: ircs-dev
+  labels:
+    app.kubernetes.io/part-of: ircs
+    environment: dev
+data:
+  DB_URL: "jdbc:postgresql://postgres-svc.ircs-dev.svc.cluster.local:5432/ircs?connectionTimeZone=UTC"
+  VALKEY_HOST: "valkey-svc.ircs-dev.svc.cluster.local"
+  VALKEY_PORT: "6379"
+  SPRING_DATA_REDIS_HOST: "valkey-svc.ircs-dev.svc.cluster.local"
+  SPRING_DATA_REDIS_PORT: "6379"
+  MANAGEMENT_ENDPOINT_HEALTH_SHOW_COMPONENTS: "always"
+  MANAGEMENT_HEALTH_MAIL_ENABLED: "false"
+  RABBITMQ_HOST: "rabbitmq-svc.ircs-dev.svc.cluster.local"
+  ELASTICSEARCH_URIS: "http://elasticsearch-svc.ircs-dev.svc.cluster.local:9200"
+  OTEL_ENDPOINT: "http://otel-collector.monitoring.svc.cluster.local:4318/v1/traces"
+  R2_BUCKET_NAME: "ircs-dev"
+  R2_PUBLIC_DOMAIN: "img.mnnu.eu.org"
+  MAIL_HOST: "smtp.gmail.com"
+  MAIL_PORT: "465"
+  MAIL_FROM: "HuaWai System <huawai.system@gmail.com>"
+  APP_MAIL_ENABLED: "false"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ircs-notification-worker
+  namespace: ircs-dev
+  labels:
+    app: ircs-notification-worker
+    app.kubernetes.io/part-of: ircs
+    environment: dev
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ircs-notification-worker
+  template:
+    metadata:
+      labels:
+        app: ircs-notification-worker
+        app.kubernetes.io/part-of: ircs
+        environment: dev
+    spec:
+      imagePullSecrets:
+        - name: harbor-secret
+      containers:
+        - name: app
+          image: harbor.mnnu.eu.org/ircs/ircs-notification-worker:dev
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: ircs-dev-app-config
+          env:
+            - name: SPRING_APPLICATION_NAME
+              value: ircs-notification-worker
+            - name: SPRING_RABBITMQ_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: ircs-dev-app-config
+                  key: RABBITMQ_HOST
+            - name: SPRING_RABBITMQ_USERNAME
+              value: admin
+            - name: SPRING_RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ircs-dev-secrets
+                  key: RABBITMQ_PASSWORD
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: ircs-dev-app-config
+                  key: DB_URL
+            - name: SPRING_DATASOURCE_USERNAME
+              value: postgres
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ircs-dev-secrets
+                  key: DB_PASSWORD
+            - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+              value: "2"
+            - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+              value: "0"
+            - name: SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT
+              value: "30000"
+            - name: APP_MAIL_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: ircs-dev-app-config
+                  key: MAIL_HOST
+            - name: APP_MAIL_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: ircs-dev-app-config
+                  key: MAIL_PORT
+            - name: APP_MAIL_FROM
+              valueFrom:
+                configMapKeyRef:
+                  name: ircs-dev-app-config
+                  key: MAIL_FROM
+            - name: APP_MAIL_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: ircs-dev-app-config
+                  key: APP_MAIL_ENABLED
+            - name: APP_MAIL_SEND_HISTORY_CLEANUP_ENABLED
+              value: "false"
+            - name: APP_MAIL_SEND_HISTORY_CLEANUP_DRY_RUN
+              value: "true"
+            - name: APP_MAIL_SEND_HISTORY_CLEANUP_EXECUTE_ENABLED
+              value: "false"
+            - name: APP_MAIL_SEND_HISTORY_CLEANUP_RATE_LIMIT_DELAY_MS
+              value: "0"
+            - name: APP_NOTIFICATION_CONFIG_LISTENER_ENABLED
+              value: "true"
+            - name: APP_WORKER_AUDIT_ENABLED
+              value: "true"
+            - name: APP_WORKER_AUDIT_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: ircs-dev-app-config
+                  key: DB_URL
+            - name: APP_WORKER_AUDIT_USERNAME
+              value: postgres
+            - name: APP_WORKER_AUDIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ircs-dev-secrets
+                  key: DB_PASSWORD
+            - name: APP_WORKER_AUDIT_SOURCE
+              value: ircs-notification-worker
+          startupProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            failureThreshold: 30
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 25m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 512Mi

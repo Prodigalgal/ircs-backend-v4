@@ -1,0 +1,37 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: ircs-config-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:${DB_URL:jdbc:postgresql://localhost:5432/ircs?connectionTimeZone=UTC}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:postgres}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:}}
+    driver-class-name: org.postgresql.Driver
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:${REDIS_HOST:${VALKEY_HOST:localhost}}}
+      port: ${SPRING_DATA_REDIS_PORT:${REDIS_PORT:${VALKEY_PORT:6379}}}
+      password: ${SPRING_DATA_REDIS_PASSWORD:${REDIS_PASSWORD:${VALKEY_PASSWORD:}}}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+app:
+  config:
+    cluster-lock:
+      enabled: ${APP_CONFIG_CLUSTER_LOCK_ENABLED:true}
+      ttl: ${APP_CONFIG_CLUSTER_LOCK_TTL:PT10M}
+      worker-id: ${APP_CONFIG_CLUSTER_LOCK_WORKER_ID:}
+  service:
+    audit:
+      enabled: ${APP_SERVICE_AUDIT_ENABLED:true}
+      source: ${APP_SERVICE_AUDIT_SOURCE:${spring.application.name}}

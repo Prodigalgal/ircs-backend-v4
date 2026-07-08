@@ -1,0 +1,44 @@
+plugins {
+    id 'org.springframework.boot'
+    id 'com.google.cloud.tools.jib'
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+    implementation 'org.liquibase:liquibase-core'
+
+    runtimeOnly 'org.postgresql:postgresql'
+}
+
+springBoot {
+    mainClass = 'com.prodigalgal.ircs.migrator.IrcsMigratorApplication'
+}
+
+bootJar {
+    mainClass = 'com.prodigalgal.ircs.migrator.IrcsMigratorApplication'
+}
+
+jib {
+    containerizingMode = 'packaged'
+    from {
+        image = providers.gradleProperty('jibBaseImage')
+                .orElse('registry.mnnu.eu.org/ircs/base/eclipse-temurin:25-jre-alpine')
+                .get()
+        platforms {
+            platform {
+                architecture = providers.gradleProperty('jibTargetArch').orElse('arm64').get()
+                os = providers.gradleProperty('jibTargetOs').orElse('linux').get()
+            }
+        }
+    }
+    to {
+        image = providers.gradleProperty('jibToImage')
+                .orElse('harbor.mnnu.eu.org/ircs/ircs-migrator:dev')
+                .get()
+    }
+    container {
+        creationTime = 'USE_CURRENT_TIMESTAMP'
+    }
+}

@@ -1,0 +1,51 @@
+package com.prodigalgal.ircs.task.dto;
+
+import java.time.Instant;
+import java.util.UUID;
+
+public record TaskDetailSummary(
+        UUID id,
+        String name,
+        String status,
+        Boolean enabled,
+        String cronExpression,
+        String timeZone,
+        UUID dataSourceId,
+        String dataSourceName,
+        String taskType,
+        Integer startPage,
+        Integer endPage,
+        Integer currentPage,
+        String filterType,
+        Integer filterHours,
+        String filterKeywords,
+        String requestDelayType,
+        Integer fixedDelayMs,
+        Integer randomDelayMinMs,
+        Integer randomDelayMaxMs,
+        Integer timeoutMs,
+        Integer maxRetries,
+        String userAgent,
+        Boolean enableRandomUa,
+        Boolean useCustomProxy,
+        String proxyType,
+        String proxyHost,
+        Integer proxyPort,
+        String proxyUsername,
+        String proxyPassword,
+        String headers,
+        Instant lastExecutionTime,
+        Instant createdAt,
+        Instant updatedAt,
+        String lastErrorMessage,
+        Long statTotalFound,
+        Long statProcessed,
+        Long statSuccess,
+        Long statFailed,
+        Long statInserted,
+        Long statUpdated,
+        Long statIgnored,
+        Instant statStartTime,
+        Instant statEndTime
+) {
+}

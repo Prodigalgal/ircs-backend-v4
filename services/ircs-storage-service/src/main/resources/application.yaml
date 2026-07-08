@@ -1,0 +1,88 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: ircs-storage-service
+  task:
+    scheduling:
+      pool:
+        size: ${APP_STORAGE_SCHEDULING_POOL_SIZE:4}
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:${RABBITMQ_HOST:localhost}}
+    port: ${RABBITMQ_PORT:${SPRING_RABBITMQ_PORT:5672}}
+    username: ${RABBITMQ_USERNAME:${SPRING_RABBITMQ_USERNAME:admin}}
+    password: ${SPRING_RABBITMQ_PASSWORD:${RABBITMQ_PASSWORD:}}
+    listener:
+      simple:
+        auto-startup: ${APP_STORAGE_LISTENER_ENABLED:false}
+        default-requeue-rejected: false
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:${DB_URL:jdbc:postgresql://localhost:5432/ircs?connectionTimeZone=UTC}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:postgres}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:}}
+    driver-class-name: org.postgresql.Driver
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:${REDIS_HOST:${VALKEY_HOST:localhost}}}
+      port: ${SPRING_DATA_REDIS_PORT:${REDIS_PORT:${VALKEY_PORT:6379}}}
+      password: ${SPRING_DATA_REDIS_PASSWORD:${REDIS_PASSWORD:${VALKEY_PASSWORD:}}}
+
+app:
+  worker:
+    audit:
+      enabled: ${APP_WORKER_AUDIT_ENABLED:true}
+      datasource-url: ${APP_WORKER_AUDIT_DATASOURCE_URL:${SPRING_DATASOURCE_URL:${DB_URL:${spring.datasource.url:}}}}
+      username: ${APP_WORKER_AUDIT_USERNAME:${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:${spring.datasource.username:}}}}
+      password: ${APP_WORKER_AUDIT_PASSWORD:${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:${spring.datasource.password:}}}}
+      source: ${APP_WORKER_AUDIT_SOURCE:${spring.application.name:ircs-storage-service}}
+  storage:
+    internal-access:
+      require-token: ${APP_STORAGE_INTERNAL_ACCESS_REQUIRE_TOKEN:false}
+      token: ${APP_STORAGE_INTERNAL_ACCESS_TOKEN:${APP_STORAGE_SERVICE_TOKEN:}}
+      avatar-scope: ${APP_STORAGE_INTERNAL_ACCESS_AVATAR_SCOPE:storage:avatar}
+    cluster-lock:
+      enabled: ${APP_STORAGE_CLUSTER_LOCK_ENABLED:true}
+      ttl: ${APP_STORAGE_CLUSTER_LOCK_TTL:PT10M}
+      worker-id: ${APP_STORAGE_CLUSTER_LOCK_WORKER_ID:}
+    listener:
+      enabled: ${APP_STORAGE_LISTENER_ENABLED:false}
+    config-listener:
+      enabled: ${APP_STORAGE_CONFIG_LISTENER_ENABLED:true}
+    base-path: ${APP_STORAGE_BASE_PATH:./storage}
+    public-path: ${APP_STORAGE_PUBLIC_PATH:}
+    cover-path-prefix: ${APP_STORAGE_PATH_PREFIX_COVER:covers}
+    image:
+      download-enabled: ${APP_STORAGE_IMAGE_DOWNLOAD_ENABLED:true}
+      max-upload-bytes: ${APP_STORAGE_IMAGE_MAX_UPLOAD_BYTES:10485760}
+      allow-local-addresses: ${APP_STORAGE_IMAGE_ALLOW_LOCAL_ADDRESSES:false}
+      max-retries: ${APP_STORAGE_IMAGE_MAX_RETRIES:3}
+      download-timeout-seconds: ${APP_STORAGE_IMAGE_DOWNLOAD_TIMEOUT_SECONDS:15}
+    r2:
+      enabled: ${APP_STORAGE_R2_ENABLED:false}
+      bucket-name: ${APP_STORAGE_R2_BUCKET_NAME:${R2_BUCKET_NAME:ircs}}
+      account-id: ${APP_STORAGE_R2_ACCOUNT_ID:}
+      access-key: ${APP_STORAGE_R2_ACCESS_KEY:}
+      secret-key: ${APP_STORAGE_R2_SECRET_KEY:}
+      endpoint: ${APP_STORAGE_R2_ENDPOINT:}
+      public-domain: ${APP_STORAGE_R2_PUBLIC_DOMAIN:${R2_PUBLIC_DOMAIN:}}
+      work-queue:
+        worker:
+          enabled: ${APP_STORAGE_R2_WORK_QUEUE_WORKER_ENABLED:false}
+          initial-delay-ms: ${APP_STORAGE_R2_WORK_QUEUE_INITIAL_DELAY_MS:30000}
+          fixed-delay-ms: ${APP_STORAGE_R2_WORK_QUEUE_FIXED_DELAY_MS:5000}
+          batch-size: ${APP_STORAGE_R2_WORK_QUEUE_BATCH_SIZE:25}
+          visibility-seconds: ${APP_STORAGE_R2_WORK_QUEUE_VISIBILITY_SECONDS:900}
+          max-retries: ${APP_STORAGE_R2_WORK_QUEUE_MAX_RETRIES:8}
+          max-backoff-seconds: ${APP_STORAGE_R2_WORK_QUEUE_MAX_BACKOFF_SECONDS:1800}
+          worker-id: ${APP_STORAGE_R2_WORK_QUEUE_WORKER_ID:${APP_STORAGE_CLUSTER_LOCK_WORKER_ID:}}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true

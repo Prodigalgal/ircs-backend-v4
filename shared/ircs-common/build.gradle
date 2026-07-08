@@ -1,0 +1,44 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    api project(':shared:ircs-contracts')
+
+    implementation 'com.fasterxml.uuid:java-uuid-generator:5.2.0'
+    implementation 'org.apache.httpcomponents.client5:httpclient5'
+
+    compileOnly 'com.fasterxml.jackson.core:jackson-databind'
+    compileOnly 'io.micrometer:micrometer-core'
+    compileOnly 'io.jsonwebtoken:jjwt-api:0.12.6'
+    compileOnly 'jakarta.annotation:jakarta.annotation-api'
+    compileOnly 'jakarta.servlet:jakarta.servlet-api'
+    compileOnly 'org.slf4j:slf4j-api'
+    compileOnly 'org.springframework:spring-jdbc'
+    compileOnly 'org.springframework:spring-tx'
+    compileOnly 'org.springframework:spring-web'
+    compileOnly 'org.springframework:spring-webmvc'
+    compileOnly 'org.springframework:spring-context'
+    compileOnly 'org.springframework.data:spring-data-redis'
+    compileOnly 'org.springframework.data:spring-data-commons'
+    compileOnly 'org.springframework.boot:spring-boot'
+    compileOnly 'org.springframework.boot:spring-boot-autoconfigure'
+    compileOnly 'org.springframework.boot:spring-boot-actuator'
+
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind'
+    testImplementation 'io.micrometer:micrometer-core'
+    testImplementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    testRuntimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    testRuntimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+    testImplementation 'jakarta.servlet:jakarta.servlet-api'
+    testImplementation 'org.springframework:spring-jdbc'
+    testImplementation 'org.springframework:spring-tx'
+    testImplementation 'org.springframework:spring-web'
+    testImplementation 'org.springframework:spring-webmvc'
+    testImplementation 'org.springframework.data:spring-data-redis'
+    testImplementation 'org.springframework.data:spring-data-commons'
+    testImplementation 'org.springframework.boot:spring-boot'
+    testImplementation 'org.springframework.boot:spring-boot-actuator'
+    testImplementation 'org.springframework.boot:spring-boot-autoconfigure'
+    testImplementation 'com.h2database:h2'
+}

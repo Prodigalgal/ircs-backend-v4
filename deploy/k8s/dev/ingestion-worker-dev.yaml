@@ -1,0 +1,95 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ircs-ingestion-worker
+  namespace: ircs-dev
+  labels:
+    app: ircs-ingestion-worker
+    app.kubernetes.io/part-of: ircs
+    environment: dev
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ircs-ingestion-worker
+  template:
+    metadata:
+      labels:
+        app: ircs-ingestion-worker
+        app.kubernetes.io/part-of: ircs
+        environment: dev
+      annotations:
+        ircs.prodigalgal.com/no-public-route: "true"
+    spec:
+      imagePullSecrets:
+        - name: harbor-secret
+      containers:
+        - name: app
+          image: harbor.mnnu.eu.org/ircs/ircs-ingestion-worker:dev
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: ircs-dev-app-config
+          env:
+            - name: SPRING_APPLICATION_NAME
+              value: ircs-ingestion-worker
+            - name: SPRING_RABBITMQ_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: ircs-dev-app-config
+                  key: RABBITMQ_HOST
+            - name: SPRING_RABBITMQ_USERNAME
+              value: admin
+            - name: SPRING_RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ircs-dev-secrets
+                  key: RABBITMQ_PASSWORD
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: ircs-dev-app-config
+                  key: DB_URL
+            - name: SPRING_DATASOURCE_USERNAME
+              value: postgres
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ircs-dev-secrets
+                  key: DB_PASSWORD
+            - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+              value: "2"
+            - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+              value: "0"
+            - name: SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT
+              value: "30000"
+            - name: APP_INGESTION_LISTENER_ENABLED
+              value: "true"
+          startupProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            failureThreshold: 30
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 25m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 512Mi

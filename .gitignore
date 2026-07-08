@@ -1,0 +1,44 @@
+# Gradle
+.gradle/
+build/
+**/build/
+
+# Java/JVM
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+*.war
+*.ear
+hs_err_pid*
+replay_pid*
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs and temp
+*.log
+tmp/
+temp/
+*.tmp
+
+# Local env and secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.jks
+*.keystore
+
+# Local test artifacts
+.playwright-mcp/
+playwright-report/
+test-results/
+build-image-manifest.txt

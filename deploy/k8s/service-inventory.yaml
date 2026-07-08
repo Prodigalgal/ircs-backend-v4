@@ -1,0 +1,75 @@
+apiVersion: ircs.prodigalgal.com/v1alpha1
+kind: ServiceInventory
+metadata:
+  name: ircs-v3-target-services
+  namespace: ircs-system
+spec:
+  services:
+    - name: ircs-identity-service
+      type: http
+      routes: ["/api/v1/auth", "/api/v1/members", "/api/portal/auth", "/api/portal/profile"]
+    - name: ircs-content-service
+      type: http
+      routes: ["/api/v1/raw-videos", "/api/v1/unified-videos", "/api/v1/playlists"]
+      publishes: ["q.normalize.video", "q.enrich.metadata", "runtime-work:search.sync.raw", "runtime-work:search.sync.unified"]
+    - name: ircs-catalog-service
+      type: http
+      routes: ["/api/v1/standard-areas", "/api/v1/standard-categories", "/api/v1/standard-genres", "/api/v1/standard-languages", "/api/v1/data-sources"]
+    - name: ircs-task-service
+      type: http
+      routes: ["/api/v1/collection-tasks"]
+    - name: ircs-portal-service
+      type: http
+      routes: ["/api/portal"]
+    - name: ircs-scraper-service
+      type: http
+      routes: ["/api/v1/scraper/manual"]
+      publishes: ["q.ingest.video", "q.enrich.metadata"]
+    - name: ircs-magnet-service
+      type: http
+      routes: ["/api/v1/magnets", "/api/v1/magnet-providers"]
+    - name: ircs-search-service
+      type: http-worker
+      routes: ["/api/portal/search"]
+      consumes: ["runtime-work:search.sync.raw", "runtime-work:search.sync.unified"]
+    - name: ircs-storage-service
+      type: http-worker
+      routes: ["/api/v1/cover-images", "/media"]
+      consumes: ["q.storage.image", "q.storage.image_delete"]
+    - name: ircs-interaction-service
+      type: http-worker
+      routes: ["/api/v1/messages", "/api/portal/interaction", "/api/portal/feedback"]
+      consumes: ["q.interaction.watch_progress"]
+    - name: ircs-config-service
+      type: http
+      routes: ["/api/v1/configs", "/api/v1/common"]
+    - name: ircs-credential-service
+      type: http
+      routes: ["/api/v1/credentials"]
+    - name: ircs-content-safety-service
+      type: internal-http
+      routes: ["/internal/v1/content-safety"]
+    - name: ircs-adult-classifier-service
+      type: internal-http
+      routes: ["/internal/v1/adult-classifier"]
+    - name: ircs-ops-service
+      type: http
+      routes: ["/api/v1/ops", "/api/v1/dashboard", "/api/v1/debug"]
+    - name: ircs-ingestion-worker
+      type: worker
+      consumes: ["q.ingest.video", "q.process.playlist_sync"]
+    - name: ircs-normalization-worker
+      type: http-worker
+      routes: ["/internal/v1/normalization/llm-cleaning"]
+      consumes: ["q.normalize.video"]
+      publishes: ["runtime-work:search.sync.raw", "runtime-work:aggregation.raw-video"]
+    - name: ircs-aggregation-worker
+      type: worker
+      consumes: ["runtime-work:aggregation.raw-video"]
+    - name: ircs-metadata-worker
+      type: worker
+      consumes: ["q.enrich.metadata", "q.enrich.metadata.result", "q.fetch.metadata.douban", "q.fetch.metadata.tmdb", "q.fetch.metadata.rt"]
+      publishes: ["runtime-work:search.sync.raw", "runtime-work:aggregation.raw-video"]
+    - name: ircs-notification-worker
+      type: worker
+      consumes: ["q.notification.mail"]

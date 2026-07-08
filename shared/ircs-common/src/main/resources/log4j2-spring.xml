@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+    <Properties>
+        <Property name="IRCS_RESOLVED_LOG_PATH">${env:IRCS_LOG_PATH:-${env:LOG_PATH:-./logs}}</Property>
+        <Property name="CONSOLE_LOG_PATTERN">%clr{%d{yyyy-MM-dd HH:mm:ss.SSS}}{faint} %clr{%5p} %clr{${sys:PID}}{magenta} %clr{---}{faint} %clr{[%15.15t]}{faint} %clr{[%X{traceId},%X{spanId},%X{correlationId}]}{yellow} %clr{%-40.40c{1.}}{cyan} %clr{:}{faint} %m%n%wEx</Property>
+        <Property name="FILE_LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] [%X{traceId},%X{spanId},%X{correlationId}] %-5level %logger{36} - %msg%n</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${CONSOLE_LOG_PATTERN}" charset="UTF-8"/>
+        </Console>
+
+        <RollingRandomAccessFile name="InfoFile"
+                                 fileName="${IRCS_RESOLVED_LOG_PATH}/info.log"
+                                 filePattern="${IRCS_RESOLVED_LOG_PATH}/info-%d{yyyy-MM-dd}-%i.log.gz">
+            <Filters>
+                <ThresholdFilter level="WARN" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="${FILE_LOG_PATTERN}" charset="UTF-8"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="30"/>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="WarnFile"
+                                 fileName="${IRCS_RESOLVED_LOG_PATH}/warn.log"
+                                 filePattern="${IRCS_RESOLVED_LOG_PATH}/warn-%d{yyyy-MM-dd}-%i.log.gz">
+            <Filters>
+                <ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="${FILE_LOG_PATTERN}" charset="UTF-8"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="30"/>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="ErrorFile"
+                                 fileName="${IRCS_RESOLVED_LOG_PATH}/error.log"
+                                 filePattern="${IRCS_RESOLVED_LOG_PATH}/error-%d{yyyy-MM-dd}-%i.log.gz">
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${FILE_LOG_PATTERN}" charset="UTF-8"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="30"/>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="TraceFile"
+                                 fileName="${IRCS_RESOLVED_LOG_PATH}/ingestion-trace.log"
+                                 filePattern="${IRCS_RESOLVED_LOG_PATH}/ingestion-trace-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout pattern="%m%n" charset="UTF-8"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="200 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="50"/>
+        </RollingRandomAccessFile>
+    </Appenders>
+
+    <Loggers>
+        <AsyncLogger name="org.apache.hc.client5.http.impl.io.DefaultHttpClientConnectionOperator"
+                     level="WARN"
+                     includeLocation="false"
+                     additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="InfoFile"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="com.prodigalgal.ircs"
+                     level="${env:IRCS_APP_LOG_LEVEL:-INFO}"
+                     includeLocation="false"
+                     additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="InfoFile"/>
+            <AppenderRef ref="WarnFile"/>
+            <AppenderRef ref="ErrorFile"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="ingestion-tracer"
+                     level="INFO"
+                     includeLocation="false"
+                     additivity="false">
+            <AppenderRef ref="TraceFile"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="org.springframework"
+                     level="${env:IRCS_SPRING_LOG_LEVEL:-WARN}"
+                     includeLocation="false"
+                     additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="InfoFile"/>
+            <AppenderRef ref="WarnFile"/>
+            <AppenderRef ref="ErrorFile"/>
+        </AsyncLogger>
+
+        <Root level="${env:IRCS_ROOT_LOG_LEVEL:-INFO}">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="InfoFile"/>
+            <AppenderRef ref="WarnFile"/>
+            <AppenderRef ref="ErrorFile"/>
+        </Root>
+    </Loggers>
+</Configuration>

@@ -1,0 +1,56 @@
+spring:
+  application:
+    name: ircs-platform-api
+  profiles:
+    active: platform-api
+  main:
+    allow-bean-definition-overriding: true
+    banner-mode: off
+    lazy-initialization: false
+  threads:
+    virtual:
+      enabled: true
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+  datasource:
+    hikari:
+      maximum-pool-size: ${IRCS_PLATFORM_DB_POOL_MAX:6}
+      minimum-idle: ${IRCS_PLATFORM_DB_POOL_MIN:1}
+      idle-timeout: 30000
+      max-lifetime: 600000
+  rabbitmq:
+    listener:
+      simple:
+        auto-startup: false
+      direct:
+        auto-startup: false
+  data:
+    redis:
+      lettuce:
+        pool:
+          max-active: ${IRCS_PLATFORM_REDIS_POOL_MAX:8}
+          max-idle: ${IRCS_PLATFORM_REDIS_POOL_IDLE:4}
+          min-idle: 0
+
+server:
+  port: ${SERVER_PORT:8080}
+  shutdown: graceful
+  tomcat:
+    threads:
+      max: ${IRCS_PLATFORM_TOMCAT_MAX_THREADS:32}
+      min-spare: ${IRCS_PLATFORM_TOMCAT_MIN_SPARE_THREADS:2}
+    accept-count: ${IRCS_PLATFORM_TOMCAT_ACCEPT_COUNT:64}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  level:
+    root: INFO

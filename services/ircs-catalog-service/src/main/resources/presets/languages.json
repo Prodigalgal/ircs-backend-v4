@@ -1,0 +1,1124 @@
+[
+  {
+    "iso_639_1": "kw",
+    "english_name": "Cornish",
+    "native_name": "",
+    "cn_name": "康沃尔语"
+  },
+  {
+    "iso_639_1": "ff",
+    "english_name": "Fulah",
+    "native_name": "Fulfulde",
+    "cn_name": "富拉语"
+  },
+  {
+    "iso_639_1": "gn",
+    "english_name": "Guarani",
+    "native_name": "",
+    "cn_name": "瓜拉尼语"
+  },
+  {
+    "iso_639_1": "id",
+    "english_name": "Indonesian",
+    "native_name": "Bahasa indonesia",
+    "cn_name": "印尼语"
+  },
+  {
+    "iso_639_1": "lu",
+    "english_name": "Luba-Katanga",
+    "native_name": "",
+    "cn_name": "卢巴-加丹加语"
+  },
+  {
+    "iso_639_1": "nr",
+    "english_name": "Ndebele",
+    "native_name": "",
+    "cn_name": "南恩德贝莱语"
+  },
+  {
+    "iso_639_1": "os",
+    "english_name": "Ossetian; Ossetic",
+    "native_name": "",
+    "cn_name": "奥塞梯语"
+  },
+  {
+    "iso_639_1": "ru",
+    "english_name": "Russian",
+    "native_name": "Pусский",
+    "cn_name": "俄语"
+  },
+  {
+    "iso_639_1": "se",
+    "english_name": "Northern Sami",
+    "native_name": "",
+    "cn_name": "北萨米语"
+  },
+  {
+    "iso_639_1": "so",
+    "english_name": "Somali",
+    "native_name": "Somali",
+    "cn_name": "索马里语"
+  },
+  {
+    "iso_639_1": "es",
+    "english_name": "Spanish",
+    "native_name": "Español",
+    "cn_name": "西班牙语"
+  },
+  {
+    "iso_639_1": "sv",
+    "english_name": "Swedish",
+    "native_name": "svenska",
+    "cn_name": "瑞典语"
+  },
+  {
+    "iso_639_1": "ta",
+    "english_name": "Tamil",
+    "native_name": "தமிழ்",
+    "cn_name": "泰米尔语"
+  },
+  {
+    "iso_639_1": "te",
+    "english_name": "Telugu",
+    "native_name": "తెలుగు",
+    "cn_name": "泰卢固语"
+  },
+  {
+    "iso_639_1": "tn",
+    "english_name": "Tswana",
+    "native_name": "",
+    "cn_name": "茨瓦纳语"
+  },
+  {
+    "iso_639_1": "uk",
+    "english_name": "Ukrainian",
+    "native_name": "Український",
+    "cn_name": "乌克兰语"
+  },
+  {
+    "iso_639_1": "uz",
+    "english_name": "Uzbek",
+    "native_name": "ozbek",
+    "cn_name": "乌兹别克语"
+  },
+  {
+    "iso_639_1": "el",
+    "english_name": "Greek",
+    "native_name": "ελληνικά",
+    "cn_name": "希腊语"
+  },
+  {
+    "iso_639_1": "co",
+    "english_name": "Corsican",
+    "native_name": "",
+    "cn_name": "科西嘉语"
+  },
+  {
+    "iso_639_1": "dv",
+    "english_name": "Divehi",
+    "native_name": "",
+    "cn_name": "迪维希语"
+  },
+  {
+    "iso_639_1": "kk",
+    "english_name": "Kazakh",
+    "native_name": "қазақ",
+    "cn_name": "哈萨克语"
+  },
+  {
+    "iso_639_1": "ki",
+    "english_name": "Kikuyu",
+    "native_name": "",
+    "cn_name": "基库尤语"
+  },
+  {
+    "iso_639_1": "or",
+    "english_name": "Oriya",
+    "native_name": "",
+    "cn_name": "奥里亚语"
+  },
+  {
+    "iso_639_1": "si",
+    "english_name": "Sinhalese",
+    "native_name": "සිංහල",
+    "cn_name": "僧伽罗语"
+  },
+  {
+    "iso_639_1": "st",
+    "english_name": "Sotho",
+    "native_name": "",
+    "cn_name": "索托语"
+  },
+  {
+    "iso_639_1": "sr",
+    "english_name": "Serbian",
+    "native_name": "Srpski",
+    "cn_name": "塞尔维亚语"
+  },
+  {
+    "iso_639_1": "ss",
+    "english_name": "Swati",
+    "native_name": "",
+    "cn_name": "斯威士语"
+  },
+  {
+    "iso_639_1": "tr",
+    "english_name": "Turkish",
+    "native_name": "Türkçe",
+    "cn_name": "土耳其语"
+  },
+  {
+    "iso_639_1": "wa",
+    "english_name": "Walloon",
+    "native_name": "",
+    "cn_name": "瓦隆语"
+  },
+  {
+    "iso_639_1": "cn",
+    "english_name": "Cantonese",
+    "native_name": "广州话 / 廣州話",
+    "cn_name": "粤语"
+  },
+  {
+    "iso_639_1": "bi",
+    "english_name": "Bislama",
+    "native_name": "Bislama",
+    "cn_name": "比斯拉马语"
+  },
+  {
+    "iso_639_1": "cr",
+    "english_name": "Cree",
+    "native_name": "",
+    "cn_name": "克里语"
+  },
+  {
+    "iso_639_1": "cy",
+    "english_name": "Welsh",
+    "native_name": "Cymraeg",
+    "cn_name": "威尔士语"
+  },
+  {
+    "iso_639_1": "eu",
+    "english_name": "Basque",
+    "native_name": "euskera",
+    "cn_name": "巴斯克语"
+  },
+  {
+    "iso_639_1": "hz",
+    "english_name": "Herero",
+    "native_name": "",
+    "cn_name": "赫雷罗语"
+  },
+  {
+    "iso_639_1": "ho",
+    "english_name": "Hiri Motu",
+    "native_name": "",
+    "cn_name": "希里摩图语"
+  },
+  {
+    "iso_639_1": "ka",
+    "english_name": "Georgian",
+    "native_name": "ქართული",
+    "cn_name": "格鲁吉亚语"
+  },
+  {
+    "iso_639_1": "kr",
+    "english_name": "Kanuri",
+    "native_name": "",
+    "cn_name": "卡努里语"
+  },
+  {
+    "iso_639_1": "km",
+    "english_name": "Khmer",
+    "native_name": "",
+    "cn_name": "高棉语"
+  },
+  {
+    "iso_639_1": "kj",
+    "english_name": "Kuanyama",
+    "native_name": "",
+    "cn_name": "宽亚玛语"
+  },
+  {
+    "iso_639_1": "to",
+    "english_name": "Tonga",
+    "native_name": "",
+    "cn_name": "汤加语"
+  },
+  {
+    "iso_639_1": "vi",
+    "english_name": "Vietnamese",
+    "native_name": "Tiếng Việt",
+    "cn_name": "越南语"
+  },
+  {
+    "iso_639_1": "zu",
+    "english_name": "Zulu",
+    "native_name": "isiZulu",
+    "cn_name": "祖鲁语"
+  },
+  {
+    "iso_639_1": "zh",
+    "english_name": "Mandarin",
+    "native_name": "普通话",
+    "cn_name": "普通话"
+  },
+  {
+    "iso_639_1": "ps",
+    "english_name": "Pushto",
+    "native_name": "پښتو",
+    "cn_name": "普什图语"
+  },
+  {
+    "iso_639_1": "mk",
+    "english_name": "Macedonian",
+    "native_name": "",
+    "cn_name": "马其顿语"
+  },
+  {
+    "iso_639_1": "ae",
+    "english_name": "Avestan",
+    "native_name": "Upastawakaēna",
+    "cn_name": "阿维斯陀语"
+  },
+  {
+    "iso_639_1": "az",
+    "english_name": "Azerbaijani",
+    "native_name": "Azərbaycan",
+    "cn_name": "阿塞拜疆语"
+  },
+  {
+    "iso_639_1": "ba",
+    "english_name": "Bashkir",
+    "native_name": "Башҡорт теле",
+    "cn_name": "巴什基尔语"
+  },
+  {
+    "iso_639_1": "sh",
+    "english_name": "Serbo-Croatian",
+    "native_name": "",
+    "cn_name": "塞尔维亚-克罗地亚语"
+  },
+  {
+    "iso_639_1": "lv",
+    "english_name": "Latvian",
+    "native_name": "Latviešu",
+    "cn_name": "拉脱维亚语"
+  },
+  {
+    "iso_639_1": "lt",
+    "english_name": "Lithuanian",
+    "native_name": "Lietuvių",
+    "cn_name": "立陶宛语"
+  },
+  {
+    "iso_639_1": "ms",
+    "english_name": "Malay",
+    "native_name": "Bahasa melayu",
+    "cn_name": "马来语"
+  },
+  {
+    "iso_639_1": "rm",
+    "english_name": "Raeto-Romance",
+    "native_name": "",
+    "cn_name": "雷托-罗曼语"
+  },
+  {
+    "iso_639_1": "as",
+    "english_name": "Assamese",
+    "native_name": "অসমীয়া",
+    "cn_name": "阿萨姆语"
+  },
+  {
+    "iso_639_1": "gd",
+    "english_name": "Gaelic",
+    "native_name": "",
+    "cn_name": "盖尔语"
+  },
+  {
+    "iso_639_1": "ja",
+    "english_name": "Japanese",
+    "native_name": "日本語",
+    "cn_name": "日语"
+  },
+  {
+    "iso_639_1": "ko",
+    "english_name": "Korean",
+    "native_name": "한국어/조선말",
+    "cn_name": "韩语"
+  },
+  {
+    "iso_639_1": "ku",
+    "english_name": "Kurdish",
+    "native_name": "",
+    "cn_name": "库尔德语"
+  },
+  {
+    "iso_639_1": "mo",
+    "english_name": "Moldavian",
+    "native_name": "",
+    "cn_name": "摩尔多瓦语"
+  },
+  {
+    "iso_639_1": "mn",
+    "english_name": "Mongolian",
+    "native_name": "",
+    "cn_name": "蒙古语"
+  },
+  {
+    "iso_639_1": "nb",
+    "english_name": "Norwegian Bokmål",
+    "native_name": "Bokmål",
+    "cn_name": "挪威博克莫尔语"
+  },
+  {
+    "iso_639_1": "om",
+    "english_name": "Oromo",
+    "native_name": "",
+    "cn_name": "奥罗莫语"
+  },
+  {
+    "iso_639_1": "pi",
+    "english_name": "Pali",
+    "native_name": "",
+    "cn_name": "巴利语"
+  },
+  {
+    "iso_639_1": "sq",
+    "english_name": "Albanian",
+    "native_name": "shqip",
+    "cn_name": "阿尔巴尼亚语"
+  },
+  {
+    "iso_639_1": "vo",
+    "english_name": "Volapük",
+    "native_name": "",
+    "cn_name": "沃拉普克语"
+  },
+  {
+    "iso_639_1": "bo",
+    "english_name": "Tibetan",
+    "native_name": "བོད་སྐད་།",
+    "cn_name": "藏语"
+  },
+  {
+    "iso_639_1": "da",
+    "english_name": "Danish",
+    "native_name": "Dansk",
+    "cn_name": "丹麦语"
+  },
+  {
+    "iso_639_1": "kl",
+    "english_name": "Kalaallisut",
+    "native_name": "",
+    "cn_name": "格陵兰语"
+  },
+  {
+    "iso_639_1": "kn",
+    "english_name": "Kannada",
+    "native_name": "?????",
+    "cn_name": "卡纳达语"
+  },
+  {
+    "iso_639_1": "nl",
+    "english_name": "Dutch",
+    "native_name": "Nederlands",
+    "cn_name": "荷兰语"
+  },
+  {
+    "iso_639_1": "nn",
+    "english_name": "Norwegian Nynorsk",
+    "native_name": "",
+    "cn_name": "挪威尼诺斯克语"
+  },
+  {
+    "iso_639_1": "sa",
+    "english_name": "Sanskrit",
+    "native_name": "",
+    "cn_name": "梵语"
+  },
+  {
+    "iso_639_1": "am",
+    "english_name": "Amharic",
+    "native_name": "",
+    "cn_name": "阿姆哈拉语"
+  },
+  {
+    "iso_639_1": "hy",
+    "english_name": "Armenian",
+    "native_name": "",
+    "cn_name": "亚美尼亚语"
+  },
+  {
+    "iso_639_1": "bs",
+    "english_name": "Bosnian",
+    "native_name": "Bosanski",
+    "cn_name": "波斯尼亚语"
+  },
+  {
+    "iso_639_1": "hr",
+    "english_name": "Croatian",
+    "native_name": "Hrvatski",
+    "cn_name": "克罗地亚语"
+  },
+  {
+    "iso_639_1": "mh",
+    "english_name": "Marshall",
+    "native_name": "",
+    "cn_name": "马绍尔语"
+  },
+  {
+    "iso_639_1": "mg",
+    "english_name": "Malagasy",
+    "native_name": "",
+    "cn_name": "马达加斯加语"
+  },
+  {
+    "iso_639_1": "ne",
+    "english_name": "Nepali",
+    "native_name": "",
+    "cn_name": "尼泊尔语"
+  },
+  {
+    "iso_639_1": "su",
+    "english_name": "Sundanese",
+    "native_name": "",
+    "cn_name": "巽他语"
+  },
+  {
+    "iso_639_1": "ts",
+    "english_name": "Tsonga",
+    "native_name": "Xitsonga",
+    "cn_name": "聪加语"
+  },
+  {
+    "iso_639_1": "ug",
+    "english_name": "Uighur",
+    "native_name": "",
+    "cn_name": "维吾尔语"
+  },
+  {
+    "iso_639_1": "cs",
+    "english_name": "Czech",
+    "native_name": "Český",
+    "cn_name": "捷克语"
+  },
+  {
+    "iso_639_1": "jv",
+    "english_name": "Javanese",
+    "native_name": "",
+    "cn_name": "爪哇语"
+  },
+  {
+    "iso_639_1": "ro",
+    "english_name": "Romanian",
+    "native_name": "Română",
+    "cn_name": "罗马尼亚语"
+  },
+  {
+    "iso_639_1": "sm",
+    "english_name": "Samoan",
+    "native_name": "",
+    "cn_name": "萨摩亚语"
+  },
+  {
+    "iso_639_1": "tg",
+    "english_name": "Tajik",
+    "native_name": "",
+    "cn_name": "塔吉克语"
+  },
+  {
+    "iso_639_1": "wo",
+    "english_name": "Wolof",
+    "native_name": "Wolof",
+    "cn_name": "沃洛夫语"
+  },
+  {
+    "iso_639_1": "br",
+    "english_name": "Breton",
+    "native_name": "Brezhoneg",
+    "cn_name": "布列塔尼语"
+  },
+  {
+    "iso_639_1": "fr",
+    "english_name": "French",
+    "native_name": "Français",
+    "cn_name": "法语"
+  },
+  {
+    "iso_639_1": "ga",
+    "english_name": "Irish",
+    "native_name": "Gaeilge",
+    "cn_name": "爱尔兰语"
+  },
+  {
+    "iso_639_1": "ht",
+    "english_name": "Haitian; Haitian Creole",
+    "native_name": "",
+    "cn_name": "海地语"
+  },
+  {
+    "iso_639_1": "kv",
+    "english_name": "Komi",
+    "native_name": "",
+    "cn_name": "科米语"
+  },
+  {
+    "iso_639_1": "mi",
+    "english_name": "Maori",
+    "native_name": "",
+    "cn_name": "毛利语"
+  },
+  {
+    "iso_639_1": "th",
+    "english_name": "Thai",
+    "native_name": "ภาษาไทย",
+    "cn_name": "泰语"
+  },
+  {
+    "iso_639_1": "xx",
+    "english_name": "No Language",
+    "native_name": "No Language",
+    "cn_name": "无语言"
+  },
+  {
+    "iso_639_1": "af",
+    "english_name": "Afrikaans",
+    "native_name": "Afrikaans",
+    "cn_name": "南非荷兰语"
+  },
+  {
+    "iso_639_1": "av",
+    "english_name": "Avaric",
+    "native_name": "магӏарул мацӏ",
+    "cn_name": "阿瓦尔语"
+  },
+  {
+    "iso_639_1": "bm",
+    "english_name": "Bambara",
+    "native_name": "Bamanankan",
+    "cn_name": "班巴拉语"
+  },
+  {
+    "iso_639_1": "ca",
+    "english_name": "Catalan",
+    "native_name": "Català",
+    "cn_name": "加泰罗尼亚语"
+  },
+  {
+    "iso_639_1": "ce",
+    "english_name": "Chechen",
+    "native_name": "",
+    "cn_name": "车臣语"
+  },
+  {
+    "iso_639_1": "de",
+    "english_name": "German",
+    "native_name": "Deutsch",
+    "cn_name": "德语"
+  },
+  {
+    "iso_639_1": "gv",
+    "english_name": "Manx",
+    "native_name": "",
+    "cn_name": "曼岛语"
+  },
+  {
+    "iso_639_1": "rw",
+    "english_name": "Kinyarwanda",
+    "native_name": "Kinyarwanda",
+    "cn_name": "卢旺达语"
+  },
+  {
+    "iso_639_1": "ky",
+    "english_name": "Kirghiz",
+    "native_name": "??????",
+    "cn_name": "吉尔吉斯语"
+  },
+  {
+    "iso_639_1": "ln",
+    "english_name": "Lingala",
+    "native_name": "",
+    "cn_name": "林加拉语"
+  },
+  {
+    "iso_639_1": "sn",
+    "english_name": "Shona",
+    "native_name": "",
+    "cn_name": "绍纳语"
+  },
+  {
+    "iso_639_1": "yi",
+    "english_name": "Yiddish",
+    "native_name": "",
+    "cn_name": "意第绪语"
+  },
+  {
+    "iso_639_1": "be",
+    "english_name": "Belarusian",
+    "native_name": "беларуская мова",
+    "cn_name": "白俄罗斯语"
+  },
+  {
+    "iso_639_1": "cu",
+    "english_name": "Slavic",
+    "native_name": "",
+    "cn_name": "教会斯拉夫语"
+  },
+  {
+    "iso_639_1": "dz",
+    "english_name": "Dzongkha",
+    "native_name": "",
+    "cn_name": "宗卡语"
+  },
+  {
+    "iso_639_1": "eo",
+    "english_name": "Esperanto",
+    "native_name": "Esperanto",
+    "cn_name": "世界语"
+  },
+  {
+    "iso_639_1": "fi",
+    "english_name": "Finnish",
+    "native_name": "suomi",
+    "cn_name": "芬兰语"
+  },
+  {
+    "iso_639_1": "fy",
+    "english_name": "Frisian",
+    "native_name": "",
+    "cn_name": "弗里斯兰语"
+  },
+  {
+    "iso_639_1": "ie",
+    "english_name": "Interlingue",
+    "native_name": "",
+    "cn_name": "国际语E"
+  },
+  {
+    "iso_639_1": "ia",
+    "english_name": "Interlingua",
+    "native_name": "",
+    "cn_name": "国际语A"
+  },
+  {
+    "iso_639_1": "it",
+    "english_name": "Italian",
+    "native_name": "Italiano",
+    "cn_name": "意大利语"
+  },
+  {
+    "iso_639_1": "ng",
+    "english_name": "Ndonga",
+    "native_name": "",
+    "cn_name": "恩敦加语"
+  },
+  {
+    "iso_639_1": "pa",
+    "english_name": "Punjabi",
+    "native_name": "ਪੰਜਾਬੀ",
+    "cn_name": "旁遮普语"
+  },
+  {
+    "iso_639_1": "pt",
+    "english_name": "Portuguese",
+    "native_name": "Português",
+    "cn_name": "葡萄牙语"
+  },
+  {
+    "iso_639_1": "rn",
+    "english_name": "Rundi",
+    "native_name": "Kirundi",
+    "cn_name": "基隆迪语"
+  },
+  {
+    "iso_639_1": "fa",
+    "english_name": "Persian",
+    "native_name": "فارسی",
+    "cn_name": "波斯语"
+  },
+  {
+    "iso_639_1": "ch",
+    "english_name": "Chamorro",
+    "native_name": "Finu' Chamorro",
+    "cn_name": "查莫罗语"
+  },
+  {
+    "iso_639_1": "cv",
+    "english_name": "Chuvash",
+    "native_name": "",
+    "cn_name": "楚瓦什语"
+  },
+  {
+    "iso_639_1": "en",
+    "english_name": "English",
+    "native_name": "English",
+    "cn_name": "英语"
+  },
+  {
+    "iso_639_1": "hu",
+    "english_name": "Hungarian",
+    "native_name": "Magyar",
+    "cn_name": "匈牙利语"
+  },
+  {
+    "iso_639_1": "ii",
+    "english_name": "Yi",
+    "native_name": "",
+    "cn_name": "彝语"
+  },
+  {
+    "iso_639_1": "kg",
+    "english_name": "Kongo",
+    "native_name": "",
+    "cn_name": "刚果语"
+  },
+  {
+    "iso_639_1": "li",
+    "english_name": "Limburgish",
+    "native_name": "",
+    "cn_name": "林堡语"
+  },
+  {
+    "iso_639_1": "ml",
+    "english_name": "Malayalam",
+    "native_name": "",
+    "cn_name": "马拉雅拉姆语"
+  },
+  {
+    "iso_639_1": "nv",
+    "english_name": "Navajo",
+    "native_name": "",
+    "cn_name": "纳瓦霍语"
+  },
+  {
+    "iso_639_1": "ny",
+    "english_name": "Chichewa; Nyanja",
+    "native_name": "",
+    "cn_name": "切瓦语"
+  },
+  {
+    "iso_639_1": "sg",
+    "english_name": "Sango",
+    "native_name": "",
+    "cn_name": "桑戈语"
+  },
+  {
+    "iso_639_1": "tw",
+    "english_name": "Twi",
+    "native_name": "",
+    "cn_name": "特威语"
+  },
+  {
+    "iso_639_1": "ab",
+    "english_name": "Abkhazian",
+    "native_name": "",
+    "cn_name": "阿布哈兹语"
+  },
+  {
+    "iso_639_1": "ar",
+    "english_name": "Arabic",
+    "native_name": "العربية",
+    "cn_name": "阿拉伯语"
+  },
+  {
+    "iso_639_1": "ee",
+    "english_name": "Ewe",
+    "native_name": "Èʋegbe",
+    "cn_name": "埃维语"
+  },
+  {
+    "iso_639_1": "fo",
+    "english_name": "Faroese",
+    "native_name": "",
+    "cn_name": "法罗语"
+  },
+  {
+    "iso_639_1": "ik",
+    "english_name": "Inupiaq",
+    "native_name": "",
+    "cn_name": "伊努皮克语"
+  },
+  {
+    "iso_639_1": "ks",
+    "english_name": "Kashmiri",
+    "native_name": "",
+    "cn_name": "克什米尔语"
+  },
+  {
+    "iso_639_1": "lb",
+    "english_name": "Letzeburgesch",
+    "native_name": "",
+    "cn_name": "卢森堡语"
+  },
+  {
+    "iso_639_1": "nd",
+    "english_name": "Ndebele",
+    "native_name": "",
+    "cn_name": "北恩德贝莱语"
+  },
+  {
+    "iso_639_1": "oc",
+    "english_name": "Occitan",
+    "native_name": "",
+    "cn_name": "奥克语"
+  },
+  {
+    "iso_639_1": "sk",
+    "english_name": "Slovak",
+    "native_name": "Slovenčina",
+    "cn_name": "斯洛伐克语"
+  },
+  {
+    "iso_639_1": "tt",
+    "english_name": "Tatar",
+    "native_name": "",
+    "cn_name": "鞑靼语"
+  },
+  {
+    "iso_639_1": "ve",
+    "english_name": "Venda",
+    "native_name": "",
+    "cn_name": "文达语"
+  },
+  {
+    "iso_639_1": "ay",
+    "english_name": "Aymara",
+    "native_name": "Aymara",
+    "cn_name": "艾马拉语"
+  },
+  {
+    "iso_639_1": "fj",
+    "english_name": "Fijian",
+    "native_name": "",
+    "cn_name": "斐济语"
+  },
+  {
+    "iso_639_1": "gu",
+    "english_name": "Gujarati",
+    "native_name": "",
+    "cn_name": "古吉拉特语"
+  },
+  {
+    "iso_639_1": "io",
+    "english_name": "Ido",
+    "native_name": "",
+    "cn_name": "伊多语"
+  },
+  {
+    "iso_639_1": "lo",
+    "english_name": "Lao",
+    "native_name": "",
+    "cn_name": "老挝语"
+  },
+  {
+    "iso_639_1": "la",
+    "english_name": "Latin",
+    "native_name": "Latin",
+    "cn_name": "拉丁语"
+  },
+  {
+    "iso_639_1": "no",
+    "english_name": "Norwegian",
+    "native_name": "Norsk",
+    "cn_name": "挪威语"
+  },
+  {
+    "iso_639_1": "oj",
+    "english_name": "Ojibwa",
+    "native_name": "",
+    "cn_name": "奥吉布瓦语"
+  },
+  {
+    "iso_639_1": "pl",
+    "english_name": "Polish",
+    "native_name": "Polski",
+    "cn_name": "波兰语"
+  },
+  {
+    "iso_639_1": "qu",
+    "english_name": "Quechua",
+    "native_name": "",
+    "cn_name": "盖丘亚语"
+  },
+  {
+    "iso_639_1": "sl",
+    "english_name": "Slovenian",
+    "native_name": "Slovenščina",
+    "cn_name": "斯洛文尼亚语"
+  },
+  {
+    "iso_639_1": "sc",
+    "english_name": "Sardinian",
+    "native_name": "",
+    "cn_name": "撒丁语"
+  },
+  {
+    "iso_639_1": "sw",
+    "english_name": "Swahili",
+    "native_name": "Kiswahili",
+    "cn_name": "斯瓦希里语"
+  },
+  {
+    "iso_639_1": "tl",
+    "english_name": "Tagalog",
+    "native_name": "",
+    "cn_name": "他加禄语"
+  },
+  {
+    "iso_639_1": "ur",
+    "english_name": "Urdu",
+    "native_name": "اردو",
+    "cn_name": "乌尔都语"
+  },
+  {
+    "iso_639_1": "bg",
+    "english_name": "Bulgarian",
+    "native_name": "български език",
+    "cn_name": "保加利亚语"
+  },
+  {
+    "iso_639_1": "hi",
+    "english_name": "Hindi",
+    "native_name": "हिन्दी",
+    "cn_name": "印地语"
+  },
+  {
+    "iso_639_1": "yo",
+    "english_name": "Yoruba",
+    "native_name": "Èdè Yorùbá",
+    "cn_name": "约鲁巴语"
+  },
+  {
+    "iso_639_1": "ak",
+    "english_name": "Akan",
+    "native_name": "Ákán",
+    "cn_name": "阿坎语"
+  },
+  {
+    "iso_639_1": "an",
+    "english_name": "Aragonese",
+    "native_name": "Aragonés",
+    "cn_name": "阿拉贡语"
+  },
+  {
+    "iso_639_1": "bn",
+    "english_name": "Bengali",
+    "native_name": "বাংলা",
+    "cn_name": "孟加拉语"
+  },
+  {
+    "iso_639_1": "et",
+    "english_name": "Estonian",
+    "native_name": "Eesti",
+    "cn_name": "爱沙尼亚语"
+  },
+  {
+    "iso_639_1": "gl",
+    "english_name": "Galician",
+    "native_name": "Galego",
+    "cn_name": "加利西亚语"
+  },
+  {
+    "iso_639_1": "ha",
+    "english_name": "Hausa",
+    "native_name": "Hausa",
+    "cn_name": "豪萨语"
+  },
+  {
+    "iso_639_1": "ig",
+    "english_name": "Igbo",
+    "native_name": "",
+    "cn_name": "伊博语"
+  },
+  {
+    "iso_639_1": "iu",
+    "english_name": "Inuktitut",
+    "native_name": "",
+    "cn_name": "因纽特语"
+  },
+  {
+    "iso_639_1": "lg",
+    "english_name": "Ganda",
+    "native_name": "",
+    "cn_name": "干达语"
+  },
+  {
+    "iso_639_1": "mr",
+    "english_name": "Marathi",
+    "native_name": "",
+    "cn_name": "马拉地语"
+  },
+  {
+    "iso_639_1": "mt",
+    "english_name": "Maltese",
+    "native_name": "Malti",
+    "cn_name": "马耳他语"
+  },
+  {
+    "iso_639_1": "my",
+    "english_name": "Burmese",
+    "native_name": "",
+    "cn_name": "缅甸语"
+  },
+  {
+    "iso_639_1": "na",
+    "english_name": "Nauru",
+    "native_name": "",
+    "cn_name": "瑙鲁语"
+  },
+  {
+    "iso_639_1": "sd",
+    "english_name": "Sindhi",
+    "native_name": "",
+    "cn_name": "信德语"
+  },
+  {
+    "iso_639_1": "xh",
+    "english_name": "Xhosa",
+    "native_name": "",
+    "cn_name": "科萨语"
+  },
+  {
+    "iso_639_1": "za",
+    "english_name": "Zhuang",
+    "native_name": "",
+    "cn_name": "壮语"
+  },
+  {
+    "iso_639_1": "aa",
+    "english_name": "Afar",
+    "native_name": "Qafar af",
+    "cn_name": "阿法尔语"
+  },
+  {
+    "iso_639_1": "is",
+    "english_name": "Icelandic",
+    "native_name": "Íslenska",
+    "cn_name": "冰岛语"
+  },
+  {
+    "iso_639_1": "ty",
+    "english_name": "Tahitian",
+    "native_name": "",
+    "cn_name": "塔希提语"
+  },
+  {
+    "iso_639_1": "ti",
+    "english_name": "Tigrinya",
+    "native_name": "",
+    "cn_name": "提格利尼亚语"
+  },
+  {
+    "iso_639_1": "tk",
+    "english_name": "Turkmen",
+    "native_name": "",
+    "cn_name": "土库曼语"
+  },
+  {
+    "iso_639_1": "he",
+    "english_name": "Hebrew",
+    "native_name": "עִבְרִית",
+    "cn_name": "希伯来语"
+  }
+]

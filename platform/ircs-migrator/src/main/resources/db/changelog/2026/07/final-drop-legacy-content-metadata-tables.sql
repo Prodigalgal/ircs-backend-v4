@@ -1,0 +1,6 @@
+ALTER TABLE raw_videos
+    DROP COLUMN IF EXISTS data_source_category_id;
+
+DROP TABLE IF EXISTS raw_category CASCADE;
+DROP TABLE IF EXISTS actors CASCADE;
+DROP TABLE IF EXISTS directors CASCADE;

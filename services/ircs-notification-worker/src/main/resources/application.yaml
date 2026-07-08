@@ -1,0 +1,108 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: ircs-notification-worker
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:${RABBITMQ_HOST:localhost}}
+    port: ${RABBITMQ_PORT:${SPRING_RABBITMQ_PORT:5672}}
+    username: ${RABBITMQ_USERNAME:${SPRING_RABBITMQ_USERNAME:admin}}
+    password: ${SPRING_RABBITMQ_PASSWORD:${RABBITMQ_PASSWORD:}}
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:${DB_URL:jdbc:postgresql://localhost:5432/ircs?connectionTimeZone=UTC}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:postgres}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:}}
+    driver-class-name: org.postgresql.Driver
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:${REDIS_HOST:${VALKEY_HOST:localhost}}}
+      port: ${SPRING_DATA_REDIS_PORT:${REDIS_PORT:${VALKEY_PORT:6379}}}
+      password: ${SPRING_DATA_REDIS_PASSWORD:${REDIS_PASSWORD:${VALKEY_PASSWORD:}}}
+  mail:
+    host: ${APP_MAIL_HOST:${MAIL_HOST:${SPRING_MAIL_HOST:localhost}}}
+    port: ${APP_MAIL_PORT:${MAIL_PORT:${SPRING_MAIL_PORT:25}}}
+    username: ${APP_MAIL_USERNAME:${SPRING_MAIL_USERNAME:}}
+    password: ${APP_MAIL_PASSWORD:${SPRING_MAIL_PASSWORD:}}
+    protocol: ${APP_MAIL_PROTOCOL:${SPRING_MAIL_PROTOCOL:smtp}}
+    properties:
+      mail:
+        smtp:
+          auth: ${APP_MAIL_SMTP_AUTH:true}
+          starttls:
+            enable: ${APP_MAIL_STARTTLS_ENABLED:false}
+            required: ${APP_MAIL_STARTTLS_REQUIRED:false}
+          ssl:
+            enable: ${APP_MAIL_SSL_ENABLED:true}
+          connectiontimeout: ${APP_MAIL_TIMEOUT:10000}
+          timeout: ${APP_MAIL_TIMEOUT:10000}
+          writetimeout: ${APP_MAIL_TIMEOUT:10000}
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+
+app:
+  notification:
+    cluster-lock:
+      enabled: ${APP_NOTIFICATION_CLUSTER_LOCK_ENABLED:true}
+      ttl: ${APP_NOTIFICATION_CLUSTER_LOCK_TTL:PT10M}
+      worker-id: ${APP_NOTIFICATION_CLUSTER_LOCK_WORKER_ID:}
+    listener:
+      enabled: ${APP_NOTIFICATION_LISTENER_ENABLED:false}
+      command-enabled: ${APP_NOTIFICATION_COMMAND_LISTENER_ENABLED:${APP_NOTIFICATION_LISTENER_ENABLED:false}}
+    config-listener:
+      enabled: ${APP_NOTIFICATION_CONFIG_LISTENER_ENABLED:true}
+    webhook:
+      enabled: ${APP_NOTIFICATION_WEBHOOK_ENABLED:false}
+      request-timeout: ${APP_NOTIFICATION_WEBHOOK_REQUEST_TIMEOUT:5s}
+      max-retries: ${APP_NOTIFICATION_WEBHOOK_MAX_RETRIES:1}
+      max-payload-bytes: ${APP_NOTIFICATION_WEBHOOK_MAX_PAYLOAD_BYTES:65536}
+      user-agent: ${APP_NOTIFICATION_WEBHOOK_USER_AGENT:IRCS-Notification-Webhook/0.1}
+      allow-private-addresses: ${APP_NOTIFICATION_WEBHOOK_ALLOW_PRIVATE_ADDRESSES:false}
+    mail:
+      enabled: ${APP_MAIL_ENABLED:true}
+      from: ${APP_MAIL_FROM:${MAIL_FROM:}}
+      delivery-mode: ${APP_MAIL_DELIVERY_MODE:smtp}
+      credential-provider: ${APP_MAIL_CREDENTIAL_PROVIDER:static}
+      fake-failure-enabled: ${APP_MAIL_FAKE_FAILURE_ENABLED:false}
+      send-history:
+        enabled: ${APP_MAIL_SEND_HISTORY_ENABLED:false}
+        datasource-url: ${APP_MAIL_SEND_HISTORY_DATASOURCE_URL:${SPRING_DATASOURCE_URL:${DB_URL:}}}
+        username: ${APP_MAIL_SEND_HISTORY_USERNAME:${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:}}}
+        password: ${APP_MAIL_SEND_HISTORY_PASSWORD:${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:}}}
+        cleanup:
+          enabled: ${APP_MAIL_SEND_HISTORY_CLEANUP_ENABLED:false}
+          dry-run: ${APP_MAIL_SEND_HISTORY_CLEANUP_DRY_RUN:true}
+          execute-enabled: ${APP_MAIL_SEND_HISTORY_CLEANUP_EXECUTE_ENABLED:false}
+          retention-days: ${APP_MAIL_SEND_HISTORY_RETENTION_DAYS:180}
+          statuses: ${APP_MAIL_SEND_HISTORY_CLEANUP_STATUSES:}
+          batch-size: ${APP_MAIL_SEND_HISTORY_CLEANUP_BATCH_SIZE:500}
+          max-batches: ${APP_MAIL_SEND_HISTORY_CLEANUP_MAX_BATCHES:20}
+          rate-limit-delay-ms: ${APP_MAIL_SEND_HISTORY_CLEANUP_RATE_LIMIT_DELAY_MS:0}
+          exit-on-complete: ${APP_MAIL_SEND_HISTORY_CLEANUP_EXIT_ON_COMPLETE:false}
+      credential-service:
+        base-url: ${APP_MAIL_CREDENTIAL_SERVICE_BASE_URL:${APP_CREDENTIAL_SERVICE_BASE_URL:${CREDENTIAL_SERVICE_BASE_URL:http://localhost:8080}}}
+        lease-limit: ${APP_MAIL_CREDENTIAL_LEASE_LIMIT:20}
+        token: ${APP_MAIL_CREDENTIAL_SERVICE_TOKEN:}
+        service-id: ${APP_MAIL_CREDENTIAL_SERVICE_ID:notification-worker}
+        scopes: ${APP_MAIL_CREDENTIAL_SERVICE_SCOPES:credential:lease}
+        request-timeout: ${APP_MAIL_CREDENTIAL_SERVICE_REQUEST_TIMEOUT:10s}
+  worker:
+    audit:
+      enabled: ${APP_WORKER_AUDIT_ENABLED:true}
+      datasource-url: ${APP_WORKER_AUDIT_DATASOURCE_URL:${SPRING_DATASOURCE_URL:${DB_URL:}}}
+      username: ${APP_WORKER_AUDIT_USERNAME:${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:}}}
+      password: ${APP_WORKER_AUDIT_PASSWORD:${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:}}}
+      source: ${APP_WORKER_AUDIT_SOURCE:${spring.application.name}}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true

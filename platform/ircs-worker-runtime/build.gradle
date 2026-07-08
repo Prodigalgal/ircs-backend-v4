@@ -1,0 +1,24 @@
+dependencies {
+    implementation project(':services:ircs-aggregation-worker')
+    implementation project(':services:ircs-content-safety-service')
+    implementation project(':services:ircs-content-service')
+    implementation project(':services:ircs-ingestion-worker')
+    implementation project(':services:ircs-magnet-service')
+    implementation project(':services:ircs-metadata-worker')
+    implementation project(':services:ircs-normalization-worker')
+    implementation project(':services:ircs-notification-worker')
+    implementation project(':services:ircs-ops-alert-service')
+    implementation project(':services:ircs-ops-service')
+    implementation project(':services:ircs-scraper-service')
+    implementation project(':services:ircs-search-service')
+    implementation project(':services:ircs-storage-service')
+    implementation project(':services:ircs-task-service')
+}
+
+springBoot {
+    mainClass = 'com.prodigalgal.ircs.workerruntime.IrcsWorkerRuntimeApplication'
+}
+
+bootJar {
+    mainClass = 'com.prodigalgal.ircs.workerruntime.IrcsWorkerRuntimeApplication'
+}

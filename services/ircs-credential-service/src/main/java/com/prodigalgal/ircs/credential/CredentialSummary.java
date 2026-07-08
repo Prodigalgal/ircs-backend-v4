@@ -1,0 +1,83 @@
+package com.prodigalgal.ircs.credential;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+public record CredentialSummary(
+        UUID id,
+        Instant createdAt,
+        Instant updatedAt,
+        long revision,
+        String provider,
+        String name,
+        String fingerprintSuffix,
+        Map<String, Object> payload,
+        boolean enabled,
+        Integer priority,
+        Integer rateLimit,
+        String rateLimitUnit,
+        Long dayLimit,
+        Long monthLimit,
+        Long classALimit,
+        Long classBLimit,
+        String remark,
+        Long currentDayUsage,
+        Long currentMonthUsage,
+        Long currentClassAUsage,
+        Long currentClassBUsage,
+        Double currentTps,
+        Long currentTpm,
+        List<String> payloadKeys) {
+    public CredentialSummary(
+            UUID id,
+            Instant createdAt,
+            Instant updatedAt,
+            String provider,
+            String name,
+            String fingerprintSuffix,
+            Map<String, Object> payload,
+            boolean enabled,
+            Integer priority,
+            Integer rateLimit,
+            String rateLimitUnit,
+            Long dayLimit,
+            Long monthLimit,
+            Long classALimit,
+            Long classBLimit,
+            String remark,
+            Long currentDayUsage,
+            Long currentMonthUsage,
+            Long currentClassAUsage,
+            Long currentClassBUsage,
+            Double currentTps,
+            Long currentTpm,
+            List<String> payloadKeys) {
+        this(
+                id,
+                createdAt,
+                updatedAt,
+                0L,
+                provider,
+                name,
+                fingerprintSuffix,
+                payload,
+                enabled,
+                priority,
+                rateLimit,
+                rateLimitUnit,
+                dayLimit,
+                monthLimit,
+                classALimit,
+                classBLimit,
+                remark,
+                currentDayUsage,
+                currentMonthUsage,
+                currentClassAUsage,
+                currentClassBUsage,
+                currentTps,
+                currentTpm,
+                payloadKeys);
+    }
+}

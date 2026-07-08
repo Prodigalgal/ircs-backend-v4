@@ -1,0 +1,9 @@
+dependencies {
+    implementation project(':shared:ircs-common')
+    implementation project(':shared:ircs-messaging')
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.jsoup:jsoup:1.21.2'
+    runtimeOnly 'org.postgresql:postgresql'
+}

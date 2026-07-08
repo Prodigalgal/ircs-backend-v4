@@ -1,0 +1,140 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ircs-ops-service
+  namespace: ircs-dev
+  labels:
+    app: ircs-ops-service
+    app.kubernetes.io/part-of: ircs
+    environment: dev
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ircs-ops-service
+  template:
+    metadata:
+      labels:
+        app: ircs-ops-service
+        app.kubernetes.io/part-of: ircs
+        environment: dev
+      annotations:
+        ircs.prodigalgal.com/no-public-route: "true"
+    spec:
+      imagePullSecrets:
+        - name: harbor-secret
+      containers:
+        - name: app
+          image: harbor.mnnu.eu.org/ircs/ircs-ops-service:030-rabbit-metrics-20260614-0811
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: ircs-dev-app-config
+          env:
+            - name: SPRING_APPLICATION_NAME
+              value: ircs-ops-service
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: ircs-dev-app-config
+                  key: DB_URL
+            - name: SPRING_DATASOURCE_USERNAME
+              value: postgres
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ircs-dev-secrets
+                  key: DB_PASSWORD
+            - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+              value: "2"
+            - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+              value: "0"
+            - name: SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT
+              value: "30000"
+            - name: SPRING_RABBITMQ_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: ircs-dev-app-config
+                  key: RABBITMQ_HOST
+            - name: SPRING_RABBITMQ_USERNAME
+              value: admin
+            - name: SPRING_RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ircs-dev-secrets
+                  key: RABBITMQ_PASSWORD
+            - name: APP_OPS_CONFIG_LISTENER_ENABLED
+              value: "true"
+            - name: APP_OPS_INTERNAL_ACCESS_REQUIRE_TOKEN
+              value: "true"
+            - name: APP_OPS_INTERNAL_ACCESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: ircs-dev-secrets
+                  key: INTERNAL_CREDENTIAL_TOKEN
+            - name: APP_OPS_INTERNAL_ACCESS_READ_SCOPE
+              value: ops:read
+            - name: APP_OPS_INTERNAL_ACCESS_RUN_SCOPE
+              value: ops:run
+            - name: OPS_MAINTENANCE_REINDEX_DEV_LIMIT
+              value: "5"
+            - name: APP_OPS_MAINTENANCE_SCHEDULER_ENABLED
+              value: "false"
+            - name: APP_OPS_MAINTENANCE_SCHEDULER_DRY_RUN
+              value: "true"
+            - name: APP_OPS_MAINTENANCE_SCHEDULER_EXECUTE_ENABLED
+              value: "true"
+            - name: APP_OPS_MAINTENANCE_SCHEDULER_TASKS
+              value: search-reindex-unified
+            - name: APP_OPS_SEARCH_SERVICE_BASE_URL
+              value: http://ircs-search-service.ircs-dev.svc.cluster.local:8080
+            - name: APP_OPS_NORMALIZATION_WORKER_BASE_URL
+              value: http://ircs-normalization-worker.ircs-dev.svc.cluster.local:8080
+            - name: APP_OPS_NORMALIZATION_LLM_REQUEST_TIMEOUT
+              value: 5m
+          startupProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            failureThreshold: 30
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 25m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ircs-ops-service
+  namespace: ircs-dev
+  labels:
+    app: ircs-ops-service
+    app.kubernetes.io/part-of: ircs
+    environment: dev
+spec:
+  type: ClusterIP
+  selector:
+    app: ircs-ops-service
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http

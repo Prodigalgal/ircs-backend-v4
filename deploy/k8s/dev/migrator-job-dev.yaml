@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ircs-migrator
+  namespace: ircs-dev
+  labels:
+    app: ircs-migrator
+    app.kubernetes.io/part-of: ircs
+    environment: dev
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 300
+  template:
+    metadata:
+      labels:
+        app: ircs-migrator
+        app.kubernetes.io/part-of: ircs
+        environment: dev
+    spec:
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: harbor-secret
+      containers:
+        - name: migrator
+          image: harbor.mnnu.eu.org/ircs/ircs-migrator:dev
+          imagePullPolicy: Always
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: ircs-dev-app-config
+                  key: DB_URL
+            - name: SPRING_DATASOURCE_USERNAME
+              value: postgres
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ircs-dev-secrets
+                  key: DB_PASSWORD
+            - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+              value: "2"
+            - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+              value: "0"
+            - name: SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT
+              value: "30000"
+          resources:
+            requests:
+              cpu: 25m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 512Mi

@@ -1,0 +1,15 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    api project(':shared:ircs-contracts')
+    compileOnly 'com.fasterxml.jackson.core:jackson-databind'
+    compileOnly 'org.springframework.amqp:spring-amqp'
+    compileOnly 'org.springframework.amqp:spring-rabbit'
+    compileOnly 'org.springframework:spring-context'
+    compileOnly 'org.springframework.boot:spring-boot-autoconfigure'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind'
+    testImplementation 'org.springframework.amqp:spring-amqp'
+    testImplementation 'org.springframework.amqp:spring-rabbit'
+}

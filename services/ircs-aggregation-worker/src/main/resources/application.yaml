@@ -1,0 +1,79 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: ircs-aggregation-worker
+  task:
+    scheduling:
+      pool:
+        size: ${APP_AGGREGATION_SCHEDULING_POOL_SIZE:4}
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:${RABBITMQ_HOST:localhost}}
+    port: ${RABBITMQ_PORT:${SPRING_RABBITMQ_PORT:5672}}
+    username: ${RABBITMQ_USERNAME:${SPRING_RABBITMQ_USERNAME:admin}}
+    password: ${SPRING_RABBITMQ_PASSWORD:${RABBITMQ_PASSWORD:}}
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:${DB_URL:jdbc:postgresql://localhost:5432/ircs?connectionTimeZone=UTC}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:postgres}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:}}
+    driver-class-name: org.postgresql.Driver
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:${REDIS_HOST:${VALKEY_HOST:localhost}}}
+      port: ${SPRING_DATA_REDIS_PORT:${REDIS_PORT:${VALKEY_PORT:6379}}}
+      password: ${SPRING_DATA_REDIS_PASSWORD:${REDIS_PASSWORD:${VALKEY_PASSWORD:}}}
+
+app:
+  aggregation:
+    work-queue:
+      worker:
+        initial-delay-ms: ${APP_AGGREGATION_WORK_QUEUE_INITIAL_DELAY_MS:10000}
+        fixed-delay-ms: ${APP_AGGREGATION_WORK_QUEUE_FIXED_DELAY_MS:1000}
+        batch-size: ${APP_AGGREGATION_WORK_QUEUE_BATCH_SIZE:100}
+        processing-chunk-size: ${APP_AGGREGATION_WORK_QUEUE_PROCESSING_CHUNK_SIZE:5}
+        processing-stall-threshold: ${APP_AGGREGATION_WORK_QUEUE_WORKER_PROCESSING_STALL_THRESHOLD:PT10M}
+        visibility-seconds: ${APP_AGGREGATION_WORK_QUEUE_VISIBILITY_SECONDS:600}
+        max-retries: ${APP_AGGREGATION_WORK_QUEUE_MAX_RETRIES:8}
+        max-backoff-seconds: ${APP_AGGREGATION_WORK_QUEUE_MAX_BACKOFF_SECONDS:900}
+        worker-id: ${APP_AGGREGATION_WORK_QUEUE_WORKER_ID:}
+    jdbc:
+      query-timeout-seconds: ${APP_AGGREGATION_JDBC_QUERY_TIMEOUT_SECONDS:30}
+    pipeline:
+      stage-transaction-timeout-seconds: ${APP_AGGREGATION_PIPELINE_STAGE_TRANSACTION_TIMEOUT_SECONDS:30}
+    stuck-timeout-minutes: ${APP_AGGREGATION_STUCK_TIMEOUT_MINUTES:30}
+    match-lock:
+      enabled: ${APP_AGGREGATION_MATCH_LOCK_ENABLED:true}
+      ttl: ${APP_AGGREGATION_MATCH_LOCK_TTL:PT10M}
+      worker-id: ${APP_AGGREGATION_MATCH_LOCK_WORKER_ID:}
+    context-search:
+      enabled: ${APP_AGGREGATION_CONTEXT_SEARCH_ENABLED:true}
+      base-url: ${APP_AGGREGATION_CONTEXT_SEARCH_BASE_URL:${APP_SEARCH_SERVICE_BASE_URL:http://ircs-search-service:8080}}
+    content-safety:
+      enabled: ${APP_AGGREGATION_CONTENT_SAFETY_ENABLED:true}
+      base-url: ${APP_AGGREGATION_CONTENT_SAFETY_BASE_URL:${APP_CONTENT_SAFETY_SERVICE_BASE_URL:http://ircs-content-safety-service:8080}}
+      service-id: ${APP_AGGREGATION_CONTENT_SAFETY_SERVICE_ID:${spring.application.name}}
+      service-token: ${APP_AGGREGATION_CONTENT_SAFETY_SERVICE_TOKEN:${APP_CONTENT_SAFETY_SERVICE_TOKEN:}}
+      scopes: ${APP_AGGREGATION_CONTENT_SAFETY_SCOPES:content-safety:assess}
+      request-timeout: ${APP_AGGREGATION_CONTENT_SAFETY_REQUEST_TIMEOUT:PT30S}
+    internal-access:
+      require-token: ${APP_AGGREGATION_INTERNAL_ACCESS_REQUIRE_TOKEN:false}
+      token: ${APP_AGGREGATION_SERVICE_TOKEN:}
+      required-scope: ${APP_AGGREGATION_INTERNAL_ACCESS_REQUIRED_SCOPE:aggregation:maintenance}
+  worker:
+    audit:
+      enabled: ${APP_WORKER_AUDIT_ENABLED:true}
+      datasource-url: ${APP_WORKER_AUDIT_DATASOURCE_URL:${SPRING_DATASOURCE_URL:${DB_URL:${spring.datasource.url:}}}}
+      username: ${APP_WORKER_AUDIT_USERNAME:${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:${spring.datasource.username:}}}}
+      password: ${APP_WORKER_AUDIT_PASSWORD:${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:${spring.datasource.password:}}}}
+      source: ${APP_WORKER_AUDIT_SOURCE:${spring.application.name}}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true

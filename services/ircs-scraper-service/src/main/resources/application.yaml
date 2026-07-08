@@ -1,0 +1,83 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: ircs-scraper-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:${DB_URL:jdbc:postgresql://localhost:5432/ircs?connectionTimeZone=UTC}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:postgres}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:}}
+    driver-class-name: org.postgresql.Driver
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:${RABBITMQ_HOST:localhost}}
+    port: ${RABBITMQ_PORT:${SPRING_RABBITMQ_PORT:5672}}
+    username: ${RABBITMQ_USERNAME:${SPRING_RABBITMQ_USERNAME:admin}}
+    password: ${SPRING_RABBITMQ_PASSWORD:${RABBITMQ_PASSWORD:}}
+    listener:
+      simple:
+        auto-startup: ${APP_SCRAPER_TASK_QUEUE_LISTENER_ENABLED:false}
+        default-requeue-rejected: false
+        prefetch: ${APP_SCRAPER_RABBIT_PREFETCH:1}
+        concurrency: ${APP_SCRAPER_RABBIT_CONCURRENCY:2}
+        max-concurrency: ${APP_SCRAPER_RABBIT_MAX_CONCURRENCY:2}
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:${REDIS_HOST:localhost}}
+      port: ${SPRING_DATA_REDIS_PORT:${REDIS_PORT:6379}}
+      password: ${SPRING_DATA_REDIS_PASSWORD:${REDIS_PASSWORD:}}
+
+app:
+  scraper:
+    direct-items-enabled: ${APP_SCRAPER_DIRECT_ITEMS_ENABLED:true}
+    http-timeout-ms: ${APP_SCRAPER_HTTP_TIMEOUT_MS:20000}
+    traffic:
+      enabled: ${APP_SCRAPER_TRAFFIC_ENABLED:true}
+      source-enabled: ${APP_SCRAPER_TRAFFIC_SOURCE_ENABLED:true}
+      default-gap-ms: ${APP_SCRAPER_TRAFFIC_DEFAULT_GAP_MS:1000}
+      max-wait: ${APP_SCRAPER_TRAFFIC_MAX_WAIT:PT2M}
+      ttl: ${APP_SCRAPER_TRAFFIC_TTL:PT10M}
+    task-queue:
+      listener-enabled: ${APP_SCRAPER_TASK_QUEUE_LISTENER_ENABLED:false}
+      retry:
+        max-retries: ${APP_SCRAPER_TASK_QUEUE_RETRY_MAX_RETRIES:3}
+    internal-access:
+      require-token: ${APP_SCRAPER_INTERNAL_ACCESS_REQUIRE_TOKEN:false}
+      token: ${APP_SCRAPER_SERVICE_TOKEN:}
+      required-scope: ${APP_SCRAPER_INTERNAL_ACCESS_REQUIRED_SCOPE:scraper:maintenance}
+    trend-sync:
+      douban-enabled: ${APP_SCRAPER_TREND_SYNC_DOUBAN_ENABLED:true}
+      tmdb-enabled: ${APP_SCRAPER_TREND_SYNC_TMDB_ENABLED:true}
+      tmdb-api-key: ${APP_SCRAPER_TMDB_API_KEY:${TMDB_API_KEY:}}
+      discovery-enabled: ${APP_SCRAPER_TREND_DISCOVERY_ENABLED:true}
+      discovery-max-data-sources: ${APP_SCRAPER_TREND_DISCOVERY_MAX_DATA_SOURCES:0}
+      provider-timeout: ${APP_SCRAPER_TREND_SYNC_PROVIDER_TIMEOUT:PT20S}
+      max-provider-items: ${APP_SCRAPER_TREND_SYNC_MAX_PROVIDER_ITEMS:100}
+      content-owner-base-url: ${APP_SCRAPER_CONTENT_SERVICE_BASE_URL:http://ircs-content-service.ircs-dev.svc.cluster.local:8080}
+      content-owner-request-timeout: ${APP_SCRAPER_CONTENT_SERVICE_REQUEST_TIMEOUT:PT30S}
+      content-owner-service-id: ${APP_SCRAPER_SERVICE_ID:scraper-service}
+      content-owner-service-token: ${APP_SCRAPER_CONTENT_SERVICE_TOKEN:${APP_CONTENT_SERVICE_TOKEN:}}
+      content-owner-scopes: ${APP_SCRAPER_CONTENT_SERVICE_SCOPES:content:maintenance}
+      task-owner-base-url: ${APP_SCRAPER_TASK_SERVICE_BASE_URL:http://ircs-task-service.ircs-dev.svc.cluster.local:8080}
+      task-owner-request-timeout: ${APP_SCRAPER_TASK_SERVICE_REQUEST_TIMEOUT:PT30S}
+      task-owner-service-id: ${APP_SCRAPER_SERVICE_ID:scraper-service}
+      task-owner-service-token: ${APP_SCRAPER_TASK_SERVICE_TOKEN:${APP_TASK_SERVICE_TOKEN:}}
+      task-owner-scopes: ${APP_SCRAPER_TASK_SERVICE_SCOPES:task:maintenance}
+      credential-service:
+        enabled: ${APP_SCRAPER_CREDENTIAL_SERVICE_ENABLED:true}
+        base-url: ${APP_SCRAPER_CREDENTIAL_SERVICE_BASE_URL:${APP_CREDENTIAL_SERVICE_BASE_URL:http://ircs-credential-service.ircs-dev.svc.cluster.local:8080}}
+        lease-limit: ${APP_SCRAPER_CREDENTIAL_SERVICE_LEASE_LIMIT:1}
+        token: ${APP_SCRAPER_CREDENTIAL_SERVICE_TOKEN:${APP_CREDENTIAL_SERVICE_TOKEN:${SERVICE_CREDENTIAL_TOKEN:}}}
+        service-id: ${APP_SCRAPER_CREDENTIAL_SERVICE_ID:scraper-service}
+        scopes: ${APP_SCRAPER_CREDENTIAL_SERVICE_SCOPES:credential:lease}
+        request-timeout: ${APP_SCRAPER_CREDENTIAL_SERVICE_REQUEST_TIMEOUT:PT10S}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true

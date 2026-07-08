@@ -1,0 +1,29 @@
+{
+  "index": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0,
+    "analysis": {
+      "analyzer": {
+        "pinyin": {
+          "tokenizer": "my_pinyin",
+          "filter": [
+            "word_delimiter",
+            "lowercase"
+          ]
+        }
+      },
+      "tokenizer": {
+        "my_pinyin": {
+          "type": "pinyin",
+          "keep_first_letter": true,
+          "keep_separate_first_letter": false,
+          "keep_full_pinyin": true,
+          "keep_original": true,
+          "limit_first_letter_length": 16,
+          "lowercase": true,
+          "remove_duplicated_term": true
+        }
+      }
+    }
+  }
+}

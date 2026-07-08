@@ -1,0 +1,45 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: ircs-ingestion-worker
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:${RABBITMQ_HOST:localhost}}
+    port: ${RABBITMQ_PORT:${SPRING_RABBITMQ_PORT:5672}}
+    username: ${RABBITMQ_USERNAME:${SPRING_RABBITMQ_USERNAME:admin}}
+    password: ${SPRING_RABBITMQ_PASSWORD:${RABBITMQ_PASSWORD:}}
+    listener:
+      simple:
+        auto-startup: ${APP_INGESTION_LISTENER_ENABLED:false}
+        default-requeue-rejected: false
+        prefetch: ${APP_INGESTION_RABBIT_PREFETCH:1}
+        concurrency: ${APP_INGESTION_RABBIT_CONCURRENCY:1}
+        max-concurrency: ${APP_INGESTION_RABBIT_MAX_CONCURRENCY:1}
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:${DB_URL:jdbc:postgresql://localhost:5432/ircs?connectionTimeZone=UTC}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:postgres}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:}}
+    driver-class-name: org.postgresql.Driver
+
+app:
+  worker:
+    audit:
+      enabled: ${APP_WORKER_AUDIT_ENABLED:true}
+      datasource-url: ${APP_WORKER_AUDIT_DATASOURCE_URL:${SPRING_DATASOURCE_URL:${DB_URL:${spring.datasource.url:}}}}
+      username: ${APP_WORKER_AUDIT_USERNAME:${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:${spring.datasource.username:}}}}
+      password: ${APP_WORKER_AUDIT_PASSWORD:${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:${spring.datasource.password:}}}}
+      source: ${APP_WORKER_AUDIT_SOURCE:${spring.application.name:ircs-ingestion-worker}}
+  ingestion:
+    listener:
+      enabled: ${APP_INGESTION_LISTENER_ENABLED:false}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true

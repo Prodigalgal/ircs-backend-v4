@@ -1,0 +1,44 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: ircs-magnet-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:${DB_URL:jdbc:postgresql://localhost:5432/ircs?connectionTimeZone=UTC}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:postgres}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:}}
+    driver-class-name: org.postgresql.Driver
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:${REDIS_HOST:${VALKEY_HOST:localhost}}}
+      port: ${SPRING_DATA_REDIS_PORT:${REDIS_PORT:${VALKEY_PORT:6379}}}
+      password: ${SPRING_DATA_REDIS_PASSWORD:${REDIS_PASSWORD:${VALKEY_PASSWORD:}}}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+app:
+  magnet:
+    real-provider:
+      enabled: ${APP_MAGNET_REAL_PROVIDER_ENABLED:false}
+      allowlist: ${APP_MAGNET_REAL_PROVIDER_ALLOWLIST:YTS_BZ,THE_PIRATE_BAY,EZTV,EXT_TO,THE_PIRATE_BAY_FRONTEND}
+    auto-search:
+      enabled: ${APP_MAGNET_AUTO_SEARCH_ENABLED:false}
+      batch-size: ${APP_MAGNET_AUTO_SEARCH_BATCH_SIZE:10}
+      cooldown: ${APP_MAGNET_AUTO_SEARCH_COOLDOWN:PT12H}
+      initial-delay-ms: ${APP_MAGNET_AUTO_SEARCH_INITIAL_DELAY_MS:60000}
+      fixed-delay-ms: ${APP_MAGNET_AUTO_SEARCH_FIXED_DELAY_MS:300000}
+    traffic:
+      enabled: ${APP_MAGNET_TRAFFIC_ENABLED:true}
+      default-gap-ms: ${APP_MAGNET_TRAFFIC_DEFAULT_GAP_MS:3000}
+      provider-gap-ms: ${APP_MAGNET_TRAFFIC_PROVIDER_GAP_MS:}
+      max-wait: ${APP_MAGNET_TRAFFIC_MAX_WAIT:PT2M}
+      ttl: ${APP_MAGNET_TRAFFIC_TTL:PT10M}

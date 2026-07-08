@@ -1,0 +1,128 @@
+name: build-and-push
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - "v*"
+    paths:
+      - ".gitea/workflows/build-and-push.yml"
+      - "build.gradle"
+      - "settings.gradle"
+      - "gradle/**"
+      - "gradlew"
+      - "platform/**"
+      - "services/**"
+      - "shared/**"
+      - "scripts/ci/**"
+  workflow_dispatch:
+    inputs:
+      build_scope:
+        description: "affected, all, or comma-separated service image names"
+        required: false
+        default: "affected"
+      image_mode:
+        description: "jvm or native"
+        required: false
+        default: "jvm"
+
+jobs:
+  backend-images:
+    runs-on: ubuntu-22.04
+    env:
+      REGISTRY: registry.mnnu.eu.org/ircs
+      PROD_CONFIG_REPO_URL: https://gitea.mnnu.eu.org/admin/ircs-prod-config-v4.git
+      PROD_CONFIG_REPO_BRANCH: main
+      TARGET_PLATFORMS: linux/arm64,linux/amd64
+      REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+      REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+      PUSH_USERNAME: ${{ secrets.PUSH_USERNAME }}
+      PUSH_PASSWORD: ${{ secrets.PUSH_PASSWORD }}
+      BUILD_SCOPE_INPUT: ${{ inputs.build_scope }}
+      IMAGE_MODE_INPUT: ${{ inputs.image_mode }}
+      BASE_IMAGE_SOURCE: mirror.gcr.io/library/eclipse-temurin:25-jre-alpine
+      BASE_IMAGE_FALLBACK: public.ecr.aws/docker/library/eclipse-temurin:25-jre-alpine
+      BASE_IMAGE_TARGET: registry.mnnu.eu.org/ircs/base/eclipse-temurin:25-jre-alpine
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+
+      - name: Set up Docker multi-platform builder
+        shell: bash
+        run: |
+          docker run --privileged --rm tonistiigi/binfmt --install arm64,amd64
+          docker buildx inspect ircs-builder >/dev/null 2>&1 || docker buildx create --name ircs-builder --use
+          docker buildx use ircs-builder
+          docker buildx inspect --bootstrap
+
+      - name: Sync Jib base image
+        shell: bash
+        run: |
+          if [[ "${IMAGE_MODE_INPUT:-jvm}" == "native" ]]; then
+            echo "IMAGE_MODE=native, skipping Jib base image sync."
+            exit 0
+          fi
+          chmod +x scripts/ci/sync-jib-base-image.sh
+          scripts/ci/sync-jib-base-image.sh
+
+      - name: Build and push images
+        shell: bash
+        run: |
+          chmod +x gradlew
+          chmod +x scripts/ci/jib-build-push-affected.sh
+          REF_TYPE="${GITHUB_REF_TYPE:-${GITEA_REF_TYPE:-}}"
+          REF_NAME="${GITHUB_REF_NAME:-${GITEA_REF_NAME:-}}"
+          if [[ "${REF_TYPE}" == "tag" ]]; then
+            export IMAGE_TAG="${REF_NAME}"
+          else
+            export IMAGE_TAG="sha-$(git rev-parse --short=12 HEAD)"
+          fi
+          export BUILD_SCOPE="${BUILD_SCOPE_INPUT:-affected}"
+          export IMAGE_MODE="${IMAGE_MODE_INPUT:-jvm}"
+          scripts/ci/jib-build-push-affected.sh
+
+      - name: Update production config image tags
+        shell: bash
+        run: |
+          set -euo pipefail
+          REF_TYPE="${GITHUB_REF_TYPE:-${GITEA_REF_TYPE:-}}"
+          if [[ "${REF_TYPE}" == "tag" ]]; then
+            echo "Tag build detected; production manifests are not rewritten from release tags."
+            exit 0
+          fi
+          if [[ -z "${PUSH_USERNAME:-}" || -z "${PUSH_PASSWORD:-}" ]]; then
+            echo "PUSH_USERNAME and PUSH_PASSWORD are required to push image tag updates." >&2
+            exit 2
+          fi
+
+          auth="$(printf '%s:%s' "${PUSH_USERNAME}" "${PUSH_PASSWORD}" | base64 -w0)"
+          git -c http.extraHeader="Authorization: Basic ${auth}" clone --depth 1 --branch "${PROD_CONFIG_REPO_BRANCH}" "${PROD_CONFIG_REPO_URL}" prod-config-repo
+
+          chmod +x scripts/ci/update-prod-image-tags.sh
+          export PROD_K8S_DIR="prod-config-repo/ircs-prod"
+          scripts/ci/update-prod-image-tags.sh build-image-manifest.txt
+
+          cd prod-config-repo
+          if git diff --quiet -- ircs-prod; then
+            echo "No production manifest image changes."
+            exit 0
+          fi
+          git config user.name "gitea-actions"
+          git config user.email "actions@mnnu.eu.org"
+          git add ircs-prod
+          git commit -m "ci: update ircs image tags"
+          git -c http.extraHeader="Authorization: Basic ${auth}" push origin "HEAD:${PROD_CONFIG_REPO_BRANCH}"
+
+      - name: Print image manifest
+        shell: bash
+        run: cat build-image-manifest.txt

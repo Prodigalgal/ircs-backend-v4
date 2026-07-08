@@ -1,0 +1,11 @@
+.git
+.gradle
+.idea
+.playwright-cli
+.playwright-mcp
+build
+**/build
+**/.pytest_cache
+**/__pycache__
+**/*.pyc
+build-image-manifest.txt

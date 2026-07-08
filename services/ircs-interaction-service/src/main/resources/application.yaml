@@ -1,0 +1,43 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: ircs-interaction-service
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:${RABBITMQ_HOST:localhost}}
+    port: ${RABBITMQ_PORT:${SPRING_RABBITMQ_PORT:5672}}
+    username: ${RABBITMQ_USERNAME:${SPRING_RABBITMQ_USERNAME:admin}}
+    password: ${SPRING_RABBITMQ_PASSWORD:${RABBITMQ_PASSWORD:}}
+    listener:
+      simple:
+        auto-startup: ${APP_INTERACTION_LISTENER_ENABLED:false}
+        default-requeue-rejected: false
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:${DB_URL:jdbc:postgresql://localhost:5432/ircs?connectionTimeZone=UTC}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:postgres}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:}}
+    driver-class-name: org.postgresql.Driver
+
+app:
+  interaction:
+    listener:
+      enabled: ${APP_INTERACTION_LISTENER_ENABLED:false}
+    config-listener:
+      enabled: ${APP_INTERACTION_CONFIG_LISTENER_ENABLED:true}
+  identity:
+    jwt:
+      secret: ${APP_IDENTITY_JWT_SECRET:}
+      iat-floor: ${APP_IDENTITY_JWT_IAT_FLOOR:0}
+  storage:
+    r2-public-domain: ${APP_STORAGE_R2_PUBLIC_DOMAIN:${R2_PUBLIC_DOMAIN:}}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true

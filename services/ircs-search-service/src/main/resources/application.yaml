@@ -1,0 +1,99 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: ircs-search-service
+  task:
+    scheduling:
+      pool:
+        size: ${APP_SEARCH_SCHEDULING_POOL_SIZE:4}
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:${RABBITMQ_HOST:localhost}}
+    port: ${RABBITMQ_PORT:${SPRING_RABBITMQ_PORT:5672}}
+    username: ${RABBITMQ_USERNAME:${SPRING_RABBITMQ_USERNAME:admin}}
+    password: ${SPRING_RABBITMQ_PASSWORD:${RABBITMQ_PASSWORD:}}
+    listener:
+      simple:
+        auto-startup: false
+        default-requeue-rejected: false
+  elasticsearch:
+    uris: ${SPRING_ELASTICSEARCH_URIS:${ELASTICSEARCH_URIS:http://localhost:9200}}
+    username: ${SPRING_ELASTICSEARCH_USERNAME:${ELASTICSEARCH_USERNAME:elastic}}
+    password: ${SPRING_ELASTICSEARCH_PASSWORD:${ELASTICSEARCH_PASSWORD:}}
+    connection-timeout: ${SPRING_ELASTICSEARCH_CONNECTION_TIMEOUT:5s}
+    socket-timeout: ${SPRING_ELASTICSEARCH_SOCKET_TIMEOUT:10s}
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:${DB_URL:jdbc:postgresql://localhost:5432/ircs?connectionTimeZone=UTC}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:postgres}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:}}
+    driver-class-name: org.postgresql.Driver
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:${REDIS_HOST:${VALKEY_HOST:localhost}}}
+      port: ${SPRING_DATA_REDIS_PORT:${REDIS_PORT:${VALKEY_PORT:6379}}}
+      password: ${SPRING_DATA_REDIS_PASSWORD:${REDIS_PASSWORD:${VALKEY_PASSWORD:}}}
+
+app:
+  audit:
+    es-replication:
+      enabled: ${APP_AUDIT_ES_REPLICATION_ENABLED:true}
+  log-retention:
+    enabled: ${APP_LOG_RETENTION_ENABLED:true}
+    default-retention: ${APP_LOG_RETENTION_DEFAULT_RETENTION:P30D}
+    initial-delay-ms: ${APP_LOG_RETENTION_INITIAL_DELAY_MS:60000}
+    fixed-delay-ms: ${APP_LOG_RETENTION_FIXED_DELAY_MS:3600000}
+    target:
+      audit-es:
+        enabled: ${APP_LOG_RETENTION_TARGET_AUDIT_ES_ENABLED:true}
+        retention: ${APP_LOG_RETENTION_TARGET_AUDIT_ES_RETENTION:${APP_LOG_RETENTION_DEFAULT_RETENTION:P30D}}
+  search:
+    internal-access:
+      token: ${APP_SEARCH_SERVICE_TOKEN:}
+      require-token: ${APP_SEARCH_SERVICE_REQUIRE_TOKEN:false}
+      required-scope: ${APP_SEARCH_SERVICE_REQUIRED_SCOPE:search:sync}
+      max-batch-size: ${APP_SEARCH_SERVICE_MAX_BATCH_SIZE:1000}
+    work-queue:
+      worker:
+        enabled: ${APP_SEARCH_WORK_QUEUE_WORKER_ENABLED:false}
+        initial-delay-ms: ${APP_SEARCH_WORK_QUEUE_INITIAL_DELAY_MS:10000}
+        fixed-rate-ms: ${APP_SEARCH_WORK_QUEUE_FIXED_RATE_MS:1000}
+        batch-size: ${APP_SEARCH_WORK_QUEUE_BATCH_SIZE:100}
+        max-retries: ${APP_SEARCH_WORK_QUEUE_MAX_RETRIES:5}
+        visibility-seconds: ${APP_SEARCH_WORK_QUEUE_VISIBILITY_SECONDS:300}
+        max-backoff-seconds: ${APP_SEARCH_WORK_QUEUE_MAX_BACKOFF_SECONDS:300}
+        worker-id: ${APP_SEARCH_WORK_QUEUE_WORKER_ID:}
+    audit-es-replication:
+      worker:
+        fixed-rate-ms: ${APP_SEARCH_AUDIT_ES_REPLICATION_WORKER_FIXED_RATE_MS:1000}
+        heartbeat-fixed-rate-ms: ${APP_SEARCH_AUDIT_ES_REPLICATION_WORKER_HEARTBEAT_FIXED_RATE_MS:15000}
+    sync:
+      jdbc-query-timeout-seconds: ${APP_SEARCH_SYNC_JDBC_QUERY_TIMEOUT_SECONDS:30}
+    cache:
+      portal-public-version-key: ${APP_SEARCH_CACHE_PORTAL_PUBLIC_VERSION_KEY:ircs:cache:search.portal.public.version}
+      portal-version-refresh-interval: ${APP_SEARCH_CACHE_PORTAL_VERSION_REFRESH_INTERVAL:PT2S}
+    reconciliation:
+      enabled: ${APP_SEARCH_RECONCILIATION_ENABLED:false}
+      cron: ${APP_SEARCH_RECONCILIATION_CRON:0 0 3 * * ?}
+      batch-size: ${APP_SEARCH_RECONCILIATION_BATCH_SIZE:100}
+      max-batches: ${APP_SEARCH_RECONCILIATION_MAX_BATCHES:20}
+      dry-run: ${APP_SEARCH_RECONCILIATION_DRY_RUN:true}
+      execute-gate: ${APP_SEARCH_RECONCILIATION_EXECUTE_GATE:true}
+    cluster-lock:
+      enabled: ${APP_SEARCH_CLUSTER_LOCK_ENABLED:true}
+      ttl: ${APP_SEARCH_CLUSTER_LOCK_TTL:PT10M}
+      worker-id: ${APP_SEARCH_CLUSTER_LOCK_WORKER_ID:}
+    config-listener:
+      enabled: ${APP_SEARCH_CONFIG_LISTENER_ENABLED:true}
+  storage:
+    r2-public-domain: ${APP_STORAGE_R2_PUBLIC_DOMAIN:${R2_PUBLIC_DOMAIN:}}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true

@@ -1,0 +1,22 @@
+dependencies {
+    implementation project(':services:ircs-api-gateway')
+    implementation project(':services:ircs-catalog-service')
+    implementation project(':services:ircs-config-service')
+    implementation project(':services:ircs-content-service')
+    implementation project(':services:ircs-credential-service')
+    implementation project(':services:ircs-identity-service')
+    implementation project(':services:ircs-interaction-service')
+    implementation project(':services:ircs-ops-service')
+    implementation project(':services:ircs-portal-service')
+    implementation project(':services:ircs-search-service')
+    implementation project(':services:ircs-storage-service')
+    implementation project(':services:ircs-task-service')
+}
+
+springBoot {
+    mainClass = 'com.prodigalgal.ircs.platformapi.IrcsPlatformApiApplication'
+}
+
+bootJar {
+    mainClass = 'com.prodigalgal.ircs.platformapi.IrcsPlatformApiApplication'
+}

@@ -1,0 +1,101 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: valkey-svc
+  namespace: ircs-dev
+  labels:
+    app: valkey
+    app.kubernetes.io/part-of: ircs
+    environment: dev
+spec:
+  type: ClusterIP
+  selector:
+    app: valkey
+  ports:
+    - name: valkey
+      port: 6379
+      targetPort: valkey
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: valkey
+  namespace: ircs-dev
+  labels:
+    app: valkey
+    app.kubernetes.io/part-of: ircs
+    environment: dev
+spec:
+  serviceName: valkey-svc
+  replicas: 1
+  selector:
+    matchLabels:
+      app: valkey
+  template:
+    metadata:
+      labels:
+        app: valkey
+        app.kubernetes.io/part-of: ircs
+        environment: dev
+    spec:
+      containers:
+        - name: valkey
+          image: valkey/valkey:8-alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: valkey
+              containerPort: 6379
+          args:
+            - valkey-server
+            - --save
+            - ""
+            - --appendonly
+            - "yes"
+            - --appendfsync
+            - everysec
+            - --dir
+            - /data
+            - --maxmemory
+            - 192mb
+            - --maxmemory-policy
+            - noeviction
+            - --auto-aof-rewrite-percentage
+            - "100"
+            - --auto-aof-rewrite-min-size
+            - 32mb
+          volumeMounts:
+            - name: valkey-data
+              mountPath: /data
+          startupProbe:
+            exec:
+              command: ["valkey-cli", "ping"]
+            failureThreshold: 30
+            periodSeconds: 5
+          readinessProbe:
+            exec:
+              command: ["valkey-cli", "ping"]
+            periodSeconds: 10
+          livenessProbe:
+            exec:
+              command: ["valkey-cli", "ping"]
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 384Mi
+  volumeClaimTemplates:
+    - metadata:
+        name: valkey-data
+        labels:
+          app: valkey
+          app.kubernetes.io/part-of: ircs
+          environment: dev
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi

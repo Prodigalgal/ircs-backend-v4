@@ -1,0 +1,72 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: ircs-content-service
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:${RABBITMQ_HOST:localhost}}
+    port: ${RABBITMQ_PORT:${SPRING_RABBITMQ_PORT:5672}}
+    username: ${RABBITMQ_USERNAME:${SPRING_RABBITMQ_USERNAME:admin}}
+    password: ${SPRING_RABBITMQ_PASSWORD:${RABBITMQ_PASSWORD:}}
+    listener:
+      simple:
+        auto-startup: ${APP_CONTENT_LISTENER_ENABLED:false}
+        default-requeue-rejected: false
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:${DB_URL:jdbc:postgresql://localhost:5432/ircs?connectionTimeZone=UTC}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:postgres}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:}}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-init-sql: ${SPRING_DATASOURCE_HIKARI_CONNECTION_INIT_SQL:SET jit=off}
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:${REDIS_HOST:${VALKEY_HOST:localhost}}}
+      port: ${SPRING_DATA_REDIS_PORT:${REDIS_PORT:${VALKEY_PORT:6379}}}
+      password: ${SPRING_DATA_REDIS_PASSWORD:${REDIS_PASSWORD:${VALKEY_PASSWORD:}}}
+
+app:
+  content:
+    cluster-lock:
+      enabled: ${APP_CONTENT_CLUSTER_LOCK_ENABLED:true}
+      ttl: ${APP_CONTENT_CLUSTER_LOCK_TTL:PT10M}
+      worker-id: ${APP_CONTENT_CLUSTER_LOCK_WORKER_ID:}
+    listener:
+      enabled: ${APP_CONTENT_LISTENER_ENABLED:false}
+    config-listener:
+      enabled: ${APP_CONTENT_CONFIG_LISTENER_ENABLED:true}
+    maintenance-gate-listener:
+      enabled: ${APP_CONTENT_MAINTENANCE_GATE_LISTENER_ENABLED:false}
+    system-config:
+      cache-ttl: ${APP_CONTENT_SYSTEM_CONFIG_CACHE_TTL:30s}
+    internal:
+      scraper-base-url: ${APP_CONTENT_INTERNAL_SCRAPER_BASE_URL:${APP_CONTENT_SCRAPER_BASE_URL:http://ircs-scraper-service.ircs-dev.svc.cluster.local:8080}}
+    internal-access:
+      require-token: ${APP_CONTENT_INTERNAL_ACCESS_REQUIRE_TOKEN:false}
+      token: ${APP_CONTENT_SERVICE_TOKEN:}
+      required-scope: ${APP_CONTENT_INTERNAL_ACCESS_REQUIRED_SCOPE:content:maintenance}
+    trend-sync:
+      title-similarity-threshold: ${APP_CONTENT_TREND_SYNC_TITLE_SIMILARITY_THRESHOLD:0.4}
+    resolver-preset-seed:
+      enabled: ${APP_CONTENT_RESOLVER_PRESET_SEED_ENABLED:true}
+
+ircs:
+  outbound:
+    circuit:
+      content-refetch-scraper:
+        enabled: ${IRCS_OUTBOUND_CIRCUIT_CONTENT_REFETCH_SCRAPER_ENABLED:${IRCS_OUTBOUND_CIRCUIT_ENABLED:true}}
+        failure-threshold: ${IRCS_OUTBOUND_CIRCUIT_CONTENT_REFETCH_SCRAPER_FAILURE_THRESHOLD:${IRCS_OUTBOUND_CIRCUIT_FAILURE_THRESHOLD:5}}
+        open-duration: ${IRCS_OUTBOUND_CIRCUIT_CONTENT_REFETCH_SCRAPER_OPEN_DURATION:${IRCS_OUTBOUND_CIRCUIT_OPEN_DURATION:PT30S}}
+        open-duration-ms: ${IRCS_OUTBOUND_CIRCUIT_CONTENT_REFETCH_SCRAPER_OPEN_DURATION_MS:${IRCS_OUTBOUND_CIRCUIT_OPEN_DURATION_MS:30000}}
+        half-open-max-calls: ${IRCS_OUTBOUND_CIRCUIT_CONTENT_REFETCH_SCRAPER_HALF_OPEN_MAX_CALLS:${IRCS_OUTBOUND_CIRCUIT_HALF_OPEN_MAX_CALLS:1}}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true

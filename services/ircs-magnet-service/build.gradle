@@ -1,0 +1,8 @@
+dependencies {
+    implementation project(':shared:ircs-common')
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.jsoup:jsoup:1.21.2'
+    runtimeOnly 'org.postgresql:postgresql'
+    testImplementation 'com.h2database:h2'
+}

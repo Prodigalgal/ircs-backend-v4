@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ircs-adult-classifier-service
+  namespace: ircs-dev
+  labels:
+    app: ircs-adult-classifier-service
+    app.kubernetes.io/part-of: ircs
+    environment: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ircs-adult-classifier-service
+  template:
+    metadata:
+      labels:
+        app: ircs-adult-classifier-service
+        app.kubernetes.io/part-of: ircs
+        environment: dev
+      annotations:
+        ircs.prodigalgal.com/no-public-route: "true"
+    spec:
+      imagePullSecrets:
+        - name: harbor-secret
+      containers:
+        - name: app
+          image: harbor.mnnu.eu.org/ircs/ircs-adult-classifier-service:dev
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: APP_ADULT_CLASSIFIER_MODEL_NAME
+              value: uget/sexual_content_dection
+            - name: APP_ADULT_CLASSIFIER_MODEL_VERSION
+              value: uget-sexual-content-dection
+            - name: APP_ADULT_CLASSIFIER_REQUIRE_TOKEN
+              value: "false"
+            - name: APP_ADULT_CLASSIFIER_MAX_LENGTH
+              value: "128"
+            - name: APP_ADULT_CLASSIFIER_BATCH_SIZE
+              value: "16"
+            - name: APP_ADULT_CLASSIFIER_TORCH_THREADS
+              value: "1"
+            - name: APP_ADULT_CLASSIFIER_LOCAL_FILES_ONLY
+              value: "true"
+          startupProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            failureThreshold: 60
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 250m
+              memory: 768Mi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ircs-adult-classifier-service
+  namespace: ircs-dev
+  labels:
+    app: ircs-adult-classifier-service
+    app.kubernetes.io/part-of: ircs
+    environment: dev
+spec:
+  type: ClusterIP
+  selector:
+    app: ircs-adult-classifier-service
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http

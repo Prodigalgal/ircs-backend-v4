@@ -1,0 +1,219 @@
+plugins {
+    id 'org.springframework.boot' version '3.5.6' apply false
+    id 'io.spring.dependency-management' version '1.1.7' apply false
+    id 'com.google.cloud.tools.jib' version '3.5.3' apply false
+    id 'org.graalvm.buildtools.native' version '0.10.6' apply false
+}
+ext {
+    springAiVersion = '1.1.2'
+}
+
+allprojects {
+    group = 'com.prodigalgal'
+    version = '0.1.0-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+    }
+}
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'io.spring.dependency-management'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(25)
+        }
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom 'org.springframework.boot:spring-boot-dependencies:3.5.6'
+            mavenBom 'software.amazon.awssdk:bom:2.40.8'
+            mavenBom 'io.github.resilience4j:resilience4j-bom:2.3.0'
+            mavenBom 'io.opentelemetry:opentelemetry-bom:1.56.0'
+            mavenBom 'io.micrometer:micrometer-tracing-bom:1.5.7'
+            mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+        }
+    }
+
+    configurations.configureEach {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+
+    configurations {
+        mockitoAgent
+    }
+
+    dependencies {
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+        mockitoAgent('org.mockito:mockito-core') {
+            transitive = false
+        }
+    }
+
+    tasks.withType(Test).configureEach {
+        useJUnitPlatform()
+        jvmArgs "-javaagent:${configurations.mockitoAgent.singleFile.absolutePath}"
+    }
+}
+
+def serviceProjects = subprojects.findAll { it.path.startsWith(':services:') }
+def runtimeProjects = [
+        project(':platform:ircs-platform-api'),
+        project(':platform:ircs-worker-runtime')
+]
+
+def parseJibPlatforms(Project project) {
+    def configured = project.providers.gradleProperty('jibTargetPlatforms')
+            .orElse(project.providers.gradleProperty('jibTargetOs')
+                    .zip(project.providers.gradleProperty('jibTargetArch')) { os, arch -> "${os}/${arch}" })
+            .orElse('linux/arm64')
+            .get()
+    configured.split(',')
+            .collect { it.trim() }
+            .findAll { !it.isBlank() }
+            .collect { platform ->
+                def parts = platform.split('/')
+                if (parts.length != 2 || parts[0].isBlank() || parts[1].isBlank()) {
+                    throw new GradleException("Invalid jibTargetPlatforms entry '${platform}', expected os/architecture")
+                }
+                [os: parts[0], architecture: parts[1]]
+            }
+}
+
+def optimizedJvmFlags(Project project) {
+    [
+            '-XX:+UseContainerSupport',
+            '-XX:+UseCompactObjectHeaders',
+            "-XX:ActiveProcessorCount=${project.providers.gradleProperty('ircsRuntimeActiveProcessorCount').orElse('1').get()}",
+            '-XX:InitialRAMPercentage=20',
+            '-XX:MaxRAMPercentage=60',
+            '-XX:ParallelGCThreads=1',
+            '-XX:ConcGCThreads=1',
+            '-XX:+ExitOnOutOfMemoryError',
+            '-Djava.security.egd=file:/dev/./urandom',
+            '-Dspring.threads.virtual.enabled=true'
+    ]
+}
+
+configure(serviceProjects) {
+    apply plugin: 'java-library'
+
+    dependencies {
+        implementation project(':shared:ircs-common')
+        implementation project(':shared:ircs-contracts')
+        implementation project(':shared:ircs-observability')
+
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+        implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+        implementation 'com.lmax:disruptor:3.4.4'
+        implementation 'io.micrometer:micrometer-registry-prometheus'
+        implementation 'io.micrometer:micrometer-tracing-bridge-otel'
+        implementation 'io.opentelemetry:opentelemetry-exporter-otlp'
+    }
+}
+
+configure(runtimeProjects) {
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'com.google.cloud.tools.jib'
+    apply plugin: 'org.graalvm.buildtools.native'
+
+    dependencies {
+        implementation project(':shared:ircs-common')
+        implementation project(':shared:ircs-contracts')
+        implementation project(':shared:ircs-messaging')
+        implementation project(':shared:ircs-observability')
+
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-amqp'
+        implementation 'org.springframework.boot:spring-boot-starter-cache'
+        implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+        implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+        implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+        implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+        implementation 'org.springframework.boot:spring-boot-starter-mail'
+        implementation 'org.springframework.boot:spring-boot-starter-security'
+        implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+        implementation 'com.github.ben-manes.caffeine:caffeine'
+        implementation 'com.lmax:disruptor:3.4.4'
+        implementation 'io.micrometer:micrometer-registry-prometheus'
+        implementation 'io.micrometer:micrometer-tracing-bridge-otel'
+        implementation 'io.opentelemetry:opentelemetry-exporter-otlp'
+
+        runtimeOnly 'org.postgresql:postgresql'
+    }
+
+    springBoot {
+        buildInfo()
+    }
+
+    graalvmNative {
+        toolchainDetection = true
+        metadataRepository {
+            enabled = true
+        }
+        binaries {
+            main {
+                imageName = project.name
+                buildArgs.addAll([
+                        '--enable-url-protocols=http,https',
+                        '-H:+ReportExceptionStackTraces',
+                        '-H:+UnlockExperimentalVMOptions',
+                        '--gc=serial',
+                        '--no-fallback'
+                ])
+            }
+        }
+    }
+
+    jib {
+        containerizingMode = 'packaged'
+        from {
+            image = providers.gradleProperty('jibBaseImage')
+                    .orElse('registry.mnnu.eu.org/ircs/base/eclipse-temurin:25-jre-alpine')
+                    .get()
+            platforms {
+                parseJibPlatforms(project).each { targetPlatform ->
+                    platform {
+                        architecture = targetPlatform.architecture
+                        os = targetPlatform.os
+                    }
+                }
+            }
+        }
+        to {
+            image = providers.gradleProperty('jibToImage')
+                    .orElse("registry.mnnu.eu.org/ircs/${project.name}:v4-dev")
+                    .get()
+        }
+        container {
+            ports = ['8080']
+            creationTime = 'USE_CURRENT_TIMESTAMP'
+            jvmFlags = optimizedJvmFlags(project)
+            environment = [
+                    SPRING_THREADS_VIRTUAL_ENABLED: 'true'
+            ]
+        }
+    }
+
+    tasks.named('bootBuildImage') {
+        builder = 'paketobuildpacks/builder-jammy-tiny:latest'
+        imageName = providers.gradleProperty('bootBuildImageName')
+                .orElse("registry.mnnu.eu.org/ircs/${project.name}:v4-native-dev")
+                .get()
+        environment = [
+                BP_NATIVE_IMAGE: 'true',
+                BP_JVM_VERSION : '25'
+        ]
+    }
+}

@@ -1,0 +1,95 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: ircs-normalization-worker
+  task:
+    scheduling:
+      pool:
+        size: ${APP_NORMALIZATION_SCHEDULING_POOL_SIZE:4}
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:${RABBITMQ_HOST:localhost}}
+    port: ${RABBITMQ_PORT:${SPRING_RABBITMQ_PORT:5672}}
+    username: ${RABBITMQ_USERNAME:${SPRING_RABBITMQ_USERNAME:admin}}
+    password: ${SPRING_RABBITMQ_PASSWORD:${RABBITMQ_PASSWORD:}}
+    listener:
+      simple:
+        auto-startup: ${APP_NORMALIZATION_CONFIG_LISTENER_ENABLED:true}
+        default-requeue-rejected: false
+        prefetch: ${APP_NORMALIZATION_RABBIT_PREFETCH:10}
+        concurrency: ${APP_NORMALIZATION_RABBIT_CONCURRENCY:2}
+        max-concurrency: ${APP_NORMALIZATION_RABBIT_MAX_CONCURRENCY:4}
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:${DB_URL:jdbc:postgresql://localhost:5432/ircs?connectionTimeZone=UTC}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:postgres}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:}}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: ${APP_NORMALIZATION_DB_MAX_POOL_SIZE:8}
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:${REDIS_HOST:${VALKEY_HOST:localhost}}}
+      port: ${SPRING_DATA_REDIS_PORT:${REDIS_PORT:${VALKEY_PORT:6379}}}
+      password: ${SPRING_DATA_REDIS_PASSWORD:${REDIS_PASSWORD:${VALKEY_PASSWORD:}}}
+
+app:
+  worker:
+    audit:
+      enabled: ${APP_WORKER_AUDIT_ENABLED:true}
+      datasource-url: ${APP_WORKER_AUDIT_DATASOURCE_URL:${SPRING_DATASOURCE_URL:${DB_URL:${spring.datasource.url:}}}}
+      username: ${APP_WORKER_AUDIT_USERNAME:${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:${spring.datasource.username:}}}}
+      password: ${APP_WORKER_AUDIT_PASSWORD:${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:${spring.datasource.password:}}}}
+      source: ${APP_WORKER_AUDIT_SOURCE:${spring.application.name:ircs-normalization-worker}}
+  normalization:
+    config-listener:
+      enabled: ${APP_NORMALIZATION_CONFIG_LISTENER_ENABLED:true}
+    internal-access:
+      require-token: ${APP_NORMALIZATION_INTERNAL_ACCESS_REQUIRE_TOKEN:false}
+      token: ${APP_NORMALIZATION_SERVICE_TOKEN:}
+      required-scope: ${APP_NORMALIZATION_INTERNAL_ACCESS_REQUIRED_SCOPE:normalization:maintenance}
+    system-config:
+      cache-ttl: ${APP_NORMALIZATION_SYSTEM_CONFIG_CACHE_TTL:30s}
+    max-retries: ${APP_NORMALIZATION_MAX_RETRIES:5}
+    backoff-base-seconds: ${APP_NORMALIZATION_BACKOFF_BASE_SECONDS:60}
+    hanlp-prewarm:
+      enabled: ${APP_NORMALIZATION_HANLP_PREWARM_ENABLED:true}
+    valkey-worker:
+      initial-delay-ms: ${APP_NORMALIZATION_VALKEY_WORKER_INITIAL_DELAY_MS:10000}
+      fixed-delay-ms: ${APP_NORMALIZATION_VALKEY_WORKER_FIXED_DELAY_MS:1000}
+      batch-size: ${APP_NORMALIZATION_VALKEY_WORKER_BATCH_SIZE:10}
+      visibility-timeout: ${APP_NORMALIZATION_VALKEY_WORKER_VISIBILITY_TIMEOUT:PT10M}
+    llm:
+      provider: ${APP_NORMALIZATION_LLM_PROVIDER:OPENAI}
+      request-timeout-seconds: ${APP_NORMALIZATION_LLM_REQUEST_TIMEOUT_SECONDS:30}
+      credential-service:
+        base-url: ${APP_NORMALIZATION_LLM_CREDENTIAL_SERVICE_BASE_URL:${APP_CREDENTIAL_SERVICE_BASE_URL:}}
+        token: ${APP_NORMALIZATION_LLM_CREDENTIAL_SERVICE_TOKEN:}
+        service-id: ${APP_NORMALIZATION_LLM_CREDENTIAL_SERVICE_ID:normalization-worker}
+        scopes: ${APP_NORMALIZATION_LLM_CREDENTIAL_SERVICE_SCOPES:credential:lease}
+    llm-cleaning:
+      work-queue:
+        worker:
+          enabled: ${APP_NORMALIZATION_LLM_CLEANING_WORK_QUEUE_WORKER_ENABLED:false}
+          initial-delay-ms: ${APP_NORMALIZATION_LLM_CLEANING_WORK_QUEUE_INITIAL_DELAY_MS:30000}
+          fixed-delay-ms: ${APP_NORMALIZATION_LLM_CLEANING_WORK_QUEUE_FIXED_DELAY_MS:5000}
+          batch-size: ${APP_NORMALIZATION_LLM_CLEANING_WORK_QUEUE_BATCH_SIZE:100}
+          visibility-seconds: ${APP_NORMALIZATION_LLM_CLEANING_WORK_QUEUE_VISIBILITY_SECONDS:900}
+          max-retries: ${APP_NORMALIZATION_LLM_CLEANING_WORK_QUEUE_MAX_RETRIES:8}
+          max-backoff-seconds: ${APP_NORMALIZATION_LLM_CLEANING_WORK_QUEUE_MAX_BACKOFF_SECONDS:1800}
+          worker-id: ${APP_NORMALIZATION_LLM_CLEANING_WORK_QUEUE_WORKER_ID:}
+      mode: ${APP_NORMALIZATION_LLM_CLEANING_MODE:dry-run}
+  ai:
+    llm:
+      enabled: ${APP_AI_LLM_ENABLED:false}
+      model: ${APP_AI_LLM_MODEL:gemma-4-31b-it}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true

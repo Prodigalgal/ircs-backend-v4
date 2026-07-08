@@ -1,0 +1,144 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: ircs-ops-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:${DB_URL:jdbc:postgresql://localhost:5432/ircs?connectionTimeZone=UTC}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:postgres}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:}}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: ${SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE:2}
+      minimum-idle: ${SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE:0}
+      connection-init-sql: ${SPRING_DATASOURCE_HIKARI_CONNECTION_INIT_SQL:SET jit=off}
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:${RABBITMQ_HOST:localhost}}
+    port: ${SPRING_RABBITMQ_PORT:${RABBITMQ_PORT:5672}}
+    username: ${SPRING_RABBITMQ_USERNAME:${RABBITMQ_USERNAME:guest}}
+    password: ${SPRING_RABBITMQ_PASSWORD:${RABBITMQ_PASSWORD:guest}}
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:${VALKEY_HOST:localhost}}
+      port: ${SPRING_DATA_REDIS_PORT:${VALKEY_PORT:6379}}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+app:
+  ops:
+    internal-access:
+      require-token: ${APP_OPS_INTERNAL_ACCESS_REQUIRE_TOKEN:false}
+      token: ${APP_OPS_INTERNAL_ACCESS_TOKEN:${APP_OPS_SERVICE_TOKEN:}}
+      read-scope: ${APP_OPS_INTERNAL_ACCESS_READ_SCOPE:ops:read}
+      run-scope: ${APP_OPS_INTERNAL_ACCESS_RUN_SCOPE:ops:run}
+    config-listener:
+      enabled: ${APP_OPS_CONFIG_LISTENER_ENABLED:true}
+    rabbit-management:
+      enabled: ${APP_OPS_RABBIT_MANAGEMENT_ENABLED:true}
+      base-url: ${APP_OPS_RABBIT_MANAGEMENT_BASE_URL:}
+      vhost: ${APP_OPS_RABBIT_MANAGEMENT_VHOST:/}
+      initial-delay-ms: ${APP_OPS_RABBIT_MANAGEMENT_INITIAL_DELAY_MS:10000}
+      fixed-delay-ms: ${APP_OPS_RABBIT_MANAGEMENT_FIXED_DELAY_MS:10000}
+      connect-timeout: ${APP_OPS_RABBIT_MANAGEMENT_CONNECT_TIMEOUT:PT3S}
+      request-timeout: ${APP_OPS_RABBIT_MANAGEMENT_REQUEST_TIMEOUT:PT5S}
+    dashboard:
+      snapshot:
+        enabled: ${APP_OPS_DASHBOARD_SNAPSHOT_ENABLED:true}
+        key-prefix: ${APP_OPS_DASHBOARD_SNAPSHOT_KEY_PREFIX:ircs:ops:dashboard:snapshot:v1}
+        refresh-interval: ${APP_OPS_DASHBOARD_SNAPSHOT_REFRESH_INTERVAL:PT1M}
+        refresh-budget: ${APP_OPS_DASHBOARD_SNAPSHOT_REFRESH_BUDGET:PT3S}
+        fresh-ttl: ${APP_OPS_DASHBOARD_SNAPSHOT_FRESH_TTL:PT2M}
+        stale-grace: ${APP_OPS_DASHBOARD_SNAPSHOT_STALE_GRACE:PT15M}
+        redis-ttl: ${APP_OPS_DASHBOARD_SNAPSHOT_REDIS_TTL:PT2M}
+        lease-ttl: ${APP_OPS_DASHBOARD_SNAPSHOT_LEASE_TTL:PT10S}
+        cluster-lease:
+          enabled: ${APP_OPS_DASHBOARD_SNAPSHOT_CLUSTER_LEASE_ENABLED:true}
+        default-task-runtime-limit: ${APP_OPS_DASHBOARD_SNAPSHOT_DEFAULT_TASK_RUNTIME_LIMIT:50}
+      read-model-snapshot:
+        fresh-ttl: ${APP_OPS_DASHBOARD_READ_MODEL_SNAPSHOT_FRESH_TTL:PT2M}
+        stale-grace: ${APP_OPS_DASHBOARD_READ_MODEL_SNAPSHOT_STALE_GRACE:PT15M}
+    runtime-expired-inflight-reaper:
+      enabled: ${APP_OPS_RUNTIME_EXPIRED_INFLIGHT_REAPER_ENABLED:true}
+      initial-delay-ms: ${APP_OPS_RUNTIME_EXPIRED_INFLIGHT_REAPER_INITIAL_DELAY_MS:10000}
+      fixed-delay-ms: ${APP_OPS_RUNTIME_EXPIRED_INFLIGHT_REAPER_FIXED_DELAY_MS:1000}
+      batch-size: ${APP_OPS_RUNTIME_EXPIRED_INFLIGHT_REAPER_BATCH_SIZE:50}
+      lease-ttl: ${APP_OPS_RUNTIME_EXPIRED_INFLIGHT_REAPER_LEASE_TTL:PT30S}
+      task-types: ${APP_OPS_RUNTIME_EXPIRED_INFLIGHT_REAPER_TASK_TYPES:}
+    service-restart:
+      enabled: ${APP_OPS_SERVICE_RESTART_ENABLED:false}
+      kubernetes-api-base-url: ${APP_OPS_SERVICE_RESTART_KUBERNETES_API_BASE_URL:}
+      namespace: ${APP_OPS_SERVICE_RESTART_NAMESPACE:}
+      allowed-services: ${APP_OPS_SERVICE_RESTART_ALLOWED_SERVICES:}
+      request-timeout: ${APP_OPS_SERVICE_RESTART_REQUEST_TIMEOUT:PT10S}
+    self-healing:
+      service-restart:
+        enabled: ${APP_OPS_SELF_HEALING_SERVICE_RESTART_ENABLED:false}
+        default-dry-run: ${APP_OPS_SELF_HEALING_SERVICE_RESTART_DEFAULT_DRY_RUN:true}
+        cooldown: ${APP_OPS_SELF_HEALING_SERVICE_RESTART_COOLDOWN:PT10M}
+        max-attempts-per-window: ${APP_OPS_SELF_HEALING_SERVICE_RESTART_MAX_ATTEMPTS_PER_WINDOW:1}
+        attempt-window: ${APP_OPS_SELF_HEALING_SERVICE_RESTART_ATTEMPT_WINDOW:PT1H}
+      low-risk:
+        execute-enabled: ${APP_OPS_SELF_HEALING_LOW_RISK_EXECUTE_ENABLED:false}
+        default-dry-run: ${APP_OPS_SELF_HEALING_LOW_RISK_DEFAULT_DRY_RUN:true}
+    maintenance:
+      notification:
+        mail:
+          enabled: ${APP_OPS_MAINTENANCE_NOTIFICATION_MAIL_ENABLED:true}
+          recipients: ${APP_OPS_MAINTENANCE_NOTIFICATION_MAIL_RECIPIENTS:}
+          subject-prefix: ${APP_OPS_MAINTENANCE_NOTIFICATION_MAIL_SUBJECT_PREFIX:[IRCS 运维任务]}
+      reindex:
+        dev-limit: ${OPS_MAINTENANCE_REINDEX_DEV_LIMIT:${APP_OPS_MAINTENANCE_REINDEX_DEV_LIMIT:5}}
+      scheduler:
+        enabled: ${APP_OPS_MAINTENANCE_SCHEDULER_ENABLED:false}
+        dry-run: ${APP_OPS_MAINTENANCE_SCHEDULER_DRY_RUN:true}
+        execute-enabled: ${APP_OPS_MAINTENANCE_SCHEDULER_EXECUTE_ENABLED:true}
+        tasks: ${APP_OPS_MAINTENANCE_SCHEDULER_TASKS:search-reindex-unified}
+        initial-delay-ms: ${APP_OPS_MAINTENANCE_SCHEDULER_INITIAL_DELAY_MS:60000}
+        fixed-delay-ms: ${APP_OPS_MAINTENANCE_SCHEDULER_FIXED_DELAY_MS:300000}
+        cluster-lease:
+          enabled: ${APP_OPS_MAINTENANCE_SCHEDULER_CLUSTER_LEASE_ENABLED:true}
+          ttl: ${APP_OPS_MAINTENANCE_SCHEDULER_CLUSTER_LEASE_TTL:10m}
+      gate:
+        default-ttl: ${APP_OPS_MAINTENANCE_GATE_DEFAULT_TTL:15m}
+        max-ttl: ${APP_OPS_MAINTENANCE_GATE_MAX_TTL:6h}
+      search:
+        owner-base-url: ${APP_OPS_SEARCH_SERVICE_BASE_URL:http://ircs-search-service.ircs-dev.svc.cluster.local:8080}
+        request-timeout: ${APP_OPS_SEARCH_SERVICE_REQUEST_TIMEOUT:10s}
+        service-id: ${APP_OPS_SERVICE_ID:ops-service}
+        service-token: ${APP_OPS_SEARCH_SERVICE_TOKEN:${APP_SEARCH_SERVICE_TOKEN:}}
+        scopes: ${APP_OPS_SEARCH_SERVICE_SCOPES:search:sync}
+      normalization:
+        dev-limit: ${APP_OPS_MAINTENANCE_NORMALIZATION_DEV_LIMIT:5}
+        owner-base-url: ${APP_OPS_NORMALIZATION_WORKER_BASE_URL:http://ircs-normalization-worker.ircs-dev.svc.cluster.local:8080}
+        request-timeout: ${APP_OPS_NORMALIZATION_WORKER_REQUEST_TIMEOUT:30s}
+        llm-request-timeout: ${APP_OPS_NORMALIZATION_LLM_REQUEST_TIMEOUT:5m}
+        service-id: ${APP_OPS_SERVICE_ID:ops-service}
+        service-token: ${APP_OPS_NORMALIZATION_SERVICE_TOKEN:${APP_NORMALIZATION_SERVICE_TOKEN:}}
+        scopes: ${APP_OPS_NORMALIZATION_WORKER_SCOPES:normalization:maintenance}
+      aggregation:
+        dev-limit: ${APP_OPS_MAINTENANCE_AGGREGATION_DEV_LIMIT:5}
+        owner-base-url: ${APP_OPS_AGGREGATION_WORKER_BASE_URL:http://ircs-aggregation-worker.ircs-dev.svc.cluster.local:8080}
+        request-timeout: ${APP_OPS_AGGREGATION_WORKER_REQUEST_TIMEOUT:30s}
+        stats-request-timeout: ${APP_OPS_AGGREGATION_STATS_REQUEST_TIMEOUT:2s}
+        service-id: ${APP_OPS_SERVICE_ID:ops-service}
+        service-token: ${APP_OPS_AGGREGATION_SERVICE_TOKEN:${APP_AGGREGATION_SERVICE_TOKEN:}}
+        scopes: ${APP_OPS_AGGREGATION_WORKER_SCOPES:aggregation:maintenance}
+      scraper:
+        owner-base-url: ${APP_OPS_SCRAPER_SERVICE_BASE_URL:http://ircs-scraper-service.ircs-dev.svc.cluster.local:8080}
+        request-timeout: ${APP_OPS_SCRAPER_SERVICE_REQUEST_TIMEOUT:3m}
+        service-id: ${APP_OPS_SERVICE_ID:ops-service}
+        service-token: ${APP_OPS_SCRAPER_SERVICE_TOKEN:${APP_SCRAPER_SERVICE_TOKEN:}}
+        scopes: ${APP_OPS_SCRAPER_SERVICE_SCOPES:scraper:maintenance}
+  aggregation:
+    work-queue:
+      worker:
+        processing-stall-threshold: ${APP_AGGREGATION_WORK_QUEUE_WORKER_PROCESSING_STALL_THRESHOLD:PT10M}

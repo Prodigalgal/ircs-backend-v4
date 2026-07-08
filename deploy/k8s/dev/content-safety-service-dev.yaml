@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ircs-content-safety-service
+  namespace: ircs-dev
+  labels:
+    app: ircs-content-safety-service
+    app.kubernetes.io/part-of: ircs
+    environment: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ircs-content-safety-service
+  template:
+    metadata:
+      labels:
+        app: ircs-content-safety-service
+        app.kubernetes.io/part-of: ircs
+        environment: dev
+      annotations:
+        ircs.prodigalgal.com/no-public-route: "true"
+    spec:
+      imagePullSecrets:
+        - name: harbor-secret
+      containers:
+        - name: app
+          image: harbor.mnnu.eu.org/ircs/ircs-content-safety-service:dev
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: ircs-dev-app-config
+          env:
+            - name: SPRING_APPLICATION_NAME
+              value: ircs-content-safety-service
+            - name: APP_CONTENT_SAFETY_INTERNAL_ACCESS_REQUIRE_TOKEN
+              value: "false"
+            - name: APP_CONTENT_SAFETY_ADULT_MODEL_ENABLED
+              value: "false"
+          startupProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            failureThreshold: 30
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 25m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ircs-content-safety-service
+  namespace: ircs-dev
+  labels:
+    app: ircs-content-safety-service
+    app.kubernetes.io/part-of: ircs
+    environment: dev
+spec:
+  type: ClusterIP
+  selector:
+    app: ircs-content-safety-service
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http

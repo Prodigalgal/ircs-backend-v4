@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>账号激活</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f4f4f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background-color: #000000;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            color: #6366f1;
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 1px;
+        }
+        .content {
+            padding: 40px;
+            color: #333333;
+        }
+        .code-box {
+            background-color: #f9fafb;
+            border: 1px dashed #e5e7eb;
+            border-radius: 4px;
+            text-align: center;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        .activation-code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 32px;
+            font-weight: bold;
+            color: #4f46e5;
+            letter-spacing: 5px;
+            margin: 0;
+        }
+        .footer {
+            background-color: #f9fafb;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #9ca3af;
+            border-top: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>画外 Huawai</h1>
+    </div>
+    <div class="content">
+        <p>尊敬的用户：</p>
+        <p>您好！感谢您注册 <strong>画外 Huawai</strong> 平台。</p>
+        <p>您的账号激活验证码如下（有效期 15 分钟）：</p>
+
+        <div class="code-box">
+            <p class="activation-code" th:text="${code}">123456</p>
+        </div>
+
+        <p>请在注册页面输入此验证码以完成激活。</p>
+        <p>如果这不是您的操作，请忽略此邮件，您的账号安全不会受到影响。</p>
+    </div>
+    <div class="footer">
+        <p>&copy; <span th:text="${#temporals.format(T(java.time.LocalDate).now(), 'yyyy')}">2026</span> ProdigalGal. All rights reserved.</p>
+        <p>此邮件为系统自动发送，请勿回复。</p>
+    </div>
+</div>
+</body>
+</html>

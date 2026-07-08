@@ -1,0 +1,40 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: ircs-credential-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:${DB_URL:jdbc:postgresql://localhost:5432/ircs?connectionTimeZone=UTC}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:postgres}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:}}
+    driver-class-name: org.postgresql.Driver
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:${REDIS_HOST:${VALKEY_HOST:localhost}}}
+      port: ${SPRING_DATA_REDIS_PORT:${REDIS_PORT:${VALKEY_PORT:6379}}}
+      password: ${SPRING_DATA_REDIS_PASSWORD:${REDIS_PASSWORD:${VALKEY_PASSWORD:}}}
+
+app:
+  credential:
+    cluster-lock:
+      enabled: ${APP_CREDENTIAL_CLUSTER_LOCK_ENABLED:true}
+      ttl: ${APP_CREDENTIAL_CLUSTER_LOCK_TTL:PT10M}
+      worker-id: ${APP_CREDENTIAL_CLUSTER_LOCK_WORKER_ID:}
+    initializer:
+      enabled: ${APP_CREDENTIAL_INITIALIZER_ENABLED:true}
+      file-path: ${APP_CREDENTIAL_INITIALIZER_FILE_PATH:/etc/ircs/init/credentials.json}
+      classpath-fallback-enabled: ${APP_CREDENTIAL_INITIALIZER_CLASSPATH_FALLBACK_ENABLED:true}
+    internal:
+      token: ${APP_CREDENTIAL_SERVICE_TOKEN:}
+      required-scope: ${APP_CREDENTIAL_SERVICE_REQUIRED_SCOPE:credential:lease}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true

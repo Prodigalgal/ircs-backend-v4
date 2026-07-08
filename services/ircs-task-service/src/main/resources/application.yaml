@@ -1,0 +1,96 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: ircs-task-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:${DB_URL:jdbc:postgresql://localhost:5432/ircs?connectionTimeZone=UTC}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:postgres}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:}}
+    driver-class-name: org.postgresql.Driver
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:${RABBITMQ_HOST:localhost}}
+    port: ${RABBITMQ_PORT:${SPRING_RABBITMQ_PORT:5672}}
+    username: ${RABBITMQ_USERNAME:${SPRING_RABBITMQ_USERNAME:admin}}
+    password: ${SPRING_RABBITMQ_PASSWORD:${RABBITMQ_PASSWORD:}}
+    listener:
+      simple:
+        auto-startup: ${APP_TASK_QUEUE_LISTENER_ENABLED:false}
+        default-requeue-rejected: false
+        prefetch: ${APP_TASK_RABBIT_PREFETCH:10}
+        concurrency: ${APP_TASK_RABBIT_CONCURRENCY:2}
+        max-concurrency: ${APP_TASK_RABBIT_MAX_CONCURRENCY:4}
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:${VALKEY_HOST:localhost}}
+      port: ${SPRING_DATA_REDIS_PORT:${VALKEY_PORT:6379}}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+app:
+  task:
+    default-seed:
+      enabled: ${APP_TASK_DEFAULT_SEED_ENABLED:true}
+      initial-delay-ms: ${APP_TASK_DEFAULT_SEED_INITIAL_DELAY_MS:30000}
+      fixed-delay-ms: ${APP_TASK_DEFAULT_SEED_FIXED_DELAY_MS:60000}
+    scheduler:
+      enabled: ${APP_TASK_SCHEDULER_ENABLED:true}
+    watchdog:
+      enabled: ${APP_TASK_WATCHDOG_ENABLED:false}
+    runner:
+      concurrency: ${APP_TASK_RUNNER_CONCURRENCY:1}
+      queue-capacity: ${APP_TASK_RUNNER_QUEUE_CAPACITY:500}
+      await-termination-seconds: ${APP_TASK_RUNNER_AWAIT_TERMINATION_SECONDS:300}
+    queue:
+      enabled: ${APP_TASK_QUEUE_ENABLED:true}
+      initial-page-window: ${APP_TASK_QUEUE_INITIAL_PAGE_WINDOW:200}
+      retry:
+        max-retries: ${APP_TASK_QUEUE_RETRY_MAX_RETRIES:3}
+    snapshot:
+      ttl: ${APP_TASK_SNAPSHOT_TTL:PT24H}
+      flush:
+        enabled: ${APP_TASK_SNAPSHOT_FLUSH_ENABLED:false}
+        delay-ms: ${APP_TASK_SNAPSHOT_FLUSH_DELAY_MS:30000}
+        initial-delay-ms: ${APP_TASK_SNAPSHOT_FLUSH_INITIAL_DELAY_MS:30000}
+        min-dirty-age: ${APP_TASK_SNAPSHOT_FLUSH_MIN_DIRTY_AGE:PT5S}
+        batch-size: ${APP_TASK_SNAPSHOT_FLUSH_BATCH_SIZE:100}
+    cluster-lock:
+      enabled: ${APP_TASK_CLUSTER_LOCK_ENABLED:true}
+      ttl: ${APP_TASK_CLUSTER_LOCK_TTL:PT10M}
+      worker-id: ${APP_TASK_CLUSTER_LOCK_WORKER_ID:}
+    internal-access:
+      require-token: ${APP_TASK_INTERNAL_ACCESS_REQUIRE_TOKEN:false}
+      token: ${APP_TASK_SERVICE_TOKEN:}
+      required-scope: ${APP_TASK_INTERNAL_ACCESS_REQUIRED_SCOPE:task:maintenance}
+    trend-discovery:
+      enabled: ${APP_TASK_TREND_DISCOVERY_ENABLED:true}
+      max-keywords: ${APP_TASK_TREND_DISCOVERY_MAX_KEYWORDS:50}
+      max-data-sources: ${APP_TASK_TREND_DISCOVERY_MAX_DATA_SOURCES:0}
+    media-request:
+      enabled: ${APP_TASK_MEDIA_REQUEST_ENABLED:true}
+      initial-delay-ms: ${APP_TASK_MEDIA_REQUEST_INITIAL_DELAY_MS:30000}
+      fixed-delay-ms: ${APP_TASK_MEDIA_REQUEST_FIXED_DELAY_MS:60000}
+      batch-size: ${APP_TASK_MEDIA_REQUEST_BATCH_SIZE:20}
+      start-page: ${APP_TASK_MEDIA_REQUEST_START_PAGE:1}
+      end-page: ${APP_TASK_MEDIA_REQUEST_END_PAGE:1}
+      request-fixed-delay-ms: ${APP_TASK_MEDIA_REQUEST_REQUEST_FIXED_DELAY_MS:0}
+      max-data-sources: ${APP_TASK_MEDIA_REQUEST_MAX_DATA_SOURCES:0}
+
+ircs:
+  outbound:
+    circuit:
+      task-scraper-execution:
+        enabled: ${IRCS_OUTBOUND_CIRCUIT_TASK_SCRAPER_EXECUTION_ENABLED:${IRCS_OUTBOUND_CIRCUIT_ENABLED:true}}
+        failure-threshold: ${IRCS_OUTBOUND_CIRCUIT_TASK_SCRAPER_EXECUTION_FAILURE_THRESHOLD:${IRCS_OUTBOUND_CIRCUIT_FAILURE_THRESHOLD:5}}
+        open-duration: ${IRCS_OUTBOUND_CIRCUIT_TASK_SCRAPER_EXECUTION_OPEN_DURATION:${IRCS_OUTBOUND_CIRCUIT_OPEN_DURATION:PT30S}}
+        open-duration-ms: ${IRCS_OUTBOUND_CIRCUIT_TASK_SCRAPER_EXECUTION_OPEN_DURATION_MS:${IRCS_OUTBOUND_CIRCUIT_OPEN_DURATION_MS:30000}}
+        half-open-max-calls: ${IRCS_OUTBOUND_CIRCUIT_TASK_SCRAPER_EXECUTION_HALF_OPEN_MAX_CALLS:${IRCS_OUTBOUND_CIRCUIT_HALF_OPEN_MAX_CALLS:1}}

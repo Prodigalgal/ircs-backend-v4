@@ -1,0 +1,68 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: ircs-identity-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:${DB_URL:jdbc:postgresql://localhost:5432/ircs?connectionTimeZone=UTC}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:postgres}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:}}
+    driver-class-name: org.postgresql.Driver
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:${VALKEY_HOST:localhost}}
+      port: ${SPRING_DATA_REDIS_PORT:${VALKEY_PORT:6379}}
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:${RABBITMQ_HOST:localhost}}
+    port: ${RABBITMQ_PORT:${SPRING_RABBITMQ_PORT:5672}}
+    username: ${RABBITMQ_USERNAME:${SPRING_RABBITMQ_USERNAME:admin}}
+    password: ${SPRING_RABBITMQ_PASSWORD:${RABBITMQ_PASSWORD:}}
+
+app:
+  identity:
+    jwt:
+      secret: ${APP_IDENTITY_JWT_SECRET:}
+      iat-floor: ${APP_IDENTITY_JWT_IAT_FLOOR:0}
+      ttl: ${APP_IDENTITY_JWT_TTL:7d}
+    pow:
+      enabled: ${APP_IDENTITY_POW_ENABLED:true}
+      difficulty: ${APP_IDENTITY_POW_DIFFICULTY:4}
+      ttl: ${APP_IDENTITY_POW_TTL:5m}
+    register:
+      email-verify-enabled: ${APP_IDENTITY_EMAIL_VERIFY_ENABLED:false}
+      timezone: ${APP_IDENTITY_REGISTER_TIMEZONE:Asia/Shanghai}
+    code:
+      validity: ${APP_IDENTITY_CODE_VALIDITY:900s}
+      rate-limit: ${APP_IDENTITY_CODE_RATE_LIMIT:120s}
+    mail:
+      enabled: ${APP_MAIL_ENABLED:false}
+    frontend-url: ${APP_FRONTEND_URL:}
+    storage-service:
+      base-url: ${APP_IDENTITY_STORAGE_SERVICE_BASE_URL:http://ircs-storage-service:8080}
+      request-timeout: ${APP_IDENTITY_STORAGE_SERVICE_REQUEST_TIMEOUT:10s}
+      service-id: ${APP_IDENTITY_STORAGE_SERVICE_ID:identity-service}
+      service-token: ${APP_IDENTITY_STORAGE_SERVICE_TOKEN:}
+      scopes: ${APP_IDENTITY_STORAGE_SERVICE_SCOPES:storage:avatar}
+    config-listener:
+      enabled: ${APP_IDENTITY_CONFIG_LISTENER_ENABLED:true}
+
+ircs:
+  outbound:
+    circuit:
+      identity-avatar-storage:
+        enabled: ${IRCS_OUTBOUND_CIRCUIT_IDENTITY_AVATAR_STORAGE_ENABLED:${IRCS_OUTBOUND_CIRCUIT_ENABLED:true}}
+        failure-threshold: ${IRCS_OUTBOUND_CIRCUIT_IDENTITY_AVATAR_STORAGE_FAILURE_THRESHOLD:${IRCS_OUTBOUND_CIRCUIT_FAILURE_THRESHOLD:5}}
+        open-duration: ${IRCS_OUTBOUND_CIRCUIT_IDENTITY_AVATAR_STORAGE_OPEN_DURATION:${IRCS_OUTBOUND_CIRCUIT_OPEN_DURATION:PT30S}}
+        open-duration-ms: ${IRCS_OUTBOUND_CIRCUIT_IDENTITY_AVATAR_STORAGE_OPEN_DURATION_MS:${IRCS_OUTBOUND_CIRCUIT_OPEN_DURATION_MS:30000}}
+        half-open-max-calls: ${IRCS_OUTBOUND_CIRCUIT_IDENTITY_AVATAR_STORAGE_HALF_OPEN_MAX_CALLS:${IRCS_OUTBOUND_CIRCUIT_HALF_OPEN_MAX_CALLS:1}}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
