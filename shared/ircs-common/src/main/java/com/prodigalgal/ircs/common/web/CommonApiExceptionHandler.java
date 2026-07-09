@@ -17,6 +17,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 import org.springframework.web.server.ResponseStatusException;
@@ -63,6 +64,19 @@ public class CommonApiExceptionHandler {
                 "Resource not found",
                 "http",
                 request);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ApiErrorResponse> handleMethodNotAllowed(
+            HttpRequestMethodNotSupportedException exception,
+            HttpServletRequest request) {
+        return ApiErrorResponses.response(
+                HttpStatus.METHOD_NOT_ALLOWED,
+                "http.405",
+                "Request method is not supported",
+                "http",
+                request,
+                Map.of("method", exception.getMethod()));
     }
 
     @ExceptionHandler(IrcsAuthException.class)

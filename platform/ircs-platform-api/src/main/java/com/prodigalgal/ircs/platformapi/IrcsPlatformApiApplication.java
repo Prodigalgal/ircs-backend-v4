@@ -26,6 +26,7 @@ import org.springframework.context.annotation.ImportRuntimeHints;
                 "com.prodigalgal.ircs.credential",
                 "com.prodigalgal.ircs.identity",
                 "com.prodigalgal.ircs.interaction",
+                "com.prodigalgal.ircs.magnet",
                 "com.prodigalgal.ircs.ops",
                 "com.prodigalgal.ircs.portal",
                 "com.prodigalgal.ircs.search",
@@ -44,6 +45,10 @@ import org.springframework.context.annotation.ImportRuntimeHints;
                 @ComponentScan.Filter(
                         type = FilterType.REGEX,
                         pattern = "com\\.prodigalgal\\.ircs\\.apigateway\\.(ApiGatewayProxyController|GatewayProxyClient|ApiGatewayRoutes)"
+                ),
+                @ComponentScan.Filter(
+                        type = FilterType.REGEX,
+                        pattern = "com\\.prodigalgal\\.ircs\\.magnet\\.(MagnetAutoSearchScheduler|MagnetWorkQueueWorker)"
                 )
         }
 )

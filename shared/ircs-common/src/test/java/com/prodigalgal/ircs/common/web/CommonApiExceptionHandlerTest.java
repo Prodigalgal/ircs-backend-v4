@@ -2,6 +2,7 @@ package com.prodigalgal.ircs.common.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -11,6 +12,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.context.request.async.AsyncRequestNotUsableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 class CommonApiExceptionHandlerTest {
@@ -59,6 +61,21 @@ class CommonApiExceptionHandlerTest {
         assertThat(response.getBody().code()).isEqualTo("request.parameter.missing");
         assertThat(response.getBody().message()).isEqualTo("Missing required request parameter: provider");
         assertThat(response.getBody().details()).containsEntry("parameter", "provider");
+    }
+
+    @Test
+    void mapsUnsupportedHttpMethodToMethodNotAllowedEnvelope() {
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/v1/ops/dlq/summary");
+        HttpRequestMethodNotSupportedException exception =
+                new HttpRequestMethodNotSupportedException("GET", List.of("POST", "DELETE"));
+
+        var response = handler.handleMethodNotAllowed(exception, request);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.METHOD_NOT_ALLOWED);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().code()).isEqualTo("http.405");
+        assertThat(response.getBody().path()).isEqualTo("/api/v1/ops/dlq/summary");
+        assertThat(response.getBody().details()).containsEntry("method", "GET");
     }
 
     @Test

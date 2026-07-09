@@ -6,6 +6,7 @@ dependencies {
     implementation project(':services:ircs-credential-service')
     implementation project(':services:ircs-identity-service')
     implementation project(':services:ircs-interaction-service')
+    implementation project(':services:ircs-magnet-service')
     implementation project(':services:ircs-ops-service')
     implementation project(':services:ircs-portal-service')
     implementation project(':services:ircs-search-service')
