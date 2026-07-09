@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 @Component
 @RequiredArgsConstructor
@@ -25,6 +26,10 @@ class JwtSecretBootstrapper implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
+        if (StringUtils.hasText(configService.value(IdentityConfigKey.JWT_SECRET))) {
+            log.info("JWT secret already configured; runtime bootstrap skipped");
+            return;
+        }
         String secret = generateSecret();
         configService.installRuntimeValues(Map.of(IdentityConfigKey.JWT_SECRET, secret));
         configService.updateValue(IdentityConfigKey.JWT_SECRET, secret);
