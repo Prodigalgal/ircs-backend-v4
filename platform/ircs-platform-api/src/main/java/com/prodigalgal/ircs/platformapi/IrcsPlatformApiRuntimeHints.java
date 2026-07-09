@@ -65,6 +65,18 @@ public class IrcsPlatformApiRuntimeHints implements RuntimeHintsRegistrar {
 
     private static final String[] PLATFORM_JSON_BINDING_TYPES = {
             "com.prodigalgal.ircs.identity.infrastructure.AvatarStorageClient$StoredAvatar",
+            "com.prodigalgal.ircs.portal.CategoryItem",
+            "com.prodigalgal.ircs.portal.PageResponse",
+            "com.prodigalgal.ircs.portal.PortalCategorySection",
+            "com.prodigalgal.ircs.portal.PortalHomeResponse",
+            "com.prodigalgal.ircs.portal.PortalMetadataResponse",
+            "com.prodigalgal.ircs.portal.PortalMovieCard",
+            "com.prodigalgal.ircs.portal.PortalMovieDetailResponse",
+            "com.prodigalgal.ircs.portal.PortalMovieDetailResponse$CastMember",
+            "com.prodigalgal.ircs.portal.PortalMovieDetailResponse$Episode",
+            "com.prodigalgal.ircs.portal.PortalMovieDetailResponse$MagnetLink",
+            "com.prodigalgal.ircs.portal.PortalMovieDetailResponse$VideoSource",
+            "com.prodigalgal.ircs.portal.PortalSitemapMovie",
             "com.prodigalgal.ircs.task.infrastructure.ScraperTaskExecutionLog",
             "com.prodigalgal.ircs.task.infrastructure.ScraperTaskExecutionResult"
     };
